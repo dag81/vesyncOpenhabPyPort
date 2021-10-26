@@ -48,15 +48,15 @@ public class VeSyncConstants {
     public static final String EMPTY_STRING = "";
 
     // Base Device Channel Names
-    public static final String DEVICE_CHANNEL_ENABLED = "device-enabled-channel";
-    public static final String DEVICE_CHANNEL_DISPLAY_ENABLED = "device-display-enabled-channel";
-    public static final String DEVICE_CHANNEL_CHILD_LOCK_ENABLED = "device-childLock-enabled-channel";
-    public static final String DEVICE_CHANNEL_AIR_FILTER_LIFE_PERCENTAGE_ENABLED = "device-filter-life-percentage-channel";
-    public static final String DEVICE_CHANNEL_FAN_MODE_ENABLED = "device-ap-mode-type-channel";
-    public static final String DEVICE_CHANNEL_FAN_SPEED_ENABLED = "device-ap-fan-type-channel";
-    public static final String DEVICE_CHANNEL_ERROR_CODE = "device-error-code-channel";
-    public static final String DEVICE_CHANNEL_AIRQUALITY_BASIC = "device-airQuality-channel";
-    public static final String DEVICE_CHANNEL_AIRQUALITY_PPM25 = "device-airQualityPPM25-channel";
+    public static final String DEVICE_CHANNEL_ENABLED = "enabled";
+    public static final String DEVICE_CHANNEL_DISPLAY_ENABLED = "display";
+    public static final String DEVICE_CHANNEL_CHILD_LOCK_ENABLED = "child-lock";
+    public static final String DEVICE_CHANNEL_AIR_FILTER_LIFE_PERCENTAGE_ENABLED = "filter-life-percentage";
+    public static final String DEVICE_CHANNEL_FAN_MODE_ENABLED = "fan-mode";
+    public static final String DEVICE_CHANNEL_FAN_SPEED_ENABLED = "manual-fan-speed";
+    public static final String DEVICE_CHANNEL_ERROR_CODE = "error-code";
+    public static final String DEVICE_CHANNEL_AIRQUALITY_BASIC = "air-quality";
+    public static final String DEVICE_CHANNEL_AIRQUALITY_PPM25 = "air-quality-ppm25";
 
     public static final String DEVICE_CHANNEL_AF_CONFIG_DISPLAY = "device-AF-config-display";
     public static final String DEVICE_CHANNEL_AF_CONFIG_DISPLAY_FOREVER = "device-AF-config-display-forever";
@@ -65,7 +65,7 @@ public class VeSyncConstants {
     public static final String DEVICE_CHANNEL_AF_AUTO_OFF_SECONDS = "device-AF-config-auto-off-seconds-type";
     public static final String DEVICE_CHANNEL_AF_CONFIG_AUTO_ROOM_SIZE = "device-AF-config-auto-pref-room-size-type";
     public static final String DEVICE_CHANNEL_AF_SCHEDULES_COUNT = "device-AF-config-schedules-count";
-    public static final String DEVICE_CHANNEL_AF_NIGHT_LIGHT = "device-AF-night-light";
+    public static final String DEVICE_CHANNEL_AF_NIGHT_LIGHT = "night-light-mode";
 
     // Property name constants
     public static final String DEVICE_PROP_DEVICE_NAME = "Device Name";

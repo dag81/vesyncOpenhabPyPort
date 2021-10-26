@@ -52,22 +52,22 @@
 		<description>A Air Purifier uplinking to VeSync</description>
 
 		<channels>
-			<channel id="device-enabled-channel" typeId="deviceEnabledType"/>
-			<channel id="device-childLock-enabled-channel" typeId="deviceChildLockEnabledType"/>
-			<channel id="device-display-enabled-channel" typeId="deviceDisplayEnabledType"/>
-			<channel id="device-filter-life-percentage-channel" typeId="deviceFilterLifePercentageType"/>
-			<channel id="device-ap-mode-type-channel" typeId="airPurifierModeType"/>
-			<channel id="device-ap-fan-type-channel" typeId="airPurifierFanLevelType"/>
-			<channel id="device-error-code-channel" typeId="deviceErrorCodeType"/>
-			<channel id="device-airQuality-channel" typeId="deviceAirQualityBasicType"/>
-			<channel id="device-airQualityPPM25-channel" typeId="deviceAirQualityBasicType"/>
+			<channel id="enabled" typeId="deviceEnabledType"/>
+			<channel id="child-lock" typeId="deviceChildLockEnabledType"/>
+			<channel id="display" typeId="deviceDisplayEnabledType"/>
+			<channel id="filter-life-percentage" typeId="deviceFilterLifePercentageType"/>
+			<channel id="fan-mode" typeId="airPurifierModeType"/>
+			<channel id="manual-fan-speed" typeId="airPurifierFanLevelType"/>
+			<channel id="error-code" typeId="deviceErrorCodeType"/>
+			<channel id="air-quality" typeId="deviceAirQualityBasicType"/>
+			<channel id="air-quality-ppm25" typeId="deviceAirQualityBasicType"/>
 			<channel id="device-AF-config-display" typeId="deviceAFConfigDisplay"/>
 			<channel id="device-AF-config-display-forever" typeId="deviceAFConfigDisplayForever"/>
 			<channel id="device-AF-config-auto-pref-type" typeId="deviceAFConfigAutoPrefType"/>
 			<channel id="device-AF-config-auto-off-seconds-type" typeId="deviceAFTimerOff"/>
 			<channel id="device-AF-config-auto-pref-room-size-type" typeId="deviceAFConfigAutoPrefRoomSizeType"/>
 			<channel id="device-AF-config-schedules-count" typeId="deviceAFConfigAutoScheduleCountType"/>
-			<channel id="device-AF-night-light" typeId="deviceAFNightLight"/>
+			<channel id="night-light-mode" typeId="deviceAFNightLight"/>
 		</channels>
 
 		<properties>
@@ -165,7 +165,7 @@
 		<state pattern="%.0f"/>
 	</channel-type>
 
-	<channel-type id="device-airQualityPPM25-channel">
+	<channel-type id="air-quality-ppm25">
 		<item-type>Number:Dimensionless</item-type>
 		<label>Air Quality PPM 2.5</label>
 		<description>Indicator of current air quality</description>

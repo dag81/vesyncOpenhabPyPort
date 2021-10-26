@@ -1,35 +1,44 @@
 # VeSync Binding
 
-_Give some details about what this binding is meant for - a protocol, system, specific device._
+This binding is based on the excellent work from https://github.com/webdjoe/pyvesync.
 
-_If possible, provide some resources like pictures, a video, etc. to give an impression of what can be done with this binding. You can place such resources into a `doc` folder next to this README.md._
+It's current support is for the CoreXXXS air purifiers branded as Levoit which utilise the VeSync app.
+
+Models supported are Core200S, Core300S and Core400S.
+
+### Restrictions / TODO
+
+1. Add units to the air_quality_ppm25 channel
+2. Confirm the night light for both reading and writing works against the Core200S and Core300S models 
+3. Confirm the suspected behaviour that air_quality is relevant only to the Core200S and Core300S models, and maps to some sort of visual display on the devices. 
+   * If this is confirmed dynamically remove the air_quality channel from the Core400S model
+   * If this is confirmed dynamically remove the air_quality_ppm25 channel from the Core200S and Core300S models
+4. Look at protocol mapping the V1 specification for the LV prefixed model. 
+5. Look at adding support for the moisture unit also supported by the python lib. 
+6. Look at potentially other equipment supported by the VeSync API.
 
 ## Supported Things
 
-_Please describe the different supported things / devices within this section._
-_Which different types are supported, which models were tested etc.?_
-_Note that it is planned to generate some part of this based on the XML files within ```src/main/resources/OH-INF/thing``` of your binding._
+This binding supports the follow thing types:
+
+| Thing       | Thing Type | Discovery | Description      |  
+|-------------|------------|-----------|------------------|
+| Bridge      | Bridge     | Manual    | A single connection to the VeSync API  |
+| AirPurifier | Thing      | Automatic | A Air Purifier supporting V2 e.g. Core200S/Core300S or Core400S unit |
+
+This binding was developed from the great work in the listed projects.
+
+The only unit it has been tested against is the Core400S unit, **I'm looking for others to confirm** my queries regarding **the Core200S and Core300S** units.
 
 ## Discovery
 
-_Describe the available auto-discovery features here. Mention for what it works and what needs to be kept in mind when using it._
+Once the bridge is configured auto discovery will discover supported devices from the VeSync API.
 
 ## Binding Configuration
 
-_If your binding requires or supports general configuration settings, please create a folder ```cfg``` and place the configuration file ```<bindingId>.cfg``` inside it. In this section, you should link to this file and provide some information about the options. The file could e.g. look like:_
+The binding consists of a Bridge (the API connection), and at the moment one Thing for each Air Purifier, which relates to the individual hardware devices supported. VeSync things can be configured either through the online configuration utility via discovery, or manually through a 'vesync.things' configuration file. The Bridge is not automatically discovered and must be added manually. That is because the VeSync API requires authentication credentials to communicate with the service.
 
-```
-# Configuration for the VeSync Binding
-#
-# Default secret key for the pairing of the VeSync Thing.
-# It has to be between 10-40 (alphanumeric) characters.
-# This may be changed by the user for security reasons.
-secret=openHABSecret
-```
-
-_Note that it is planned to generate some part of this based on the information that is available within ```src/main/resources/OH-INF/binding``` of your binding._
-
-_If your binding does not offer any generic configurations, you can remove this section completely._
+After adding the Bridge, it will go ONLINE, and after a short while, the discovery process for the VeSync devices will start. When supported hardware is discovered it will appear in the Inbox.
 
 ## Thing Configuration
 
@@ -39,13 +48,22 @@ _Note that it is planned to generate some part of this based on the XML files wi
 
 ## Channels
 
-_Here you should provide information about available channel types, what their meaning is and how they can be used._
+Channel names in **bold** are read/write, everything else is read-only
 
-_Note that it is planned to generate some part of this based on the XML files within ```src/main/resources/OH-INF/thing``` of your binding._
+### AirPurifier Thing
 
-| channel  | type   | description                  |
-|----------|--------|------------------------------|
-| control  | Switch | This is the control channel  |
+| Channel                | Type     | Description                                               |
+|------------------------|----------|-----------------------------------------------------------|
+| **enabled**            | Switch   | Whether the hardware device is enabled (Switched on)      |
+| **child-lock**         | Switch   | Whether the child lock (display lock is enabled)          |
+| **display**            | Switch   | Whether the display is enabled (display is shown)         |
+| **fan-mode**           | String   | The operation mode of the fan                             |
+| **manual-fan-speed**   | String   | The operation mode of the fan                             |
+| **night-light-mode**   | String   | The night lights mode                                     |
+| filter-life-percentage | Number   | The remaining filter life as a percentage                 |
+| air-quality            | Number   | The air quality as represented by the Core200S / Core300S |
+| air-quality-ppm25      | Number   | The air quality as represented by the Core400S            |
+| error-code             | Number   | The error code reported by the device                     |
 
 ## Full Example
 
