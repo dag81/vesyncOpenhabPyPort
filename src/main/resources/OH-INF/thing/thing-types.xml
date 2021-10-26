@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="vesync"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
+	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
+
+	<bridge-type id="bridge">
+		<label>Vesync Bridge</label>
+		<description>The Vesync bridge represents the Vesync cloud service.</description>
+
+		<properties>
+			<property name="Registration Time"/>
+			<property name="Country Code"/>
+			<property name="Accept Language"/>
+		</properties>
+
+		<config-description>
+			<parameter name="userName" type="text">
+				<context>password</context>
+				<label>Username</label>
+				<description>Name of a registered VeSync user, that allows to access the mobile application.</description>
+			</parameter>
+			<parameter name="password" type="text">
+				<context>password</context>
+				<label>Password</label>
+				<description>Password for the registered VeSync username, that allows to access the mobile application.</description>
+			</parameter>
+			<parameter name="backgroundDeviceDiscovery" type="boolean">
+				<label>Enable Background Device Scans</label>
+				<description>Enable background scanning for new devices.</description>
+				<default>false</default>
+			</parameter>
+			<parameter name="pollingInterval" type="integer" min="60" step="1" unit="s">
+				<label>Polling Interval</label>
+				<description>Seconds between fetching values from the Hue bridge. Default is 60.</description>
+				<default>60</default>
+			</parameter>
+			<parameter name="airPurifierPollInterval" type="integer" min="5" step="1" unit="s">
+				<label>Polling Interval For Air Filters</label>
+				<description>Seconds between fetching background updates about the air purifiers.</description>
+				<default>5</default>
+			</parameter>
+		</config-description>
+	</bridge-type>
+
+	<thing-type id="AirPurifier">
+		<supported-bridge-type-refs>
+			<bridge-type-ref id="bridge"/>
+		</supported-bridge-type-refs>
+
+		<label>Air Purifier via VeSync</label>
+		<description>A Air Purifier uplinking to VeSync</description>
+
+		<channels>
+			<channel id="device-enabled-channel" typeId="deviceEnabledType"/>
+			<channel id="device-childLock-enabled-channel" typeId="deviceChildLockEnabledType"/>
+			<channel id="device-display-enabled-channel" typeId="deviceDisplayEnabledType"/>
+			<channel id="device-filter-life-percentage-channel" typeId="deviceFilterLifePercentageType"/>
+			<channel id="device-ap-mode-type-channel" typeId="airPurifierModeType"/>
+			<channel id="device-ap-fan-type-channel" typeId="airPurifierFanLevelType"/>
+			<channel id="device-error-code-channel" typeId="deviceErrorCodeType"/>
+			<channel id="device-airQuality-channel" typeId="deviceAirQualityBasicType"/>
+			<channel id="device-airQualityPPM25-channel" typeId="deviceAirQualityBasicType"/>
+			<channel id="device-AF-config-display" typeId="deviceAFConfigDisplay"/>
+			<channel id="device-AF-config-display-forever" typeId="deviceAFConfigDisplayForever"/>
+			<channel id="device-AF-config-auto-pref-type" typeId="deviceAFConfigAutoPrefType"/>
+			<channel id="device-AF-config-auto-off-seconds-type" typeId="deviceAFTimerOff"/>
+			<channel id="device-AF-config-auto-pref-room-size-type" typeId="deviceAFConfigAutoPrefRoomSizeType"/>
+			<channel id="device-AF-config-schedules-count" typeId="deviceAFConfigAutoScheduleCountType"/>
+			<channel id="device-AF-night-light" typeId="deviceAFNightLight"/>
+		</channels>
+
+		<properties>
+			<property name="Device Name"/>
+			<property name="Device Type"/>
+			<property name="MAC Id"/>
+		</properties>
+		<representation-property>mac</representation-property>
+
+		<config-description>
+			<parameter name="macId" type="text">
+				<context>text</context>
+				<label>MAC Id</label>
+				<description>The MAC Id of the device as reported by the API.</description>
+			</parameter>
+			<parameter name="deviceName" type="text">
+				<context>text</context>
+				<label>Device Name</label>
+				<description>The name allocated to the device by the app. (Must be unique if used)</description>
+			</parameter>
+		</config-description>
+
+	</thing-type>
+
+	<channel-type id="deviceEnabledType">
+		<item-type>Switch</item-type>
+		<label>Switched On</label>
+		<description>Indicator if the device is switched on</description>
+	</channel-type>
+
+	<channel-type id="deviceChildLockEnabledType">
+		<item-type>Switch</item-type>
+		<label>Display Lock</label>
+		<description>Indicator if the devices child lock is enabled (Display Lock)</description>
+	</channel-type>
+
+	<channel-type id="deviceDisplayEnabledType">
+		<item-type>Switch</item-type>
+		<label>Display</label>
+		<description>Indicator if the devices display is enabled</description>
+	</channel-type>
+
+	<channel-type id="deviceFilterLifePercentageType">
+		<item-type>Number:Dimensionless</item-type>
+		<label>Filter Life Remaining</label>
+		<description>Indicator of the remaining filter life</description>
+		<state readOnly="true" pattern="%.0f %%"/>
+	</channel-type>
+
+	<channel-type id="airPurifierModeType">
+		<item-type>String</item-type>
+		<label>Operation mode</label>
+		<description>The operating mode the air purifier is currently set to</description>
+		<state readOnly="false">
+			<options>
+				<option value="auto">Auto</option>
+				<option value="manual">Manual Fan Control</option>
+				<option value="sleep">Sleeping Auto</option>
+			</options>
+		</state>
+	</channel-type>
+
+	<channel-type id="deviceAFNightLight">
+		<item-type>String</item-type>
+		<label>Night Light</label>
+		<description>The operating mode of the night light functionality</description>
+		<state readOnly="false">
+			<options>
+				<option value="on">On</option>
+				<option value="dim">Dimmed</option>
+				<option value="off">Off</option>
+			</options>
+		</state>
+	</channel-type>
+
+
+	<channel-type id="airPurifierFanLevelType">
+		<item-type>Number:Dimensionless</item-type>
+		<label>Fan Speed</label>
+		<description>Indicator of the current fan speed</description>
+		<state pattern="%.0f"/>
+	</channel-type>
+
+	<channel-type id="deviceErrorCodeType">
+		<item-type>Number:Dimensionless</item-type>
+		<label>Device Error Code</label>
+		<description>Indicator of the current error code of the device</description>
+		<state pattern="%.0f"/>
+	</channel-type>
+
+	<channel-type id="deviceAirQualityBasicType">
+		<item-type>Number:Dimensionless</item-type>
+		<label>Air Quality</label>
+		<description>System representation of air quality</description>
+		<state pattern="%.0f"/>
+	</channel-type>
+
+	<channel-type id="device-airQualityPPM25-channel">
+		<item-type>Number:Dimensionless</item-type>
+		<label>Air Quality PPM 2.5</label>
+		<description>Indicator of current air quality</description>
+		<state pattern="%.0f"/>
+	</channel-type>
+
+	<channel-type id="deviceAFConfigDisplay">
+		<item-type>Switch</item-type>
+		<label>Config: Display</label>
+		<description>Configuration: If the devices display is enabled</description>
+	</channel-type>
+
+	<channel-type id="deviceAFConfigDisplayForever">
+		<item-type>Switch</item-type>
+		<label>Config: Display Forever</label>
+		<description>Configuration: If the devices display is enabled forever</description>
+	</channel-type>
+
+	<channel-type id="deviceAFConfigAutoPrefType">
+		<item-type>String</item-type>
+		<label>Config: Auto Mode Preference</label>
+		<description>The operating mode when the air purifier is set to auto</description>
+		<state readOnly="false">
+			<options>
+				<option value="default">Auto (Air Quality)</option>
+				<option value="quiet">Quiet (No High Speed)</option>
+				<option value="efficient">Auto (Room Size)</option>
+			</options>
+		</state>
+	</channel-type>
+
+	<channel-type id="deviceAFTimerOff">
+		<item-type>Number:Dimensionless</item-type>
+		<label>Auto Off Timer (Seconds)</label>
+		<description>Timer remaining</description>
+		<state pattern="%.0f"/>
+	</channel-type>
+
+	<channel-type id="deviceAFConfigAutoPrefRoomSizeType">
+		<item-type>Number:Dimensionless</item-type>
+		<label>Config: Room size (foot sq)</label>
+		<description>Room size for efficient auto mode</description>
+		<state pattern="%.0f"/>
+	</channel-type>
+
+	<channel-type id="deviceAFConfigAutoScheduleCountType">
+		<item-type>Number:Dimensionless</item-type>
+		<label>Config: Number of schedules</label>
+		<description>The current number of schedules configured</description>
+		<state pattern="%.0f"/>
+	</channel-type>
+</thing:thing-descriptions>
