@@ -38,7 +38,7 @@ Once the bridge is configured auto discovery will discover supported devices fro
 
 The binding consists of a Bridge (the API connection), and at the moment one Thing for each Air Purifier, which relates to the individual hardware devices supported. VeSync things can be configured either through the online configuration utility via discovery, or manually through a 'vesync.things' configuration file. The Bridge is not automatically discovered and must be added manually. That is because the VeSync API requires authentication credentials to communicate with the service.
 
-After adding the Bridge, it will go ONLINE, and after a short while, the discovery process for the VeSync devices will start. When supported hardware is discovered it will appear in the Inbox.
+After adding the Bridge and setting the config, it will go ONLINE. After a short while, the discovery process for the VeSync devices will start. When supported hardware is discovered it will appear in the Inbox.
 
 ## Thing Configuration
 
