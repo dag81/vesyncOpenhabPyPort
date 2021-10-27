@@ -192,21 +192,25 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
         if (bridgeHandler != null && bridgeHandler instanceof VeSyncBridgeHandler) {
             VeSyncBridgeHandler vesyncBridgeHandler = (VeSyncBridgeHandler) bridgeHandler;
 
-            // Try to use the mac directly
-            if (config.macId != null) {
+            final String configMac = config.macId;
 
-                logger.debug("Searching for device mac id : {}", config.macId);
+            // Try to use the mac directly
+            if (configMac != null) {
+
+                logger.debug("Searching for device mac id : {}", configMac);
                 VesyncManagedDevicesPage.Result.@Nullable VesyncManagedDeviceBase metadata = vesyncBridgeHandler.api
-                        .getMacLookupMap().get(config.macId.toLowerCase());
+                        .getMacLookupMap().get(configMac.toLowerCase());
 
                 if (metadata != null && metadata.macId != null)
                     return metadata.macId;
             }
 
+            final String deviceName = config.deviceName;
+
             // Check if the device name can be matched to a single device
-            if (config.deviceName != null) {
+            if (deviceName != null) {
                 final String[] matchedMacIds = vesyncBridgeHandler.api.getMacLookupMap().values().stream()
-                        .filter(x -> config.deviceName.equals(x.deviceName)).map(x -> x.macId).toArray(String[]::new); // .collect();//.toArray(String[]::new)
+                        .filter(x -> deviceName.equals(x.deviceName)).map(x -> x.macId).toArray(String[]::new); // .collect();//.toArray(String[]::new)
 
                 for (String val : matchedMacIds) {
                     logger.debug("Found MAC match on name with : {}", val);
