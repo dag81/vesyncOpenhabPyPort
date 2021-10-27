@@ -32,8 +32,8 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * The {@link VeSyncHandlerFactory} is responsible for creating things and thing
- * handlers.
+ * The {@link org.openhab.binding.vesync.internal.VeSyncHandlerFactory} is responsible for creating
+ * things and thing handlers.
  *
  * @author David Goodyear - Initial contribution
  */
