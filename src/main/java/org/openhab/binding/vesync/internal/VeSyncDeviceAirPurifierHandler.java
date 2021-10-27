@@ -40,6 +40,8 @@ import org.slf4j.LoggerFactory;
  */
 @NonNullByDefault
 public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
+
+    public final static int DEFAULT_AIR_PURIFIER_POLL_RATE = 120;
     // "Device Type" values
     public final static String DEV_TYPE_CORE_400S = "Core400S";
     public final static String DEV_TYPE_CORE_300S = "Core300S";
@@ -80,7 +82,11 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
 
     @Override
     public void updateBridgeBasedPolls(final VeSyncBridgeConfiguration config) {
-        setBackgroundPollInterval(config.airPurifierPollInterval);
+        Integer pollRate = config.airPurifierPollInterval;
+        if (pollRate == null)
+            pollRate = Integer.valueOf(DEFAULT_AIR_PURIFIER_POLL_RATE);
+
+        setBackgroundPollInterval(pollRate);
     }
 
     @Override

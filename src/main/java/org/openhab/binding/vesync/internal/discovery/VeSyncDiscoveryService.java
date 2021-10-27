@@ -115,15 +115,14 @@ public class VeSyncDiscoveryService extends AbstractDiscoveryService
     public void HandleMetadataRetrieved(VeSyncBridgeHandler handler) {
         bridgeHandler.getAirPurifiersMetadata().map(apMeta -> {
             final Map<String, Object> properties = new HashMap<>(6);
+            final String deviceUUID = apMeta.getUuid().replace("-", "");
             properties.put(DEVICE_PROP_DEVICE_NAME, apMeta.getDeviceName());
             properties.put(DEVICE_PROP_DEVICE_TYPE, apMeta.getDeviceType());
             properties.put(DEVICE_PROP_DEVICE_MAC_ID, apMeta.getMacId());
-            properties.put(DEVICE_PROP_DEVICE_UUID, apMeta.getUuid().replace("-", ""));
+            properties.put(DEVICE_PROP_DEVICE_UUID, deviceUUID);
             properties.put(DEVICE_PROP_CONFIG_DEVICE_MAC, apMeta.getMacId());
             properties.put(DEVICE_PROP_CONFIG_DEVICE_NAME, apMeta.getDeviceName());
-            return DiscoveryResultBuilder
-                    .create(new ThingUID(THING_TYPE_AIR_PURIFIER, bridgeUID,
-                            properties.get(DEVICE_PROP_DEVICE_UUID).toString()))
+            return DiscoveryResultBuilder.create(new ThingUID(THING_TYPE_AIR_PURIFIER, bridgeUID, deviceUUID))
                     .withLabel(apMeta.getDeviceName()).withBridge(bridgeUID).withProperties(properties).build();
         }).forEach(x -> thingDiscovered(x));
     }
