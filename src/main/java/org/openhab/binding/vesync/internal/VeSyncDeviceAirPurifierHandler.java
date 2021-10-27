@@ -115,6 +115,7 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
                                         command.toString());
                                 return;
                             }
+                            break;
                         case DEV_TYPE_CORE_200S:
                         case DEV_TYPE_CORE_300S:
                             if (!CORE_200S300S_FAN_MODES.contains(command.toString())) {
