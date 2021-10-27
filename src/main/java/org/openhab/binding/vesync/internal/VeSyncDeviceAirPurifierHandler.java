@@ -89,109 +89,113 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
     }
 
     @Override
-    public void handleCommand(ChannelUID channelUID, Command command) {
-        if (command instanceof OnOffType) {
-            switch (channelUID.getId()) {
-                case DEVICE_CHANNEL_ENABLED:
-                    sendV2BypassControlCommand("setSwitch",
-                            new VesyncRequestManagedDeviceBypassV2.SetSwitchPayload(command.equals(OnOffType.ON), 0));
-                    break;
-                case DEVICE_CHANNEL_AF_CONFIG_DISPLAY:
-                    sendV2BypassControlCommand("setDisplay",
-                            new VesyncRequestManagedDeviceBypassV2.SetState(command.equals(OnOffType.ON)));
-                    break;
-                case DEVICE_CHANNEL_CHILD_LOCK_ENABLED:
-                    sendV2BypassControlCommand("setChildLock",
-                            new VesyncRequestManagedDeviceBypassV2.SetChildLock(command.equals(OnOffType.ON)));
-                    break;
-            }
-        } else if (command instanceof StringType) {
-            switch (channelUID.getId()) {
-                case DEVICE_CHANNEL_FAN_MODE_ENABLED:
-                    switch (getThing().getProperties().get(DEVICE_PROP_DEVICE_TYPE)) {
-                        case DEV_TYPE_CORE_400S:
-                            if (!CORE_400S_FAN_MODES.contains(command.toString())) {
-                                logger.warn("Fan mode command for \"{}\" is not valid in the (Core400S) API",
-                                        command.toString());
+    public void handleCommand(final ChannelUID channelUID, final Command command) {
+        scheduler.submit(() -> {
+
+            if (command instanceof OnOffType) {
+                switch (channelUID.getId()) {
+                    case DEVICE_CHANNEL_ENABLED:
+                        sendV2BypassControlCommand("setSwitch", new VesyncRequestManagedDeviceBypassV2.SetSwitchPayload(
+                                command.equals(OnOffType.ON), 0));
+                        break;
+                    case DEVICE_CHANNEL_AF_CONFIG_DISPLAY:
+                        sendV2BypassControlCommand("setDisplay",
+                                new VesyncRequestManagedDeviceBypassV2.SetState(command.equals(OnOffType.ON)));
+                        break;
+                    case DEVICE_CHANNEL_CHILD_LOCK_ENABLED:
+                        sendV2BypassControlCommand("setChildLock",
+                                new VesyncRequestManagedDeviceBypassV2.SetChildLock(command.equals(OnOffType.ON)));
+                        break;
+                }
+            } else if (command instanceof StringType) {
+                switch (channelUID.getId()) {
+                    case DEVICE_CHANNEL_FAN_MODE_ENABLED:
+                        switch (getThing().getProperties().get(DEVICE_PROP_DEVICE_TYPE)) {
+                            case DEV_TYPE_CORE_400S:
+                                if (!CORE_400S_FAN_MODES.contains(command.toString())) {
+                                    logger.warn("Fan mode command for \"{}\" is not valid in the (Core400S) API",
+                                            command.toString());
+                                    return;
+                                }
+                                break;
+                            case DEV_TYPE_CORE_200S:
+                            case DEV_TYPE_CORE_300S:
+                                if (!CORE_200S300S_FAN_MODES.contains(command.toString())) {
+                                    logger.warn(
+                                            "Fan mode command for \"{}\" is not valid in the (Core200S/Core300S) API",
+                                            command.toString());
+                                    return;
+                                }
+                                break;
+                        }
+
+                        sendV2BypassControlCommand("setPurifierMode",
+                                new VesyncRequestManagedDeviceBypassV2.SetMode(command.toString()));
+                        break;
+                    case DEVICE_CHANNEL_AF_NIGHT_LIGHT:
+                        switch (getThing().getProperties().get(DEVICE_PROP_DEVICE_TYPE)) {
+                            case DEV_TYPE_CORE_400S:
+                                logger.warn("Core400S API does not support night light");
                                 return;
-                            }
-                            break;
-                        case DEV_TYPE_CORE_200S:
-                        case DEV_TYPE_CORE_300S:
-                            if (!CORE_200S300S_FAN_MODES.contains(command.toString())) {
-                                logger.warn("Fan mode command for \"{}\" is not valid in the (Core200S/Core300S) API",
-                                        command.toString());
-                                return;
-                            }
-                            break;
-                    }
+                            case DEV_TYPE_CORE_200S:
+                            case DEV_TYPE_CORE_300S:
+                                if (!CORE_200S300S_NIGHT_LIGHT_MODES.contains(command.toString())) {
+                                    logger.warn(
+                                            "Night light mode command for \"{}\" is not valid in the (Core200S/Core300S) API",
+                                            command.toString());
+                                    return;
+                                }
 
-                    sendV2BypassControlCommand("setPurifierMode",
-                            new VesyncRequestManagedDeviceBypassV2.SetMode(command.toString()));
-                    break;
-                case DEVICE_CHANNEL_AF_NIGHT_LIGHT:
-                    switch (getThing().getProperties().get(DEVICE_PROP_DEVICE_TYPE)) {
-                        case DEV_TYPE_CORE_400S:
-                            logger.warn("Core400S API does not support night light");
-                            return;
-                        case DEV_TYPE_CORE_200S:
-                        case DEV_TYPE_CORE_300S:
-                            if (!CORE_200S300S_NIGHT_LIGHT_MODES.contains(command.toString())) {
-                                logger.warn(
-                                        "Night light mode command for \"{}\" is not valid in the (Core200S/Core300S) API",
-                                        command.toString());
-                                return;
-                            }
+                                sendV2BypassControlCommand("setNightLight",
+                                        new VesyncRequestManagedDeviceBypassV2.SetNightLight(command.toString()));
 
-                            sendV2BypassControlCommand("setNightLight",
-                                    new VesyncRequestManagedDeviceBypassV2.SetNightLight(command.toString()));
+                                break;
+                        }
+                        break;
+                }
+            } else if (command instanceof QuantityType) {
+                switch (channelUID.getId()) {
+                    case DEVICE_CHANNEL_FAN_SPEED_ENABLED:
+                        // If the fan speed is being set enforce manual mode
+                        logger.warn("Current fan mode is {}",
+                                getThing().getChannel(DEVICE_CHANNEL_FAN_MODE_ENABLED).toString());
+                        sendV2BypassControlCommand("setPurifierMode",
+                                new VesyncRequestManagedDeviceBypassV2.SetMode("manual"), false);
 
-                            break;
-                    }
-                    break;
+                        int requestedLevel = ((QuantityType<?>) command).intValue();
+                        if (requestedLevel < 1) {
+                            logger.warn("Fan speed command less than 0 - adjusting to 0 as the valid API value");
+                            requestedLevel = 1;
+                        }
+
+                        switch (getThing().getProperties().get(DEVICE_PROP_DEVICE_TYPE)) {
+                            case DEV_TYPE_CORE_400S:
+                                if (requestedLevel > 4) {
+                                    logger.warn(
+                                            "Fan speed command greater than 4 - adjusting to 4 as the valid (Core400S) API value");
+                                    requestedLevel = 4;
+                                }
+                                break;
+                            case DEV_TYPE_CORE_200S:
+                            case DEV_TYPE_CORE_300S:
+                                if (requestedLevel > 3) {
+                                    logger.warn(
+                                            "Fan speed command greater than 3 - adjusting to 3 as the valid (Core200S/Core300S) API value");
+                                    requestedLevel = 3;
+                                }
+                                break;
+                        }
+
+                        sendV2BypassControlCommand("setLevel",
+                                new VesyncRequestManagedDeviceBypassV2.SetLevelPayload(0, "wind", requestedLevel));
+                        break;
+                }
+            } else if (command instanceof RefreshType) {
+                logger.trace("COMMAND: Refresh Type {}", channelUID);
+            } else {
+                logger.trace("UNKNOWN COMMAND: {} {}", command.getClass().toString(), channelUID);
             }
-        } else if (command instanceof QuantityType) {
-            switch (channelUID.getId()) {
-                case DEVICE_CHANNEL_FAN_SPEED_ENABLED:
-                    // If the fan speed is being set enforce manual mode
-                    logger.warn("Current fan mode is {}",
-                            getThing().getChannel(DEVICE_CHANNEL_FAN_MODE_ENABLED).toString());
-                    sendV2BypassControlCommand("setPurifierMode",
-                            new VesyncRequestManagedDeviceBypassV2.SetMode("manual"), false);
-
-                    int requestedLevel = ((QuantityType<?>) command).intValue();
-                    if (requestedLevel < 1) {
-                        logger.warn("Fan speed command less than 0 - adjusting to 0 as the valid API value");
-                        requestedLevel = 1;
-                    }
-
-                    switch (getThing().getProperties().get(DEVICE_PROP_DEVICE_TYPE)) {
-                        case DEV_TYPE_CORE_400S:
-                            if (requestedLevel > 4) {
-                                logger.warn(
-                                        "Fan speed command greater than 4 - adjusting to 4 as the valid (Core400S) API value");
-                                requestedLevel = 4;
-                            }
-                            break;
-                        case DEV_TYPE_CORE_200S:
-                        case DEV_TYPE_CORE_300S:
-                            if (requestedLevel > 3) {
-                                logger.warn(
-                                        "Fan speed command greater than 3 - adjusting to 3 as the valid (Core200S/Core300S) API value");
-                                requestedLevel = 3;
-                            }
-                            break;
-                    }
-
-                    sendV2BypassControlCommand("setLevel",
-                            new VesyncRequestManagedDeviceBypassV2.SetLevelPayload(0, "wind", requestedLevel));
-                    break;
-            }
-        } else if (command instanceof RefreshType) {
-            logger.trace("COMMAND: Refresh Type {}", channelUID);
-        } else {
-            logger.trace("UNKNOWN COMMAND: {} {}", command.getClass().toString(), channelUID);
-        }
+        });
     }
 
     @Override
@@ -204,6 +208,9 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
 
         final VesyncV2BypassPurifierStatus purifierStatus = VeSyncConstants.GSON.fromJson(response,
                 VesyncV2BypassPurifierStatus.class);
+
+        if (purifierStatus == null)
+            return;
 
         // Bail and update the status of the thing - it will be updated to online by the next search
         // that detects it is online.

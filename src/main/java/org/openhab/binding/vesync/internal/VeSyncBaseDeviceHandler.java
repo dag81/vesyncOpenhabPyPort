@@ -87,13 +87,22 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
         return (MARKER_INVALID_DEVICE_KEY.equals(deviceLookupKey));
     }
 
+    private @Nullable BridgeHandler getBridgeHandler() {
+        Bridge bridgeRef = getBridge();
+        if (bridgeRef == null)
+            return null;
+        else {
+            return bridgeRef.getHandler();
+        }
+    }
+
     public void updateDeviceMetaData() {
 
         Map<String, String> newProps = null;
 
-        BridgeHandler bridgeHander = getBridge().getHandler();
-        if (bridgeHander != null && bridgeHander instanceof VeSyncBridgeHandler) {
-            VeSyncBridgeHandler vesyncBridgeHandler = (VeSyncBridgeHandler) bridgeHander;
+        BridgeHandler bridgeHandler = getBridgeHandler();
+        if (bridgeHandler != null && bridgeHandler instanceof VeSyncBridgeHandler) {
+            VeSyncBridgeHandler vesyncBridgeHandler = (VeSyncBridgeHandler) bridgeHandler;
             VesyncManagedDevicesPage.Result.@Nullable VesyncManagedDeviceBase metadata = vesyncBridgeHandler.api
                     .getMacLookupMap().get(deviceLookupKey);
 
@@ -167,9 +176,9 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
 
     protected void requestBridgeFreqScanMetadataIfReq() {
         if (requiresMetaDataFrequentUpdates()) {
-            BridgeHandler bridgeHander = getBridge().getHandler();
-            if (bridgeHander != null && bridgeHander instanceof VeSyncBridgeHandler) {
-                VeSyncBridgeHandler vesyncBridgeHandler = (VeSyncBridgeHandler) bridgeHander;
+            BridgeHandler bridgeHandler = getBridgeHandler();
+            if (bridgeHandler != null && bridgeHandler instanceof VeSyncBridgeHandler) {
+                VeSyncBridgeHandler vesyncBridgeHandler = (VeSyncBridgeHandler) bridgeHandler;
                 vesyncBridgeHandler.checkIfIncreaseScanRateRequired();
             }
         }
@@ -179,9 +188,9 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
     public String getValidatedIdString() {
         final VeSyncDeviceConfiguration config = getConfigAs(VeSyncDeviceConfiguration.class);
 
-        BridgeHandler bridgeHander = getBridge().getHandler();
-        if (bridgeHander != null && bridgeHander instanceof VeSyncBridgeHandler) {
-            VeSyncBridgeHandler vesyncBridgeHandler = (VeSyncBridgeHandler) bridgeHander;
+        BridgeHandler bridgeHandler = getBridgeHandler();
+        if (bridgeHandler != null && bridgeHandler instanceof VeSyncBridgeHandler) {
+            VeSyncBridgeHandler vesyncBridgeHandler = (VeSyncBridgeHandler) bridgeHandler;
 
             // Try to use the mac directly
             if (config.macId != null) {
@@ -203,7 +212,7 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
                     logger.debug("Found MAC match on name with : {}", val);
                 }
 
-                if (matchedMacIds == null || matchedMacIds.length != 1) {
+                if (matchedMacIds.length != 1) {
                     return MARKER_INVALID_DEVICE_KEY;
                 }
 
@@ -219,7 +228,7 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
     @Override
     public void initialize() {
         // Sanity check basic setup
-        if (getBridge() == null || getBridge().getHandler() == null) {
+        if (getBridgeHandler() == null) {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.BRIDGE_UNINITIALIZED, "Missing bridge for API link");
             return;
         } else {
@@ -291,10 +300,12 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
             return EMPTY_STRING;
         }
 
-        if (deviceLookupKey == null) {
-            logger.debug("No key for addressing data");
-            return EMPTY_STRING;
-        }
+        /*
+         * if (deviceLookupKey == null) {
+         * logger.debug("No key for addressing data");
+         * return EMPTY_STRING;
+         * }
+         */
 
         VesyncRequestManagedDeviceBypassV2 readReq = new VesyncRequestManagedDeviceBypassV2();
         readReq.payload.method = method;
@@ -304,9 +315,12 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
             if (MARKER_INVALID_DEVICE_KEY.equals(deviceLookupKey)) {
                 deviceLookupKey = getValidatedIdString();
             }
-
-            final String keyStr = deviceLookupKey == null ? "" : deviceLookupKey;
-            return getVeSyncClient().reqV2Authorized(VesyncV2ApiHelper.BYPASS_V2_URL, keyStr, readReq);
+            VeSyncClient client = getVeSyncClient();
+            if (client != null)
+                return client.reqV2Authorized(VesyncV2ApiHelper.BYPASS_V2_URL, deviceLookupKey, readReq);
+            else {
+                throw new DeviceUnknownException("Missing client");
+            }
         } catch (AuthenticationException e) {
             logger.debug("Auth exception {}", e.getMessage());
             return EMPTY_STRING;

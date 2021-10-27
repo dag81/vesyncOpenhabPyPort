@@ -112,8 +112,8 @@ public class VeSyncDiscoveryService extends AbstractDiscoveryService
     }
 
     @Override
-    public void HandleMetadataRetrieved(@NonNullByDefault VeSyncBridgeHandler handler) {
-        bridgeHandler.getAirPurifiersMetadata().filter(x -> x != null).map(apMeta -> {
+    public void HandleMetadataRetrieved(VeSyncBridgeHandler handler) {
+        bridgeHandler.getAirPurifiersMetadata().map(apMeta -> {
             final Map<String, Object> properties = new HashMap<>(6);
             properties.put(DEVICE_PROP_DEVICE_NAME, apMeta.getDeviceName());
             properties.put(DEVICE_PROP_DEVICE_TYPE, apMeta.getDeviceType());

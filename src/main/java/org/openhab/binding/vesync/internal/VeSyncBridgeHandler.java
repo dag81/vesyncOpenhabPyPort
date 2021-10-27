@@ -52,9 +52,6 @@ public class VeSyncBridgeHandler extends BaseBridgeHandler implements VeSyncClie
 
     private final Logger logger = LoggerFactory.getLogger(VeSyncBridgeHandler.class);
 
-    private Map<String, VesyncManagedDevicesPage.Result.@Nullable VesyncManagedDeviceBase> macLookup = Collections.<String, VesyncManagedDevicesPage.Result
-            .@Nullable VesyncManagedDeviceBase> emptyMap();
-
     private @Nullable ScheduledFuture<?> backgroundDiscoveryPollingJob;
 
     protected final @NotNull VesyncV2ApiHelper api;
@@ -139,7 +136,7 @@ public class VeSyncBridgeHandler extends BaseBridgeHandler implements VeSyncClie
         this.updateThings();
     }
 
-    public java.util.stream.Stream<VesyncManagedDevicesPage.Result.@Nullable VesyncManagedDeviceBase> getAirPurifiersMetadata() {
+    public java.util.stream.Stream<VesyncManagedDevicesPage.Result.@NotNull VesyncManagedDeviceBase> getAirPurifiersMetadata() {
         return api.getMacLookupMap().values().stream()
                 .filter(x -> VeSyncDeviceAirPurifierHandler.SUPPORTED_DEVICE_TYPES.contains(x.deviceType));
     }
@@ -157,8 +154,6 @@ public class VeSyncBridgeHandler extends BaseBridgeHandler implements VeSyncClie
 
     protected void updateThings() {
         for (Thing th : getThing().getThings()) {
-            String tid = th.getUID().getId();
-            Map<String, String> properties = null;
             ThingHandler handler = th.getHandler();
             if (handler instanceof VeSyncBaseDeviceHandler) {
                 ((VeSyncBaseDeviceHandler) handler).updateDeviceMetaData();

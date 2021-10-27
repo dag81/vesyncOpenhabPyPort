@@ -23,5 +23,5 @@ import org.openhab.binding.vesync.internal.VeSyncBridgeHandler;
  */
 @NonNullByDefault
 public interface DeviceMetaDataUpdatedHandler {
-    void HandleMetadataRetrieved(@NonNullByDefault VeSyncBridgeHandler handler);
+    void HandleMetadataRetrieved(VeSyncBridgeHandler handler);
 }

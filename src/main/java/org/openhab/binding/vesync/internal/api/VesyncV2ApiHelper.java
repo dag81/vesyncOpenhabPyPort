@@ -54,16 +54,16 @@ public class VesyncV2ApiHelper {
 
     private volatile VesyncLoginResponse.@Nullable VesyncUserSession loggedInSession;
 
-    private VeSyncHandlerFactory bridge;
+    // private VeSyncHandlerFactory bridge;
 
     public VesyncV2ApiHelper(final VeSyncHandlerFactory bridge) {
-        this.bridge = bridge;
+        // this.bridge = bridge;
         macLookup = new HashMap<>();
     }
 
-    private Map<String, VesyncManagedDevicesPage.Result.@Nullable VesyncManagedDeviceBase> macLookup;
+    private Map<String, VesyncManagedDevicesPage.Result.@NotNull VesyncManagedDeviceBase> macLookup;
 
-    public Map<String, VesyncManagedDevicesPage.Result.@Nullable VesyncManagedDeviceBase> getMacLookupMap() {
+    public Map<String, VesyncManagedDevicesPage.Result.@NotNull VesyncManagedDeviceBase> getMacLookupMap() {
         return macLookup;
     }
 
@@ -107,21 +107,23 @@ public class VesyncV2ApiHelper {
 
                 VesyncManagedDevicesPage resultsPage = VeSyncConstants.GSON.fromJson(result,
                         VesyncManagedDevicesPage.class);
-                if (resultsPage.result.getTotal() != resultsPage.result.getPageSize()) {
+                if (resultsPage == null || resultsPage.result.getTotal() != resultsPage.result.getPageSize()) {
                     finished = true;
                 } else {
                     ++pageNo;
                 }
 
                 // logger.warn("Results in page {}", resultsPage.result.pageNo);
-                for (VesyncManagedDevicesPage.Result.VesyncManagedDeviceBase device : resultsPage.result.list) {
-                    logger.debug(
-                            "Found device : {}, type: {}, deviceType: {}, connectionState: {}, deviceStatus: {}, deviceRegion: {}, cid: {}, configModule: {}, macID: {}",
-                            device.getDeviceName(), device.getType(), device.getDeviceType(),
-                            device.getConnectionStatus(), device.getDeviceStatus(), device.getDeviceRegion(),
-                            device.getCid(), device.getConfigModule(), device.getMacId());
-                    // Update the mac address -> device table
-                    generatedMacLookup.put(device.getMacId(), device);
+                if (resultsPage != null) {
+                    for (VesyncManagedDevicesPage.Result.VesyncManagedDeviceBase device : resultsPage.result.list) {
+                        logger.debug(
+                                "Found device : {}, type: {}, deviceType: {}, connectionState: {}, deviceStatus: {}, deviceRegion: {}, cid: {}, configModule: {}, macID: {}",
+                                device.getDeviceName(), device.getType(), device.getDeviceType(),
+                                device.getConnectionStatus(), device.getDeviceStatus(), device.getDeviceRegion(),
+                                device.getCid(), device.getConfigModule(), device.getMacId());
+                        // Update the mac address -> device table
+                        generatedMacLookup.put(device.getMacId(), device);
+                    }
                 }
             }
             macLookup = Collections.unmodifiableMap(generatedMacLookup);
@@ -182,7 +184,7 @@ public class VesyncV2ApiHelper {
                 VesyncResponse commResponse = VeSyncConstants.GSON.fromJson(response.getContentAsString(),
                         VesyncResponse.class);
 
-                if (commResponse.isMsgSuccess() || commResponse.isMsgDeviceOffline()) {
+                if (commResponse != null && (commResponse.isMsgSuccess() || commResponse.isMsgDeviceOffline())) {
                     logger.debug("Got OK response {}", response.getContentAsString());
                     return response.getContentAsString();
                 } else {
