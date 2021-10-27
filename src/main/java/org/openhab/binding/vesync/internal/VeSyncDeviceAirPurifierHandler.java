@@ -70,14 +70,17 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
     @Override
     protected void customiseChannels() {
         List<Channel> channelsToBeRemoved = List.of();
-        switch (getThing().getProperties().get(DEVICE_PROP_DEVICE_TYPE)) {
-            case DEV_TYPE_CORE_400S:
-                channelsToBeRemoved = this.findChannelById(DEVICE_CHANNEL_AF_NIGHT_LIGHT);
-                break;
-        }
+        String deviceType = getThing().getProperties().get(DEVICE_PROP_DEVICE_TYPE);
+        if (deviceType != null) {
+            switch (deviceType) {
+                case DEV_TYPE_CORE_400S:
+                    channelsToBeRemoved = this.findChannelById(DEVICE_CHANNEL_AF_NIGHT_LIGHT);
+                    break;
+            }
 
-        final ThingBuilder builder = editThing().withoutChannels(channelsToBeRemoved);
-        updateThing(builder.build());
+            final ThingBuilder builder = editThing().withoutChannels(channelsToBeRemoved);
+            updateThing(builder.build());
+        }
     }
 
     @Override
@@ -96,6 +99,11 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
 
     @Override
     public void handleCommand(final ChannelUID channelUID, final Command command) {
+
+        final String deviceType = getThing().getProperties().get(DEVICE_PROP_DEVICE_TYPE);
+        if (deviceType == null)
+            return;
+
         scheduler.submit(() -> {
 
             if (command instanceof OnOffType) {
@@ -116,7 +124,7 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
             } else if (command instanceof StringType) {
                 switch (channelUID.getId()) {
                     case DEVICE_CHANNEL_FAN_MODE_ENABLED:
-                        switch (getThing().getProperties().get(DEVICE_PROP_DEVICE_TYPE)) {
+                        switch (deviceType) {
                             case DEV_TYPE_CORE_400S:
                                 if (!CORE_400S_FAN_MODES.contains(command.toString())) {
                                     logger.warn("Fan mode command for \"{}\" is not valid in the (Core400S) API",
@@ -139,7 +147,7 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
                                 new VesyncRequestManagedDeviceBypassV2.SetMode(command.toString()));
                         break;
                     case DEVICE_CHANNEL_AF_NIGHT_LIGHT:
-                        switch (getThing().getProperties().get(DEVICE_PROP_DEVICE_TYPE)) {
+                        switch (deviceType) {
                             case DEV_TYPE_CORE_400S:
                                 logger.warn("Core400S API does not support night light");
                                 return;
@@ -163,8 +171,6 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
                 switch (channelUID.getId()) {
                     case DEVICE_CHANNEL_FAN_SPEED_ENABLED:
                         // If the fan speed is being set enforce manual mode
-                        logger.warn("Current fan mode is {}",
-                                getThing().getChannel(DEVICE_CHANNEL_FAN_MODE_ENABLED).toString());
                         sendV2BypassControlCommand("setPurifierMode",
                                 new VesyncRequestManagedDeviceBypassV2.SetMode("manual"), false);
 
@@ -174,7 +180,7 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
                             requestedLevel = 1;
                         }
 
-                        switch (getThing().getProperties().get(DEVICE_PROP_DEVICE_TYPE)) {
+                        switch (deviceType) {
                             case DEV_TYPE_CORE_400S:
                                 if (requestedLevel > 4) {
                                     logger.warn(
