@@ -62,9 +62,10 @@ public class VeSyncConstants {
     public static final String DEVICE_CHANNEL_AF_CONFIG_DISPLAY_FOREVER = "device-AF-config-display-forever";
     public static final String DEVICE_CHANNEL_AF_CONFIG_AUTO_MODE_PREF = "device-AF-config-auto-pref-type";
 
-    public static final String DEVICE_CHANNEL_AF_AUTO_OFF_SECONDS = "device-AF-config-auto-off-seconds-type";
+    public static final String DEVICE_CHANNEL_AF_AUTO_OFF_SECONDS = "timer-remain";
+    public static final String DEVICE_CHANNEL_AF_AUTO_OFF_CALC_TIME = "timer-expiry";
     public static final String DEVICE_CHANNEL_AF_CONFIG_AUTO_ROOM_SIZE = "device-AF-config-auto-pref-room-size-type";
-    public static final String DEVICE_CHANNEL_AF_SCHEDULES_COUNT = "device-AF-config-schedules-count";
+    public static final String DEVICE_CHANNEL_AF_SCHEDULES_COUNT = "schedules-count";
     public static final String DEVICE_CHANNEL_AF_NIGHT_LIGHT = "night-light-mode";
 
     // Property name constants

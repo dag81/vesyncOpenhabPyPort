@@ -64,9 +64,10 @@
 			<channel id="device-AF-config-display" typeId="deviceAFConfigDisplay"/>
 			<channel id="device-AF-config-display-forever" typeId="deviceAFConfigDisplayForever"/>
 			<channel id="device-AF-config-auto-pref-type" typeId="deviceAFConfigAutoPrefType"/>
-			<channel id="device-AF-config-auto-off-seconds-type" typeId="deviceAFTimerOff"/>
+			<channel id="timer-remain" typeId="deviceAFTimerOff"/>
+			<channel id="timer-expiry" typeId="deviceAFTimerExpiry"/>
 			<channel id="device-AF-config-auto-pref-room-size-type" typeId="deviceAFConfigAutoPrefRoomSizeType"/>
-			<channel id="device-AF-config-schedules-count" typeId="deviceAFConfigAutoScheduleCountType"/>
+			<channel id="schedules-count" typeId="deviceAFConfigAutoScheduleCountType"/>
 			<channel id="night-light-mode" typeId="deviceAFNightLight"/>
 		</channels>
 
@@ -202,6 +203,13 @@
 		<label>Auto Off Timer (Seconds)</label>
 		<description>Timer remaining</description>
 		<state pattern="%.0f"/>
+	</channel-type>
+
+	<channel-type id="deviceAFTimerExpiry">
+		<item-type>DateTime</item-type>
+		<label>Auto Off Timer Expiry</label>
+		<description>The time when the auto off timer will be reached</description>
+		<state readOnly="true" pattern="%1$tF %1$tR"/>
 	</channel-type>
 
 	<channel-type id="deviceAFConfigAutoPrefRoomSizeType">

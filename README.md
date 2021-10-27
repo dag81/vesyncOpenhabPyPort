@@ -64,6 +64,9 @@ Channel names in **bold** are read/write, everything else is read-only
 | air-quality            | Number   | The air quality as represented by the Core200S / Core300S |
 | air-quality-ppm25      | Number   | The air quality as represented by the Core400S            |
 | error-code             | Number   | The error code reported by the device                     |
+| timer-remain           | Number   | The seconds left on the timer at the last poll            |
+| timer-expiry           | DateTime | The expected expiry time of the current timer             |
+| schedules-count        | Number   | The number schedules configured                           |
 
 ## Full Example
 

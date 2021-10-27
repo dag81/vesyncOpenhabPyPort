@@ -14,6 +14,8 @@ package org.openhab.binding.vesync.internal;
 
 import static org.openhab.binding.vesync.internal.VeSyncConstants.*;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -21,10 +23,8 @@ import java.util.Set;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncRequestManagedDeviceBypassV2;
 import org.openhab.binding.vesync.internal.dto.responses.VesyncV2BypassPurifierStatus;
-import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.QuantityType;
-import org.openhab.core.library.types.StringType;
+import org.openhab.core.library.items.DateTimeItem;
+import org.openhab.core.library.types.*;
 import org.openhab.core.thing.*;
 import org.openhab.core.thing.binding.builder.ThingBuilder;
 import org.openhab.core.types.Command;
@@ -235,6 +235,12 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
         updateState(DEVICE_CHANNEL_AF_AUTO_OFF_SECONDS,
                 new DecimalType(purifierStatus.result.result.extension.timerRemain));
 
+        if (purifierStatus.result.result.extension.timerRemain > 0) {
+            updateState(DEVICE_CHANNEL_AF_AUTO_OFF_CALC_TIME, new DateTimeType(LocalDateTime.now()
+                    .plus(purifierStatus.result.result.extension.timerRemain, ChronoUnit.SECONDS).toString()));
+        } else {
+            updateState(DEVICE_CHANNEL_AF_AUTO_OFF_CALC_TIME, new DateTimeItem("nullEnforcements").getState());
+        }
         updateState(DEVICE_CHANNEL_AF_CONFIG_AUTO_ROOM_SIZE,
                 new DecimalType(purifierStatus.result.result.configuration.autoPreference.roomSize));
 
