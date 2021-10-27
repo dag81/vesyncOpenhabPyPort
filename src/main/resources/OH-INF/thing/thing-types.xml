@@ -61,12 +61,12 @@
 			<channel id="error-code" typeId="deviceErrorCodeType"/>
 			<channel id="air-quality" typeId="deviceAirQualityBasicType"/>
 			<channel id="air-quality-ppm25" typeId="deviceAirQualityBasicType"/>
-			<channel id="device-AF-config-display" typeId="deviceAFConfigDisplay"/>
-			<channel id="device-AF-config-display-forever" typeId="deviceAFConfigDisplayForever"/>
-			<channel id="device-AF-config-auto-pref-type" typeId="deviceAFConfigAutoPrefType"/>
+			<channel id="config-display" typeId="deviceAFConfigDisplay"/>
+			<channel id="config-display-forever" typeId="deviceAFConfigDisplayForever"/>
+			<channel id="config-auto-mode" typeId="deviceAFConfigAutoPrefType"/>
 			<channel id="timer-remain" typeId="deviceAFTimerOff"/>
 			<channel id="timer-expiry" typeId="deviceAFTimerExpiry"/>
-			<channel id="device-AF-config-auto-pref-room-size-type" typeId="deviceAFConfigAutoPrefRoomSizeType"/>
+			<channel id="config-auto-room-size" typeId="deviceAFConfigAutoPrefRoomSizeType"/>
 			<channel id="schedules-count" typeId="deviceAFConfigAutoScheduleCountType"/>
 			<channel id="night-light-mode" typeId="deviceAFNightLight"/>
 		</channels>
@@ -97,18 +97,21 @@
 		<item-type>Switch</item-type>
 		<label>Switched On</label>
 		<description>Indicator if the device is switched on</description>
+		<state readOnly="false"/>
 	</channel-type>
 
 	<channel-type id="deviceChildLockEnabledType">
 		<item-type>Switch</item-type>
 		<label>Display Lock</label>
 		<description>Indicator if the devices child lock is enabled (Display Lock)</description>
+		<state readOnly="false"/>
 	</channel-type>
 
 	<channel-type id="deviceDisplayEnabledType">
 		<item-type>Switch</item-type>
 		<label>Display</label>
 		<description>Indicator if the devices display is enabled</description>
+		<state readOnly="false"/>
 	</channel-type>
 
 	<channel-type id="deviceFilterLifePercentageType">
@@ -149,34 +152,35 @@
 		<item-type>Number:Dimensionless</item-type>
 		<label>Fan Speed</label>
 		<description>Indicator of the current fan speed</description>
-		<state pattern="%.0f"/>
+		<state readOnly="true" pattern="%.0f"/>
 	</channel-type>
 
 	<channel-type id="deviceErrorCodeType">
 		<item-type>Number:Dimensionless</item-type>
 		<label>Device Error Code</label>
 		<description>Indicator of the current error code of the device</description>
-		<state pattern="%.0f"/>
+		<state readOnly="true" pattern="%.0f"/>
 	</channel-type>
 
 	<channel-type id="deviceAirQualityBasicType">
 		<item-type>Number:Dimensionless</item-type>
 		<label>Air Quality</label>
 		<description>System representation of air quality</description>
-		<state pattern="%.0f"/>
+		<state readOnly="true" pattern="%.0f"/>
 	</channel-type>
 
 	<channel-type id="air-quality-ppm25">
 		<item-type>Number:Dimensionless</item-type>
 		<label>Air Quality PPM 2.5</label>
 		<description>Indicator of current air quality</description>
-		<state pattern="%.0f"/>
+		<state readOnly="true" pattern="%.0f"/>
 	</channel-type>
 
 	<channel-type id="deviceAFConfigDisplay">
 		<item-type>Switch</item-type>
 		<label>Config: Display</label>
 		<description>Configuration: If the devices display is enabled</description>
+		<state readOnly="false"/>
 	</channel-type>
 
 	<channel-type id="deviceAFConfigDisplayForever">
@@ -189,7 +193,7 @@
 		<item-type>String</item-type>
 		<label>Config: Auto Mode Preference</label>
 		<description>The operating mode when the air purifier is set to auto</description>
-		<state readOnly="false">
+		<state readOnly="true">
 			<options>
 				<option value="default">Auto (Air Quality)</option>
 				<option value="quiet">Quiet (No High Speed)</option>
@@ -202,7 +206,7 @@
 		<item-type>Number:Dimensionless</item-type>
 		<label>Auto Off Timer (Seconds)</label>
 		<description>Timer remaining</description>
-		<state pattern="%.0f"/>
+		<state readOnly="true" pattern="%.0f"/>
 	</channel-type>
 
 	<channel-type id="deviceAFTimerExpiry">
@@ -216,13 +220,13 @@
 		<item-type>Number:Dimensionless</item-type>
 		<label>Config: Room size (foot sq)</label>
 		<description>Room size for efficient auto mode</description>
-		<state pattern="%.0f"/>
+		<state readOnly="true" pattern="%.0f"/>
 	</channel-type>
 
 	<channel-type id="deviceAFConfigAutoScheduleCountType">
 		<item-type>Number:Dimensionless</item-type>
 		<label>Config: Number of schedules</label>
 		<description>The current number of schedules configured</description>
-		<state pattern="%.0f"/>
+		<state readOnly="true" pattern="%.0f"/>
 	</channel-type>
 </thing:thing-descriptions>

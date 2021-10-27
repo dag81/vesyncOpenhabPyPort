@@ -52,23 +52,53 @@ Channel names in **bold** are read/write, everything else is read-only
 
 ### AirPurifier Thing
 
-| Channel                | Type     | Description                                               |
-|------------------------|----------|-----------------------------------------------------------|
-| **enabled**            | Switch   | Whether the hardware device is enabled (Switched on)      |
-| **child-lock**         | Switch   | Whether the child lock (display lock is enabled)          |
-| **display**            | Switch   | Whether the display is enabled (display is shown)         |
-| **fan-mode**           | String   | The operation mode of the fan                             |
-| **manual-fan-speed**   | String   | The operation mode of the fan                             |
-| **night-light-mode**   | String   | The night lights mode                                     |
-| filter-life-percentage | Number   | The remaining filter life as a percentage                 |
-| air-quality            | Number   | The air quality as represented by the Core200S / Core300S |
-| air-quality-ppm25      | Number   | The air quality as represented by the Core400S            |
-| error-code             | Number   | The error code reported by the device                     |
-| timer-remain           | Number   | The seconds left on the timer at the last poll            |
-| timer-expiry           | DateTime | The expected expiry time of the current timer             |
-| schedules-count        | Number   | The number schedules configured                           |
+| Channel                | Type                    | Description                                               |
+|------------------------|-------------------------|-----------------------------------------------------------|
+| **enabled**            | Switch                  | Whether the hardware device is enabled (Switched on)      |
+| **child-lock**         | Switch                  | Whether the child lock (display lock is enabled)          |
+| **display**            | Switch                  | Whether the display is enabled (display is shown)         |
+| **fan-mode**           | String                  | The operation mode of the fan                             |
+| **manual-fan-speed**   | String                  | The speed of the fan when in manual mode                  |
+| **night-light-mode**   | String                  | The night lights mode                                     |
+| filter-life-percentage | Number:Dimensionless    | The remaining filter life as a percentage                 |
+| air-quality            | Number                  | The air quality as represented by the Core200S / Core300S |
+| air-quality-ppm25      | Number:Dimensionless    | The air quality as represented by the Core400S            |
+| error-code             | Number                  | The error code reported by the device                     |
+| timer-remain           | Number                  | The seconds left on the timer at the last poll            |
+| timer-expiry           | DateTime                | The expected expiry time of the current timer             |
+| schedules-count        | Number                  | The number schedules configured                           |
+| config-display         | Switch                  | Config: Whether the display is enabled                    |
+| config-display-forever | Switch                  | Config: Whether the display will disable when not active  |
+| config-auto-mode       | String                  | Config: The mode of operation when auto is active         |
+| config-auto-room-size  | Number                  | Config: The room size set when auto utilises the room size|
 
 ## Full Example
+
+### Configuration (*.things)
+
+```
+Bridge vesync:bridge:vesyncServers [username="<USERNAME>", password="<PASSWORD>"] {
+	AirPurifier loungeAirFilter [deviceName="<DEVICE NAME FROM APP>"]
+	AirPurifier bedroomAirFilter [deviceName="<DEVICE NAME FROM APP>"]
+}
+```
+### Configuration (*.items)
+
+```
+Switch               LoungeAPPower        	   "Lounge Air Purifier Power"                                  { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:enabled" }
+Switch               LoungeAPDisplay      	   "Lounge Air Purifier Display"                                { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:config-display" }
+Switch               LoungeAPControlsLock          "Lounge Air Purifier Controls Locked"                        { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:child-lock" }
+Number:Dimensionless LoungeAPFilterRemainingUse    "Lounge Air Purifier Filter Remaining [%.0f %%]"             { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:filter-life-percentage" }
+String               LoungeAPMode                  "Lounge Air Purifier Mode [%s]"                              { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:fan-mode" }
+Number:Dimensionless LoungeAPManualFanSpeed        "Lounge Air Purifier Manual Fan Speed"                       { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:manual-fan-speed" }
+Number:Dimensionless LoungeAPAirQuality		   "Lounge Air Purifier Air Quality [%.0f% PM2.5]"              { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:air-quality-ppm25" }
+Number               LoungeAPErrorCode     	   "Lounge Air Purifier Error Code"                             { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:error-code" }
+String               LoungeAPAutoMode		   "Lounge Air Purifier Auto Mode"                              { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:config-auto-mode" }
+Number               LoungeAPAutoRoomSize 	   "Lounge Air Purifier Auto Room Size [%.0f% sqft]"            { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:config-auto-room-size" }
+Number:Time          LoungeAPTimerLeft		   "Lounge Air Purifier Timer Left [%1$Tp]"                     { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:timer-remain" }	
+DateTime             LoungeAPTimerExpire           "Lounge Air Purifier Timer Expiry [%1$tA %1$tI:%1$tM %1$Tp]" { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:timer-expiry" }
+Number               LoungeAPSchedulesCount 	   "Lounge Air Purifier Schedules Count"                        { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:schedules-count" }
+```
 
 _Provide a full usage example based on textual configuration files (*.things, *.items, *.sitemap)._
 

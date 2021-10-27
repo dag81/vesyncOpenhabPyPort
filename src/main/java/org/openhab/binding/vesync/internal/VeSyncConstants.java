@@ -58,13 +58,13 @@ public class VeSyncConstants {
     public static final String DEVICE_CHANNEL_AIRQUALITY_BASIC = "air-quality";
     public static final String DEVICE_CHANNEL_AIRQUALITY_PPM25 = "air-quality-ppm25";
 
-    public static final String DEVICE_CHANNEL_AF_CONFIG_DISPLAY = "device-AF-config-display";
-    public static final String DEVICE_CHANNEL_AF_CONFIG_DISPLAY_FOREVER = "device-AF-config-display-forever";
-    public static final String DEVICE_CHANNEL_AF_CONFIG_AUTO_MODE_PREF = "device-AF-config-auto-pref-type";
+    public static final String DEVICE_CHANNEL_AF_CONFIG_DISPLAY = "config-display";
+    public static final String DEVICE_CHANNEL_AF_CONFIG_DISPLAY_FOREVER = "config-display-forever";
+    public static final String DEVICE_CHANNEL_AF_CONFIG_AUTO_MODE_PREF = "config-auto-mode";
 
     public static final String DEVICE_CHANNEL_AF_AUTO_OFF_SECONDS = "timer-remain";
     public static final String DEVICE_CHANNEL_AF_AUTO_OFF_CALC_TIME = "timer-expiry";
-    public static final String DEVICE_CHANNEL_AF_CONFIG_AUTO_ROOM_SIZE = "device-AF-config-auto-pref-room-size-type";
+    public static final String DEVICE_CHANNEL_AF_CONFIG_AUTO_ROOM_SIZE = "config-auto-room-size";
     public static final String DEVICE_CHANNEL_AF_SCHEDULES_COUNT = "schedules-count";
     public static final String DEVICE_CHANNEL_AF_NIGHT_LIGHT = "night-light-mode";
 
