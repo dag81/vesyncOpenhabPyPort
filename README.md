@@ -84,6 +84,8 @@ Bridge vesync:bridge:vesyncServers [username="<USERNAME>", password="<PASSWORD>"
 ```
 ### Configuration (*.items)
 
+#### Core 400S Model
+
 ```
 Switch               LoungeAPPower        	   "Lounge Air Purifier Power"                                  { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:enabled" }
 Switch               LoungeAPDisplay      	   "Lounge Air Purifier Display"                                { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:config-display" }
