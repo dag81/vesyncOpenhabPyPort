@@ -30,6 +30,7 @@ import org.openhab.binding.vesync.internal.dto.requests.VesyncRequestManagedDevi
 import org.openhab.binding.vesync.internal.dto.responses.VesyncManagedDevicesPage;
 import org.openhab.core.thing.Bridge;
 import org.openhab.core.thing.Channel;
+import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
 import org.openhab.core.thing.ThingStatus;
 import org.openhab.core.thing.ThingStatusDetail;
@@ -58,6 +59,15 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
     protected List<Channel> findChannelById(final String channelGroupId) {
         return getThing().getChannels().stream().filter(x -> x.getUID().getId().equals(channelGroupId))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void channelLinked(ChannelUID channelUID) {
+        super.channelLinked(channelUID);
+
+        scheduler.execute(() -> {
+            pollForUpdate();
+        });
     }
 
     protected void setBackgroundPollInterval(final int seconds) {
