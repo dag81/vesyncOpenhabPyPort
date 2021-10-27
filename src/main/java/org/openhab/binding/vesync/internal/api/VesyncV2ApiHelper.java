@@ -54,8 +54,6 @@ public class VesyncV2ApiHelper {
 
     private volatile VesyncLoginResponse.@Nullable VesyncUserSession loggedInSession;
 
-    // private VeSyncHandlerFactory bridge;
-
     public VesyncV2ApiHelper(final VeSyncHandlerFactory bridge) {
         // this.bridge = bridge;
         macLookup = new HashMap<>();

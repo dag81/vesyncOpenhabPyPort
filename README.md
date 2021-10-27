@@ -82,6 +82,7 @@ Bridge vesync:bridge:vesyncServers [username="<USERNAME>", password="<PASSWORD>"
 	AirPurifier bedroomAirFilter [deviceName="<DEVICE NAME FROM APP>"]
 }
 ```
+
 ### Configuration (*.items)
 
 #### Core 400S Model
