@@ -300,7 +300,7 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
             final VesyncRequestManagedDeviceBypassV2.EmptyPayload payload, final boolean readbackDevice) {
         final String result = sendV2BypassCommand(method, payload);
         if (!result.equals(EMPTY_STRING) && readbackDevice)
-            pollForUpdate();
+            performReadbackPoll();
         return result;
     }
 
@@ -351,6 +351,24 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
             return EMPTY_STRING;
         }
     }
+
+    // Given several changes may be done at the same time, or in close proximity, delay the readback to catch
+    // multiple readback's, so a single update can handle them.
+    public void performReadbackPoll() {
+        final long requestSystemMillis = System.currentTimeMillis();
+        latestReadBackMillis = requestSystemMillis;
+        scheduler.schedule(() -> {
+            // This is a historical poll, ignore it
+            if (requestSystemMillis != latestReadBackMillis) {
+                logger.trace("Poll read-back cancelled, another later one is scheduled to happen");
+                return;
+            }
+            logger.trace("Read-back poll executing");
+            pollForUpdate();
+        }, 1L, TimeUnit.SECONDS);
+    }
+
+    private volatile long latestReadBackMillis = 0;
 
     public void updateBridgeBasedPolls(VeSyncBridgeConfiguration config) {
     }
