@@ -363,8 +363,8 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
         }
     }
 
-    // Given several changes may be done at the same time, or in close proximity, delay the readback to catch
-    // multiple readback's, so a single update can handle them.
+    // Given several changes may be done at the same time, or in close proximity, delay the read-back to catch
+    // multiple read-back's, so a single update can handle them.
     public void performReadbackPoll() {
         final long requestSystemMillis = System.currentTimeMillis();
         latestReadBackMillis = requestSystemMillis;
@@ -375,6 +375,9 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
                 return;
             }
             logger.trace("Read-back poll executing");
+            // Read-backs should never use the cached data - but may provide it for poll's that coincide with
+            // the caches alive duration.
+            lastPollResultCache.invalidateValue();
             pollForUpdate();
         }, 1L, TimeUnit.SECONDS);
     }
