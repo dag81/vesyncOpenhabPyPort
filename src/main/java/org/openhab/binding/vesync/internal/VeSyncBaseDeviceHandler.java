@@ -14,6 +14,7 @@ package org.openhab.binding.vesync.internal;
 
 import static org.openhab.binding.vesync.internal.VeSyncConstants.*;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.vesync.internal.api.VesyncV2ApiHelper;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncRequestManagedDeviceBypassV2;
 import org.openhab.binding.vesync.internal.dto.responses.VesyncManagedDevicesPage;
+import org.openhab.core.cache.ExpiringCache;
 import org.openhab.core.thing.Bridge;
 import org.openhab.core.thing.Channel;
 import org.openhab.core.thing.ChannelUID;
@@ -53,12 +55,21 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
 
     private static final String MARKER_INVALID_DEVICE_KEY = "---INVALID---";
 
+    private static final int CACHE_TIMEOUT_SECOND = 5;
+
     private @Nullable ScheduledFuture<?> backgroundPollingScheduler;
     private Object pollConfigLock = new Object();
 
     protected List<Channel> findChannelById(final String channelGroupId) {
         return getThing().getChannels().stream().filter(x -> x.getUID().getId().equals(channelGroupId))
                 .collect(Collectors.toList());
+    }
+
+    protected ExpiringCache<String> lastPollResultCache = new ExpiringCache<>(Duration.ofSeconds(CACHE_TIMEOUT_SECOND),
+            VeSyncBaseDeviceHandler::expireCacheContents);
+
+    private static @Nullable String expireCacheContents() {
+        return null;
     }
 
     @Override
@@ -267,10 +278,10 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
     }
 
     public void pollForUpdate() {
-        pollForDeviceData();
+        pollForDeviceData(lastPollResultCache);
     }
 
-    protected void pollForDeviceData() {
+    protected void pollForDeviceData(final ExpiringCache<String> cachedResponse) {
         // Each device should implement this to get the latest data that is not part of the meta data.
     }
 

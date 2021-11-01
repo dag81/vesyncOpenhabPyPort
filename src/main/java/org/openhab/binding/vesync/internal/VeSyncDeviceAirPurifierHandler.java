@@ -23,9 +23,11 @@ import java.util.Set;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncRequestManagedDeviceBypassV2;
 import org.openhab.binding.vesync.internal.dto.responses.VesyncV2BypassPurifierStatus;
+import org.openhab.core.cache.ExpiringCache;
 import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.QuantityType;
 import org.openhab.core.library.types.StringType;
@@ -211,7 +213,7 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
                         break;
                 }
             } else if (command instanceof RefreshType) {
-                logger.trace("COMMAND: Refresh Type {}", channelUID);
+                pollForUpdate();
             } else {
                 logger.trace("UNKNOWN COMMAND: {} {}", command.getClass().toString(), channelUID);
             }
@@ -219,18 +221,36 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
     }
 
     @Override
-    protected void pollForDeviceData() {
-        final String response = sendV2BypassCommand("getPurifierStatus",
-                new VesyncRequestManagedDeviceBypassV2.EmptyPayload());
+    protected void pollForDeviceData(final ExpiringCache<String> cachedResponse) {
 
-        if (response.equals(EMPTY_STRING))
-            return;
+        String response;
+        VesyncV2BypassPurifierStatus purifierStatus;
+        synchronized (pollLock) {
 
-        final VesyncV2BypassPurifierStatus purifierStatus = VeSyncConstants.GSON.fromJson(response,
-                VesyncV2BypassPurifierStatus.class);
+            response = cachedResponse.getValue();
+            boolean cachedDataUsed = response != null;
+            if (response == null) {
+                logger.trace("Requesting fresh response");
+                response = sendV2BypassCommand("getPurifierStatus",
+                        new VesyncRequestManagedDeviceBypassV2.EmptyPayload());
+            } else {
+                logger.trace("Using cached response {}", response);
+            }
 
-        if (purifierStatus == null)
-            return;
+            if (response.equals(EMPTY_STRING))
+                return;
+
+            purifierStatus = VeSyncConstants.GSON.fromJson(response, VesyncV2BypassPurifierStatus.class);
+
+            if (purifierStatus == null)
+                return;
+
+            if (!cachedDataUsed) {
+                cachedResponse.putValue(response);
+                logger.trace("Stored cached response {}", response);
+            }
+
+        }
 
         // Bail and update the status of the thing - it will be updated to online by the next search
         // that detects it is online.
@@ -280,4 +300,6 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
             updateState(DEVICE_CHANNEL_AF_NIGHT_LIGHT, new DecimalType(purifierStatus.result.result.nightLight));
         }
     }
+
+    private Object pollLock = new Object();
 }
