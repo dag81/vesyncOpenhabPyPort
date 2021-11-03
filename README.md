@@ -76,6 +76,7 @@ Channel names in **bold** are read/write, everything else is read-only
 
 ### Configuration (*.things)
 
+#### Core 200S/300S/400S Model
 ```
 Bridge vesync:bridge:vesyncServers [username="<USERNAME>", password="<PASSWORD>"] {
 	AirPurifier loungeAirFilter [deviceName="<DEVICE NAME FROM APP>"]

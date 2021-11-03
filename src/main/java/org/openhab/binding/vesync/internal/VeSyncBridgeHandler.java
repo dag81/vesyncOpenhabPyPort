@@ -148,22 +148,13 @@ public class VeSyncBridgeHandler extends BaseBridgeHandler implements VeSyncClie
                 .filter(x -> VeSyncDeviceAirPurifierHandler.SUPPORTED_DEVICE_TYPES.contains(x.deviceType));
     }
 
-    protected void updateThingsPollScheduling() {
-        final VeSyncBridgeConfiguration config = getConfigAs(VeSyncBridgeConfiguration.class);
-
-        for (Thing th : getThing().getThings()) {
-            ThingHandler handler = th.getHandler();
-            if (handler instanceof VeSyncBaseDeviceHandler) {
-                ((VeSyncBaseDeviceHandler) handler).updateBridgeBasedPolls(config);
-            }
-        }
-    }
-
     protected void updateThings() {
+        final VeSyncBridgeConfiguration config = getConfigAs(VeSyncBridgeConfiguration.class);
         for (Thing th : getThing().getThings()) {
             ThingHandler handler = th.getHandler();
             if (handler instanceof VeSyncBaseDeviceHandler) {
                 ((VeSyncBaseDeviceHandler) handler).updateDeviceMetaData();
+                ((VeSyncBaseDeviceHandler) handler).updateBridgeBasedPolls(config);
             }
         }
     }
@@ -185,7 +176,6 @@ public class VeSyncBridgeHandler extends BaseBridgeHandler implements VeSyncClie
                 updateStatus(ThingStatus.ONLINE);
                 api.UpdateBridgeData(this);
                 runDeviceScanSequence();
-                updateThingsPollScheduling();
             } catch (final AuthenticationException ae) {
                 updateStatus(ThingStatus.OFFLINE);
                 setBackgroundScanInterval(DEFAULT_DEVICE_SCAN_DISABLED);

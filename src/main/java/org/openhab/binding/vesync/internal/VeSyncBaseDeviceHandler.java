@@ -57,6 +57,8 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
 
     private static final int CACHE_TIMEOUT_SECOND = 5;
 
+    private int activePollRate = -2; // -1 is used to deactivate the poll, so default to a different value
+
     private @Nullable ScheduledFuture<?> backgroundPollingScheduler;
     private Object pollConfigLock = new Object();
 
@@ -82,6 +84,11 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
     }
 
     protected void setBackgroundPollInterval(final int seconds) {
+        if (activePollRate == seconds)
+            return;
+
+        logger.debug("Reconfiguring devices background polling to {} seconds", seconds);
+
         synchronized (pollConfigLock) {
             final ScheduledFuture<?> job = backgroundPollingScheduler;
 
@@ -95,6 +102,7 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
                 backgroundPollingScheduler = scheduler.scheduleWithFixedDelay(() -> pollForUpdate(), seconds, seconds,
                         TimeUnit.SECONDS);
             }
+            activePollRate = seconds;
         }
     }
 
@@ -119,6 +127,21 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
         else {
             return bridgeRef.getHandler();
         }
+    }
+
+    protected boolean isDeviceOnline() {
+        BridgeHandler bridgeHandler = getBridgeHandler();
+        if (bridgeHandler != null && bridgeHandler instanceof VeSyncBridgeHandler) {
+            VeSyncBridgeHandler vesyncBridgeHandler = (VeSyncBridgeHandler) bridgeHandler;
+            VesyncManagedDevicesPage.Result.@Nullable VesyncManagedDeviceBase metadata = vesyncBridgeHandler.api
+                    .getMacLookupMap().get(deviceLookupKey);
+
+            if (metadata == null)
+                return false;
+
+            return ("online".equals(metadata.connectionStatus));
+        }
+        return false;
     }
 
     public void updateDeviceMetaData() {

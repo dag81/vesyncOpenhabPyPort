@@ -99,7 +99,11 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
         if (pollRate == null)
             pollRate = Integer.valueOf(DEFAULT_AIR_PURIFIER_POLL_RATE);
 
-        setBackgroundPollInterval(pollRate);
+        if (ThingStatus.ONLINE.equals(getThing().getStatus())) {
+            setBackgroundPollInterval(pollRate);
+        } else {
+            setBackgroundPollInterval(-1);
+        }
     }
 
     @Override
@@ -109,7 +113,6 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
 
     @Override
     public void handleCommand(final ChannelUID channelUID, final Command command) {
-
         final String deviceType = getThing().getProperties().get(DEVICE_PROP_DEVICE_TYPE);
         if (deviceType == null)
             return;
@@ -249,7 +252,6 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
                 cachedResponse.putValue(response);
                 logger.trace("Stored cached response {}", response);
             }
-
         }
 
         // Bail and update the status of the thing - it will be updated to online by the next search
