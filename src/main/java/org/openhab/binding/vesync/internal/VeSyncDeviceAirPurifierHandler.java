@@ -99,10 +99,10 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
         if (pollRate == null)
             pollRate = Integer.valueOf(DEFAULT_AIR_PURIFIER_POLL_RATE);
 
-        if (ThingStatus.ONLINE.equals(getThing().getStatus())) {
-            setBackgroundPollInterval(pollRate);
-        } else {
+        if (ThingStatus.OFFLINE.equals(getThing().getStatus())) {
             setBackgroundPollInterval(-1);
+        } else {
+            setBackgroundPollInterval(pollRate);
         }
     }
 

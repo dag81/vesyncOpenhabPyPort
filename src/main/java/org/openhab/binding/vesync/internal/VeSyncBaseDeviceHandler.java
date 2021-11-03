@@ -158,14 +158,15 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
                 return;
 
             newProps = getMetadataProperities(metadata);
+
+            // Refresh the device -> protocol mapping
+            deviceLookupKey = getValidatedIdString();
+
             if ("online".equals(metadata.connectionStatus)) {
                 updateStatus(ThingStatus.ONLINE);
             } else if ("offline".equals(metadata.connectionStatus)) {
                 updateStatus(ThingStatus.OFFLINE);
             }
-
-            // Refresh the device -> protocol mapping
-            deviceLookupKey = getValidatedIdString();
         }
 
         if (newProps != null && !newProps.isEmpty()) {
