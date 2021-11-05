@@ -131,4 +131,40 @@ Number               LoungeAPSchedulesCount 	   "Lounge Air Purifier Schedules C
 
 ### Configuration (*.sitemap)
 
+#### Core 400S Model
+```
+Frame {
+   Switch item=LoungeAPPower label="Power"
+   Text   item=LoungeAPFilterRemainingUse label="Filter Remaining"
+   Switch item=LoungeAPDisplay label="Display"
+   Text   item=LoungeAPAirQuality label="Air Quality [%.0f (PM2.5)]"                
+   Switch item=LoungeAPControlsLock label="Controls Locked"
+   Text   item=LoungeAPTimerExpiry label="Timer Shutdown @" icon="clock"
+   Switch item=LoungeAPMode label="Mode" mappings=[auto="Auto", manual="Manual Fan Control", sleep="Sleeping"] icon="settings"
+   Text   item=LoungeAPErrorCode label="Error Code [%.0f]"
+   Switch item=LoungeAPManualFanSpeed label="Manual Fan Speed [%.0f]" mappings=[1="1", 2="2", 3="3", 4="4"] icon="settings"                               
+}
+```
 
+#### Core 200S/300S Model
+
+This is untested but based on data from pyvesync.
+
+```
+Frame {
+   Switch item=LoungeAPPower label="Power"
+   Text   item=LoungeAPFilterRemainingUse label="Filter Remaining"
+   Switch item=LoungeAPDisplay label="Display"               
+   Switch item=LoungeAPControlsLock label="Controls Locked"
+   Text   item=LoungeAPTimerExpiry label="Timer Shutdown @" icon="clock"
+   Switch item=LoungeAPMode label="Mode" mappings=[manual="Manual Fan Control", sleep="Sleeping"] icon="settings"
+   Text   item=LoungeAPErrorCode label="Error Code [%.0f]"
+   Switch item=LoungeAPManualFanSpeed label="Manual Fan Speed [%.0f]" mappings=[1="1", 2="2", 3="3"] icon="settings"                               
+}
+```
+
+These items could do with confirmation vs the tested Core400S configuration in relation to the Core 200S/300S.
+
+```
+TBC
+```
