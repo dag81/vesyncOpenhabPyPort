@@ -250,7 +250,6 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
 
             if (!cachedDataUsed) {
                 cachedResponse.putValue(response);
-                logger.trace("Stored cached response {}", response);
             }
         }
 

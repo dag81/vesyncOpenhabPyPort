@@ -102,6 +102,7 @@ Device's will be found communicated with via the MAC Id first and if unsuccessfu
 | macId                  | String                  | The mac for the device under Settings -> Device Info -> MAC Address |
 
 #### Core 200S/300S/400S Model
+
 ```
 Bridge vesync:bridge:vesyncServers [username="<USERNAME>", password="<PASSWORD>"] {
 	AirPurifier loungeAirFilter [deviceName="<DEVICE NAME FROM APP>"]
@@ -151,6 +152,7 @@ Number               LoungeAPSchedulesCount 	   "Lounge Air Purifier Schedules C
 ### Configuration (*.sitemap)
 
 #### Core 400S Model
+
 ```
 Frame {
    Switch item=LoungeAPPower label="Power"
