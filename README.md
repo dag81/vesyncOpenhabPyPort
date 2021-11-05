@@ -134,6 +134,7 @@ Number               LoungeAPSchedulesCount 	   "Lounge Air Purifier Schedules C
 ```
 Switch               LoungeAPPower        	   "Lounge Air Purifier Power"                                  { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:enabled" }
 Switch               LoungeAPDisplay      	   "Lounge Air Purifier Display"                                { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:config-display" }
+String               LoungeAPNightLightMode		   "Lounge Air Purifier Night Light Mode"                              { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:night-light-mode" }
 Switch               LoungeAPControlsLock          "Lounge Air Purifier Controls Locked"                        { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:child-lock" }
 Number:Dimensionless LoungeAPFilterRemainingUse    "Lounge Air Purifier Filter Remaining [%.0f %%]"             { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:filter-life-percentage" }
 String               LoungeAPMode                  "Lounge Air Purifier Mode [%s]"                              { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:fan-mode" }
@@ -173,6 +174,7 @@ Frame {
    Switch item=LoungeAPPower label="Power"
    Text   item=LoungeAPFilterRemainingUse label="Filter Remaining"
    Switch item=LoungeAPDisplay label="Display"
+   Switch item=LoungeAPNightLightMode label="Mode" mappings=[on="On", dim="Dimmed", off="Off"] icon="settings"
    Text   item=LoungeAPAirQuality label="Air Quality [%.0f]"                
    Switch item=LoungeAPControlsLock label="Controls Locked"
    Text   item=LoungeAPTimerExpiry label="Timer Shutdown @" icon="clock"
