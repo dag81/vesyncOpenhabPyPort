@@ -20,7 +20,7 @@ Models supported are Core200S, Core300S and Core400S.
 The binding code is based on a lot of work done by other developers:
 
 - Contributors of (https://github.com/webdjoe/pyvesync) - Python interface for VeSync
-- Rene Scherer, Holger Eisold - Sure Petcare Binding for OpenHab as a reference point for the starting blocks of this code 
+- Rene Scherer, Holger Eisold - (https://www.openhab.org/addons/bindings/surepetcare) Sure Petcare Binding for OpenHab as a reference point for the starting blocks of this code 
 
 ## Supported Things
 
