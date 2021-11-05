@@ -1,7 +1,5 @@
 # VeSync Binding
 
-This binding is based on the excellent work from https://github.com/webdjoe/pyvesync.
-
 It's current support is for the CoreXXXS air purifiers branded as Levoit which utilise the VeSync app.
 
 Models supported are Core200S, Core300S and Core400S.
@@ -16,6 +14,13 @@ Models supported are Core200S, Core300S and Core400S.
 4. Look at protocol mapping the V1 specification for the LV prefixed model. 
 5. Look at adding support for the moisture unit also supported by the python lib. 
 6. Look at potentially other equipment supported by the VeSync API.
+
+### Credits
+
+The binding code is based on a lot of work done by other developers:
+
+- Contributors of (https://github.com/webdjoe/pyvesync) - Python interface for VeSync
+- Rene Scherer, Holger Eisold - Sure Petcare Binding for OpenHab as a reference point for the starting blocks of this code 
 
 ## Supported Things
 
@@ -42,9 +47,7 @@ After adding the Bridge and setting the config, it will go ONLINE. After a short
 
 ## Thing Configuration
 
-_Describe what is needed to manually configure a thing, either through the UI or via a thing-file. This should be mainly about its mandatory and optional configuration parameters. A short example entry for a thing file can help!_
-
-_Note that it is planned to generate some part of this based on the XML files within ```src/main/resources/OH-INF/thing``` of your binding._
+Details for the manual configuration are below, using the OpenHab3 UI hopefully it is self-explanatory.
 
 ## Channels
 
@@ -76,6 +79,28 @@ Channel names in **bold** are read/write, everything else is read-only
 
 ### Configuration (*.things)
 
+#### Bridge configuration parameters
+
+| Name                   | Type                    | Description                                               |
+|------------------------|-------------------------|-----------------------------------------------------------|
+| username               | String                  | The username as used in the VeSync mobile application     |
+| password               | String                  | The password as used in the VeSync mobile application     |
+
+#### AirPurifier configuration parameters
+
+It is recommended to use the device name, for locating devices. For this to work all the devices should have a unique
+name in the VeSync mobile application.
+
+The mac address from the VeSync mobile application may not align to the one the API
+uses, therefore it's best left not configured or taken from auto-discovered information.
+
+Device's will be found communicated with via the MAC Id first and if unsuccessful then by the deviceName.
+
+| Name                   | Type                    | Description                                                         |
+|------------------------|-------------------------|---------------------------------------------------------------------|
+| deviceName             | String                  | The name given to the device under Settings -> Device Name          |
+| macId                  | String                  | The mac for the device under Settings -> Device Info -> MAC Address |
+
 #### Core 200S/300S/400S Model
 ```
 Bridge vesync:bridge:vesyncServers [username="<USERNAME>", password="<PASSWORD>"] {
@@ -104,8 +129,6 @@ DateTime             LoungeAPTimerExpire           "Lounge Air Purifier Timer Ex
 Number               LoungeAPSchedulesCount 	   "Lounge Air Purifier Schedules Count"                        { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:schedules-count" }
 ```
 
-_Provide a full usage example based on textual configuration files (*.things, *.items, *.sitemap)._
+### Configuration (*.sitemap)
 
-## Any custom content here!
 
-_Feel free to add additional sections for whatever you think should also be mentioned about your binding!_
