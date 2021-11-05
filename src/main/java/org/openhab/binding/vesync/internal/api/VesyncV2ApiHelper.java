@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import javax.validation.constraints.NotNull;
@@ -134,7 +135,7 @@ public class VesyncV2ApiHelper {
         }
     }
 
-    public synchronized String reqV2Authorized(final String url, final String macId,
+    public String reqV2Authorized(final String url, final String macId,
             final VesyncAuthenticatedRequest requestData) throws AuthenticationException, DeviceUnknownException {
         // Apply current session authentication data
         requestData.ApplyAuthentication(loggedInSession);
@@ -153,7 +154,7 @@ public class VesyncV2ApiHelper {
         return reqV1Authorized(url, requestData);
     }
 
-    public synchronized String reqV1Authorized(final String url, final VesyncAuthenticatedRequest requestData)
+    public String reqV1Authorized(final String url, final VesyncAuthenticatedRequest requestData)
             throws AuthenticationException {
         String result = null;
         try {
@@ -180,7 +181,7 @@ public class VesyncV2ApiHelper {
 
             request.header(HttpHeader.CONTENT_TYPE, "application/json; utf-8");
 
-            ContentResponse response = request.send();
+            ContentResponse response = request.timeout(5, TimeUnit.SECONDS).send();
             if (response.getStatus() == HttpURLConnection.HTTP_OK) {
 
                 VesyncResponse commResponse = VeSyncConstants.GSON.fromJson(response.getContentAsString(),
@@ -232,7 +233,7 @@ public class VesyncV2ApiHelper {
 
             request.header(HttpHeader.CONTENT_TYPE, "application/json; utf-8");
 
-            ContentResponse response = request.send();
+            ContentResponse response = request.timeout(5, TimeUnit.SECONDS).send();
             if (response.getStatus() == HttpURLConnection.HTTP_OK) {
                 VesyncLoginResponse loginResponse = VeSyncConstants.GSON.fromJson(response.getContentAsString(),
                         VesyncLoginResponse.class);
