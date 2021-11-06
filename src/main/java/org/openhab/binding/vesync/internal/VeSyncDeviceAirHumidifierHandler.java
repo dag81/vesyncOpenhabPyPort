@@ -22,6 +22,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncRequestManagedDeviceBypassV2;
 import org.openhab.binding.vesync.internal.dto.responses.VesyncV2BypassHumidifierStatus;
 import org.openhab.core.cache.ExpiringCache;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
@@ -127,6 +128,8 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
         updateState(DEVICE_CHANNEL_HUMIDITY_HIGH, OnOffType.from(humidifierStatus.result.result.humidityHigh));
         updateState(DEVICE_CHANNEL_WATER_TANK_LIFTED, OnOffType.from(humidifierStatus.result.result.water_tank_lifted));
         updateState(DEVICE_CHANNEL_STOP_AT_TARGET, OnOffType.from(humidifierStatus.result.result.automatic_stop_reach_target));
+        updateState(DEVICE_CHANNEL_HUMIDITY, new DecimalType(humidifierStatus.result.result.humidity));
+        updateState(DEVICE_CHANNEL_MIST_EVEL, new DecimalType(humidifierStatus.result.result.mist_level));
         /*
          * updateState(DEVICE_CHANNEL_CHILD_LOCK_ENABLED, OnOffType.from(purifierStatus.result.result.childLock));
          * updateState(DEVICE_CHANNEL_DISPLAY_ENABLED, OnOffType.from(purifierStatus.result.result.display));

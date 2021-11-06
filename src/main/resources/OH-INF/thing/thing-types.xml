@@ -108,7 +108,8 @@
 			<channel id="humidity-high" typeId="deviceHighHumidityType"/>
 			<channel id="water-tank-lifted" typeId="deviceWaterTankLiftedType"/>
 			<channel id="stop-at-target-level" typeId="deviceAutomaticStopReachTargetType"/>
-
+			<channel id="humidity" typeId="deviceHumidityType"/>
+			<channel id="mist-level" typeId="deviceMistLevelType"/>
 		</channels>
 
 		<properties>
@@ -297,6 +298,20 @@
 		<label>Stop @ Target</label>
 		<description>Indicator if the device is set to stop when the target has been reached</description>
 		<state readOnly="false"/>
+	</channel-type>
+
+	<channel-type id="deviceHumidityType">
+		<item-type>Number:Dimensionless</item-type>
+		<label>Humidity Level</label>
+		<description>System representation humidity</description>
+		<state readOnly="true" pattern="%.0f"/>
+	</channel-type>
+	
+	<channel-type id="deviceMistLevelType">
+		<item-type>Number:Dimensionless</item-type>
+		<label>Air Quality</label>
+		<description>System representation of mist level</description>
+		<state readOnly="true" pattern="%.0f"/>
 	</channel-type>
 
 </thing:thing-descriptions>
