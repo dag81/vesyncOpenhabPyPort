@@ -111,6 +111,7 @@
 			<channel id="humidity" typeId="deviceHumidityType"/>
 			<channel id="mist-level" typeId="deviceMistLevelType"/>
 			<channel id="mist-virtual-level" typeId="deviceMistVirtualLevelType"/>
+			<channel id="humidifier-mode" typeId="airHumidifierModeType"/>
 
 		</channels>
 
@@ -321,6 +322,18 @@
 		<label>Virtual Mist Level</label>
 		<description>System representation of virtual mist level?</description>
 		<state readOnly="true" pattern="%.0f"/>
+	</channel-type>
+
+	<channel-type id="airHumidifierModeType">
+		<item-type>String</item-type>
+		<label>Operation mode</label>
+		<description>The operating mode the air humidifier is currently set to</description>
+		<state readOnly="false">
+			<options>
+				<option value="auto">Auto</option>
+				<option value="sleep">Sleeping Auto</option>
+			</options>
+		</state>
 	</channel-type>
 
 </thing:thing-descriptions>

@@ -24,6 +24,7 @@ import org.openhab.binding.vesync.internal.dto.responses.VesyncV2BypassHumidifie
 import org.openhab.core.cache.ExpiringCache;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
 import org.openhab.core.thing.ThingStatus;
@@ -133,45 +134,7 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
         updateState(DEVICE_CHANNEL_MIST_LEVEL, new DecimalType(humidifierStatus.result.result.mist_level));
         updateState(DEVICE_CHANNEL_MIST_VIRTUAL_LEVEL,
                 new DecimalType(humidifierStatus.result.result.mist_virtual_level));
-        /*
-         * updateState(DEVICE_CHANNEL_CHILD_LOCK_ENABLED, OnOffType.from(purifierStatus.result.result.childLock));
-         * updateState(DEVICE_CHANNEL_DISPLAY_ENABLED, OnOffType.from(purifierStatus.result.result.display));
-         * updateState(DEVICE_CHANNEL_AIR_FILTER_LIFE_PERCENTAGE_ENABLED,
-         * new DecimalType(purifierStatus.result.result.filterLife));
-         * updateState(DEVICE_CHANNEL_FAN_MODE_ENABLED, new StringType(purifierStatus.result.result.mode));
-         * updateState(DEVICE_CHANNEL_FAN_SPEED_ENABLED, new DecimalType(purifierStatus.result.result.level));
-         * updateState(DEVICE_CHANNEL_ERROR_CODE, new DecimalType(purifierStatus.result.result.deviceErrorCode));
-         * updateState(DEVICE_CHANNEL_AIRQUALITY_BASIC, new DecimalType(purifierStatus.result.result.airQuality));
-         * updateState(DEVICE_CHANNEL_AIRQUALITY_PPM25, new DecimalType(purifierStatus.result.result.airQualityValue));
-         * 
-         * updateState(DEVICE_CHANNEL_AF_CONFIG_DISPLAY,
-         * OnOffType.from(purifierStatus.result.result.configuration.display));
-         * updateState(DEVICE_CHANNEL_AF_CONFIG_DISPLAY_FOREVER,
-         * OnOffType.from(purifierStatus.result.result.configuration.displayForever));
-         * 
-         * updateState(DEVICE_CHANNEL_AF_CONFIG_AUTO_MODE_PREF,
-         * new StringType(purifierStatus.result.result.configuration.autoPreference.autoType));
-         * 
-         * updateState(DEVICE_CHANNEL_AF_AUTO_OFF_SECONDS,
-         * new DecimalType(purifierStatus.result.result.extension.timerRemain));
-         * 
-         * if (purifierStatus.result.result.extension.timerRemain > 0) {
-         * updateState(DEVICE_CHANNEL_AF_AUTO_OFF_CALC_TIME, new DateTimeType(LocalDateTime.now()
-         * .plus(purifierStatus.result.result.extension.timerRemain, ChronoUnit.SECONDS).toString()));
-         * } else {
-         * updateState(DEVICE_CHANNEL_AF_AUTO_OFF_CALC_TIME, new DateTimeItem("nullEnforcements").getState());
-         * }
-         * updateState(DEVICE_CHANNEL_AF_CONFIG_AUTO_ROOM_SIZE,
-         * new DecimalType(purifierStatus.result.result.configuration.autoPreference.roomSize));
-         * 
-         * updateState(DEVICE_CHANNEL_AF_SCHEDULES_COUNT,
-         * new DecimalType(purifierStatus.result.result.extension.scheduleCount));
-         * 
-         * // Not applicable to 400S payload's
-         * if (purifierStatus.result.result.nightLight != null) {
-         * updateState(DEVICE_CHANNEL_AF_NIGHT_LIGHT, new DecimalType(purifierStatus.result.result.nightLight));
-         * }
-         */
+        updateState(DEVICE_CHANNEL_HUMIDIFIER_MODE, new StringType(humidifierStatus.result.result.mode));
     }
 
     private Object pollLock = new Object();
