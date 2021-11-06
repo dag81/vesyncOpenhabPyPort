@@ -69,6 +69,11 @@ public class VeSyncConstants {
     public static final String DEVICE_CHANNEL_AF_SCHEDULES_COUNT = "schedules-count";
     public static final String DEVICE_CHANNEL_AF_NIGHT_LIGHT = "night-light-mode";
 
+    // Humidity related channels
+    public static final String DEVICE_CHANNEL_WATER_LACKS = "water-lacking";
+    public static final String DEVICE_CHANNEL_HUMIDITY_HIGH = "humidity-high";
+    public static final String DEVICE_CHANNEL_WATER_TANK_LIFTED = "water-tank-lifted";
+
     // Property name constants
     public static final String DEVICE_PROP_DEVICE_NAME = "Device Name";
     public static final String DEVICE_PROP_DEVICE_TYPE = "Device Type";
