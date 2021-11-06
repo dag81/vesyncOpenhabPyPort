@@ -36,6 +36,7 @@ import org.openhab.core.thing.Bridge;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
 import org.openhab.core.thing.ThingStatus;
+import org.openhab.core.thing.ThingStatusDetail;
 import org.openhab.core.thing.ThingUID;
 import org.openhab.core.thing.binding.BaseBridgeHandler;
 import org.openhab.core.thing.binding.ThingHandler;
@@ -116,8 +117,8 @@ public class VeSyncBridgeHandler extends BaseBridgeHandler implements VeSyncClie
                     backgroundDiscoveryPollingJob = null;
                 }
                 if (seconds > 0) {
-                    backgroundDiscoveryPollingJob = scheduler.scheduleWithFixedDelay(() -> runDeviceScanSequence(),
-                            seconds, seconds, TimeUnit.SECONDS);
+                    backgroundDiscoveryPollingJob = scheduler.scheduleWithFixedDelay(
+                            () -> runDeviceScanSequenceNoAuthErrors(), seconds, seconds, TimeUnit.SECONDS);
                 }
                 backgroundScanTime = seconds;
             }
@@ -134,7 +135,17 @@ public class VeSyncBridgeHandler extends BaseBridgeHandler implements VeSyncClie
 
     private CopyOnWriteArrayList<DeviceMetaDataUpdatedHandler> handlers = new CopyOnWriteArrayList<>();
 
-    public void runDeviceScanSequence() {
+    public void runDeviceScanSequenceNoAuthErrors() {
+        try {
+            runDeviceScanSequence();
+            updateStatus(ThingStatus.ONLINE);
+        } catch (AuthenticationException ae) {
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, "Check login credentials");
+            return;
+        }
+    }
+
+    public void runDeviceScanSequence() throws AuthenticationException {
         logger.trace("Scanning for new devices / base information now");
         api.discoverDevices();
         handlers.forEach(x -> x.HandleMetadataRetrieved(this));
@@ -183,12 +194,13 @@ public class VeSyncBridgeHandler extends BaseBridgeHandler implements VeSyncClie
 
             try {
                 api.login(config.username, passwordMd5, "Europe/London");
-                updateStatus(ThingStatus.ONLINE);
                 api.UpdateBridgeData(this);
                 runDeviceScanSequence();
+                updateStatus(ThingStatus.ONLINE);
             } catch (final AuthenticationException ae) {
-                updateStatus(ThingStatus.OFFLINE);
-                setBackgroundScanInterval(DEFAULT_DEVICE_SCAN_DISABLED);
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, "Check login credentials");
+                // setBackgroundScanInterval(DEFAULT_DEVICE_SCAN_DISABLED); -- Let the system keep checking in case the
+                // user updates their password externally to match openhab
             }
         });
     }

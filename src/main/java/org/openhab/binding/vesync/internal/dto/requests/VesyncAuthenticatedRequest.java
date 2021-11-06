@@ -12,6 +12,7 @@
  */
 package org.openhab.binding.vesync.internal.dto.requests;
 
+import org.openhab.binding.vesync.internal.AuthenticationException;
 import org.openhab.binding.vesync.internal.dto.responses.VesyncLoginResponse;
 
 import com.google.gson.annotations.SerializedName;
@@ -33,13 +34,18 @@ public class VesyncAuthenticatedRequest extends VesyncRequest {
         super();
     }
 
-    public VesyncAuthenticatedRequest(final VesyncLoginResponse.VesyncUserSession user) {
+    public VesyncAuthenticatedRequest(final VesyncLoginResponse.VesyncUserSession user) throws AuthenticationException {
         super();
+        if (user == null)
+            throw new AuthenticationException("User is not logged in");
         this.token = user.getToken();
         this.accountId = user.getAccountId();
     }
 
-    public void ApplyAuthentication(final VesyncLoginResponse.VesyncUserSession userSession) {
+    public void ApplyAuthentication(final VesyncLoginResponse.VesyncUserSession userSession)
+            throws AuthenticationException {
+        if (userSession == null)
+            throw new AuthenticationException("User is not logged in");
         this.accountId = userSession.getAccountId();
         this.token = userSession.getToken();
     }

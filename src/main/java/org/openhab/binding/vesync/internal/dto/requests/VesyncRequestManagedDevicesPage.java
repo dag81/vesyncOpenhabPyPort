@@ -12,6 +12,7 @@
  */
 package org.openhab.binding.vesync.internal.dto.requests;
 
+import org.openhab.binding.vesync.internal.AuthenticationException;
 import org.openhab.binding.vesync.internal.dto.responses.VesyncLoginResponse;
 
 import com.google.gson.annotations.SerializedName;
@@ -38,12 +39,14 @@ public class VesyncRequestManagedDevicesPage extends VesyncAuthenticatedRequest 
     @SerializedName("pageSize")
     public String pageSize;
 
-    public VesyncRequestManagedDevicesPage(final VesyncLoginResponse.VesyncUserSession user) {
+    public VesyncRequestManagedDevicesPage(final VesyncLoginResponse.VesyncUserSession user)
+            throws AuthenticationException {
         super(user);
         method = "devices";
     }
 
-    public VesyncRequestManagedDevicesPage(final VesyncLoginResponse.VesyncUserSession user, int pageNo, int pageSize) {
+    public VesyncRequestManagedDevicesPage(final VesyncLoginResponse.VesyncUserSession user, int pageNo, int pageSize)
+            throws AuthenticationException {
         this(user);
         this.pageNo = String.valueOf(pageNo);
         this.pageSize = String.valueOf(pageSize);

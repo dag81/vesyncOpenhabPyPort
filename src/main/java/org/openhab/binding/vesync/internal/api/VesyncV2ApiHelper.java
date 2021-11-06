@@ -97,9 +97,10 @@ public class VesyncV2ApiHelper {
         return md5Result.toString();
     }
 
-    public void discoverDevices() {
-        VesyncRequestManagedDevicesPage reqDevPage = new VesyncRequestManagedDevicesPage(loggedInSession);
+    public void discoverDevices() throws AuthenticationException {
+
         try {
+            VesyncRequestManagedDevicesPage reqDevPage = new VesyncRequestManagedDevicesPage(loggedInSession);
             boolean finished = false;
             int pageNo = 1;
             HashMap<String, VesyncManagedDevicesPage.Result.VesyncManagedDeviceBase> generatedMacLookup = new HashMap<>();
@@ -132,11 +133,15 @@ public class VesyncV2ApiHelper {
             macLookup = Collections.unmodifiableMap(generatedMacLookup);
         } catch (final AuthenticationException ae) {
             logger.warn("Failed background device scan : {}", ae.getMessage());
+            throw ae;
         }
     }
 
     public String reqV2Authorized(final String url, final String macId, final VesyncAuthenticatedRequest requestData)
             throws AuthenticationException, DeviceUnknownException {
+
+        if (loggedInSession == null)
+            throw new AuthenticationException("User is not logged in");
         // Apply current session authentication data
         requestData.ApplyAuthentication(loggedInSession);
 
@@ -214,6 +219,7 @@ public class VesyncV2ApiHelper {
             loggedInSession = processLogin(username, password, timezone).getUserSession();
         } catch (final AuthenticationException ae) {
             loggedInSession = null;
+            throw ae;
         }
     }
 

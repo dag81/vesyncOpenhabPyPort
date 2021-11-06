@@ -27,7 +27,6 @@ import org.openhab.core.cache.ExpiringCache;
 import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.QuantityType;
 import org.openhab.core.library.types.StringType;

@@ -106,8 +106,7 @@ public class VeSyncDiscoveryService extends AbstractDiscoveryService
         // If the bridge is not online no other thing devices can be found, so no reason to scan at this moment.
         removeOlderResults(getTimestampOfLastScan());
         if (ThingStatus.ONLINE.equals(bridgeHandler.getThing().getStatus())) {
-            bridgeHandler.runDeviceScanSequence();
-            // After the meta-data is updated it will call HandleMetadataRetrieved via the registered handler
+            bridgeHandler.runDeviceScanSequenceNoAuthErrors();
         }
     }
 

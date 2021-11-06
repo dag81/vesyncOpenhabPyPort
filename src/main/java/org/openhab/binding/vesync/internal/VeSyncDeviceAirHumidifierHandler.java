@@ -22,9 +22,11 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncRequestManagedDeviceBypassV2;
 import org.openhab.binding.vesync.internal.dto.responses.VesyncV2BypassHumidifierStatus;
 import org.openhab.core.cache.ExpiringCache;
+import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
 import org.openhab.core.thing.ThingStatus;
 import org.openhab.core.thing.ThingTypeUID;
+import org.openhab.core.types.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,6 +75,10 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
     @Override
     public void dispose() {
         this.setBackgroundPollInterval(-1);
+    }
+
+    @Override
+    public void handleCommand(final ChannelUID channelUID, final Command command) {
     }
 
     @Override
