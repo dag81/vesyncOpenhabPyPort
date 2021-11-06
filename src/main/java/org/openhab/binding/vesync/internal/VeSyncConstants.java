@@ -73,6 +73,7 @@ public class VeSyncConstants {
     public static final String DEVICE_CHANNEL_WATER_LACKS = "water-lacking";
     public static final String DEVICE_CHANNEL_HUMIDITY_HIGH = "humidity-high";
     public static final String DEVICE_CHANNEL_WATER_TANK_LIFTED = "water-tank-lifted";
+    public static final String DEVICE_CHANNEL_STOP_AT_TARGET = "stop-at-target-level";
 
     // Property name constants
     public static final String DEVICE_PROP_DEVICE_NAME = "Device Name";
