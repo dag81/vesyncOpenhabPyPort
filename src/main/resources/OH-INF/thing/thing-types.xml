@@ -15,7 +15,7 @@
 		</properties>
 
 		<config-description>
-			<parameter name="userName" type="text">
+			<parameter name="username" type="text">
 				<context>password</context>
 				<label>Username</label>
 				<description>Name of a registered VeSync user, that allows to access the mobile application.</description>
