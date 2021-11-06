@@ -103,10 +103,10 @@
 
 		<channels>
 			<channel id="enabled" typeId="deviceEnabledType"/>
+			<channel id="display" typeId="deviceDisplayEnabledType"/>
 			<channel id="water-lacking" typeId="deviceWaterLackingType"/>
 			<channel id="humidity-high" typeId="deviceHighHumidityType"/>
 			<channel id="water-tank-lifted" typeId="deviceWaterTankLiftedType"/>
-
 		</channels>
 
 		<properties>
