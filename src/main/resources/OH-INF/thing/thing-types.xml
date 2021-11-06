@@ -110,6 +110,8 @@
 			<channel id="stop-at-target-level" typeId="deviceAutomaticStopReachTargetType"/>
 			<channel id="humidity" typeId="deviceHumidityType"/>
 			<channel id="mist-level" typeId="deviceMistLevelType"/>
+			<channel id="mist-virtual-level" typeId="deviceMistVirtualLevelType"/>
+
 		</channels>
 
 		<properties>
@@ -306,11 +308,18 @@
 		<description>System representation humidity</description>
 		<state readOnly="true" pattern="%.0f"/>
 	</channel-type>
-	
+
 	<channel-type id="deviceMistLevelType">
 		<item-type>Number:Dimensionless</item-type>
-		<label>Air Quality</label>
+		<label>Mist Level</label>
 		<description>System representation of mist level</description>
+		<state readOnly="true" pattern="%.0f"/>
+	</channel-type>
+
+	<channel-type id="deviceMistVirtualLevelType">
+		<item-type>Number:Dimensionless</item-type>
+		<label>Virtual Mist Level</label>
+		<description>System representation of virtual mist level?</description>
 		<state readOnly="true" pattern="%.0f"/>
 	</channel-type>
 
