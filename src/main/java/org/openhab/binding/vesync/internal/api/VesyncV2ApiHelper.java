@@ -135,8 +135,8 @@ public class VesyncV2ApiHelper {
         }
     }
 
-    public String reqV2Authorized(final String url, final String macId,
-            final VesyncAuthenticatedRequest requestData) throws AuthenticationException, DeviceUnknownException {
+    public String reqV2Authorized(final String url, final String macId, final VesyncAuthenticatedRequest requestData)
+            throws AuthenticationException, DeviceUnknownException {
         // Apply current session authentication data
         requestData.ApplyAuthentication(loggedInSession);
 
@@ -149,7 +149,6 @@ public class VesyncV2ApiHelper {
             ((VesyncRequestManagedDeviceBypassV2) requestData).cid = deviceData.cid;
             ((VesyncRequestManagedDeviceBypassV2) requestData).configModule = deviceData.configModule;
             ((VesyncRequestManagedDeviceBypassV2) requestData).deviceRegion = deviceData.deviceRegion;
-
         }
         return reqV1Authorized(url, requestData);
     }

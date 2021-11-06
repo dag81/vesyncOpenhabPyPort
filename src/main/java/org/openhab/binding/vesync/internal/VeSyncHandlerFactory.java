@@ -42,7 +42,7 @@ import org.osgi.service.component.annotations.Reference;
 public class VeSyncHandlerFactory extends BaseThingHandlerFactory {
 
     private static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Set.of(THING_TYPE_SAMPLE, THING_TYPE_BRIDGE,
-            THING_TYPE_AIR_PURIFIER);
+            THING_TYPE_AIR_PURIFIER, THING_TYPE_AIR_HUMIDIFIER);
 
     private VesyncV2ApiHelper api = new VesyncV2ApiHelper(this);
 
@@ -57,6 +57,8 @@ public class VeSyncHandlerFactory extends BaseThingHandlerFactory {
 
         if (VeSyncDeviceAirPurifierHandler.SUPPORTED_THING_TYPES_UIDS.contains(thingTypeUID)) {
             return new VeSyncDeviceAirPurifierHandler(thing);
+        } else if (VeSyncDeviceAirHumidifierHandler.SUPPORTED_THING_TYPES_UIDS.contains(thingTypeUID)) {
+            return new VeSyncDeviceAirHumidifierHandler(thing);
         } else if (THING_TYPE_BRIDGE.equals(thingTypeUID)) {
             return new VeSyncBridgeHandler((Bridge) thing, api);
         }
@@ -83,7 +85,8 @@ public class VeSyncHandlerFactory extends BaseThingHandlerFactory {
 
         // Use the specific Handler Factory if required
         // otherwise fallback to the default
-        if (VeSyncDeviceAirPurifierHandler.SUPPORTED_THING_TYPES_UIDS.contains(thingTypeUID)) {
+        if (VeSyncDeviceAirPurifierHandler.SUPPORTED_THING_TYPES_UIDS.contains(thingTypeUID)
+                || VeSyncDeviceAirHumidifierHandler.SUPPORTED_THING_TYPES_UIDS.contains(thingTypeUID)) {
             ThingUID deviceUID = getDeviceUID(thingTypeUID, thingUID, configuration, bridgeUID);
             return super.createThing(thingTypeUID, configuration, deviceUID, bridgeUID);
         } else if (VeSyncHandlerFactory.SUPPORTED_THING_TYPES_UIDS.contains(thingTypeUID)) {

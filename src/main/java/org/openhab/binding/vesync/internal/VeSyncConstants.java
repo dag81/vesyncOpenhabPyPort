@@ -40,6 +40,7 @@ public class VeSyncConstants {
     // List of all Thing Type UIDs
     public static final ThingTypeUID THING_TYPE_BRIDGE = new ThingTypeUID(BINDING_ID, "bridge");
     public static final ThingTypeUID THING_TYPE_AIR_PURIFIER = new ThingTypeUID(BINDING_ID, "AirPurifier");
+    public static final ThingTypeUID THING_TYPE_AIR_HUMIDIFIER = new ThingTypeUID(BINDING_ID, "AirHumidifier");
     public static final ThingTypeUID THING_TYPE_SAMPLE = new ThingTypeUID(BINDING_ID, "sample");
 
     // Thing configuration properties
