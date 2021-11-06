@@ -135,6 +135,8 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
         updateState(DEVICE_CHANNEL_MIST_VIRTUAL_LEVEL,
                 new DecimalType(humidifierStatus.result.result.mist_virtual_level));
         updateState(DEVICE_CHANNEL_HUMIDIFIER_MODE, new StringType(humidifierStatus.result.result.mode));
+        updateState(DEVICE_CHANNEL_NIGHT_LIGHT_LEVEL,
+                new DecimalType(humidifierStatus.result.result.night_light_brightness));
     }
 
     private Object pollLock = new Object();

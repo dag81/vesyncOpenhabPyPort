@@ -78,6 +78,7 @@ public class VeSyncConstants {
     public static final String DEVICE_CHANNEL_MIST_LEVEL = "mist-level";
     public static final String DEVICE_CHANNEL_MIST_VIRTUAL_LEVEL = "mist-virtual-level";
     public static final String DEVICE_CHANNEL_HUMIDIFIER_MODE = "humidifier-mode";
+    public static final String DEVICE_CHANNEL_NIGHT_LIGHT_LEVEL = "night_light_brightness";
 
     // Property name constants
     public static final String DEVICE_PROP_DEVICE_NAME = "Device Name";
