@@ -328,7 +328,7 @@
 		<item-type>String</item-type>
 		<label>Operation mode</label>
 		<description>The operating mode the air humidifier is currently set to</description>
-		<state readOnly="true">
+		<state readOnly="false">
 			<options>
 				<option value="auto">Auto</option>
 				<option value="sleep">Sleeping Auto</option>
