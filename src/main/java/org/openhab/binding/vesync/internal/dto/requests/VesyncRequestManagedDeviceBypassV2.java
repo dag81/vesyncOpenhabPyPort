@@ -132,6 +132,16 @@ public class VesyncRequestManagedDeviceBypassV2 extends VesyncAuthenticatedReque
         public int nightLightLevel = 0;
     }
 
+    public static class SetTargetHumidity extends EmptyPayload {
+
+        public SetTargetHumidity(final int state) {
+            this.targetHumidity = state;
+        }
+
+        @SerializedName("target_humidity")
+        public int targetHumidity = 0;
+    }
+
     public static class SetChildLock extends EmptyPayload {
 
         public SetChildLock(final boolean childLock) {

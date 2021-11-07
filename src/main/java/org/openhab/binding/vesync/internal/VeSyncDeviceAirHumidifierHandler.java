@@ -108,18 +108,29 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
             } else if (command instanceof QuantityType) {
                 switch (channelUID.getId()) {
                     case DEVICE_CHANNEL_NIGHT_LIGHT_LEVEL:
-
-                        int requestedLevel = ((QuantityType<?>) command).intValue();
-                        if (requestedLevel < 0) {
+                        int nightLightLevel = ((QuantityType<?>) command).intValue();
+                        if (nightLightLevel < 0) {
                             logger.warn("Night light level less than 0 - adjusting to 0 as the valid API value");
-                            requestedLevel = 0;
-                        } else if (requestedLevel > 100) {
+                            nightLightLevel = 0;
+                        } else if (nightLightLevel > 100) {
                             logger.warn("Night light level greater than 100 - adjusting to 100 as the valid API value");
-                            requestedLevel = 0;
+                            nightLightLevel = 0;
                         }
-
                         sendV2BypassControlCommand("setNightLightBrightness",
-                                new VesyncRequestManagedDeviceBypassV2.SetNightLightBrightness(requestedLevel));
+                                new VesyncRequestManagedDeviceBypassV2.SetNightLightBrightness(nightLightLevel));
+                        break;
+                    case DEVICE_CHANNEL_HUMIDITY:
+                        int targetHumidity = ((QuantityType<?>) command).intValue();
+                        if (targetHumidity < 30) {
+                            logger.warn("Target Humidity less than 30 - adjusting to 30 as the valid API value");
+                            targetHumidity = 30;
+                        } else if (targetHumidity > 80) {
+                            logger.warn("Target Humidity greater than 80 - adjusting to 80 as the valid API value");
+                            targetHumidity = 80;
+                        }
+                        sendV2BypassControlCommand("setTargetHumidity",
+                                new VesyncRequestManagedDeviceBypassV2.SetTargetHumidity(targetHumidity));
+                        break;
                 }
             } else if (command instanceof RefreshType) {
                 pollForUpdate();

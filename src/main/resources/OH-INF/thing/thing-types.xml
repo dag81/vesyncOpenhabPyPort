@@ -286,7 +286,7 @@
 		<item-type>Switch</item-type>
 		<label>High Humidity</label>
 		<description>Indicator if the device is measuring high humidity?</description>
-		<state readOnly="false"/>
+		<state readOnly="true"/>
 	</channel-type>
 
 	<channel-type id="deviceWaterTankLiftedType">
@@ -306,8 +306,8 @@
 	<channel-type id="deviceHumidityType">
 		<item-type>Number:Dimensionless</item-type>
 		<label>Humidity Level</label>
-		<description>System representation humidity</description>
-		<state readOnly="true" pattern="%.0f"/>
+		<description>System representation of humidity</description>
+		<state readOnly="false" pattern="%.0f"/>
 	</channel-type>
 
 	<channel-type id="deviceMistLevelType">
