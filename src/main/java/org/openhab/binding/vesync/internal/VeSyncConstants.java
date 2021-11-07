@@ -80,6 +80,9 @@ public class VeSyncConstants {
     public static final String DEVICE_CHANNEL_HUMIDIFIER_MODE = "humidifier-mode";
     public static final String DEVICE_CHANNEL_NIGHT_LIGHT_LEVEL = "night_light_brightness";
 
+    public static final String DEVICE_CHANNEL_CONFIG_AUTO_STOP = "config-stop-at-target";
+    public static final String DEVICE_CHANNEL_CONFIG_TARGET_HUMIDITY = "config-target-humidity";
+
     // Property name constants
     public static final String DEVICE_PROP_DEVICE_NAME = "Device Name";
     public static final String DEVICE_PROP_DEVICE_TYPE = "Device Type";

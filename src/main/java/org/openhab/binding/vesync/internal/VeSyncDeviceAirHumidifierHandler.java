@@ -98,11 +98,13 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                         sendV2BypassControlCommand("setSwitch", new VesyncRequestManagedDeviceBypassV2.SetSwitchPayload(
                                 command.equals(OnOffType.ON), 0));
                         break;
+                    case DEVICE_CHANNEL_DISPLAY_ENABLED:
                     case DEVICE_CHANNEL_AF_CONFIG_DISPLAY:
                         sendV2BypassControlCommand("setDisplay",
                                 new VesyncRequestManagedDeviceBypassV2.SetState(command.equals(OnOffType.ON)));
                         break;
                     case DEVICE_CHANNEL_STOP_AT_TARGET:
+                    case DEVICE_CHANNEL_CONFIG_AUTO_STOP:
                         sendV2BypassControlCommand("setAutomaticStop",
                                 new VesyncRequestManagedDeviceBypassV2.EnabledPayload(command.equals(OnOffType.ON)));
                         break;
@@ -121,7 +123,7 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                         sendV2BypassControlCommand("setNightLightBrightness",
                                 new VesyncRequestManagedDeviceBypassV2.SetNightLightBrightness(nightLightLevel));
                         break;
-                    case DEVICE_CHANNEL_HUMIDITY:
+                    case DEVICE_CHANNEL_CONFIG_TARGET_HUMIDITY:
                         int targetHumidity = ((QuantityType<?>) command).intValue();
                         if (targetHumidity < 30) {
                             logger.warn("Target Humidity less than 30 - adjusting to 30 as the valid API value");
@@ -224,6 +226,13 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
         updateState(DEVICE_CHANNEL_HUMIDIFIER_MODE, new StringType(humidifierStatus.result.result.mode));
         updateState(DEVICE_CHANNEL_NIGHT_LIGHT_LEVEL,
                 new DecimalType(humidifierStatus.result.result.night_light_brightness));
+
+        updateState(DEVICE_CHANNEL_AF_CONFIG_DISPLAY,
+                OnOffType.from(humidifierStatus.result.result.configuration.display));
+        updateState(DEVICE_CHANNEL_CONFIG_AUTO_STOP,
+                OnOffType.from(humidifierStatus.result.result.configuration.automaticStop));
+        updateState(DEVICE_CHANNEL_CONFIG_TARGET_HUMIDITY,
+                new DecimalType(humidifierStatus.result.result.configuration.autoTargetHumidity));
     }
 
     private Object pollLock = new Object();

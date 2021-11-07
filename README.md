@@ -12,7 +12,7 @@ Models supported are Core200S, Core300S and Core400S.
    * If this is confirmed dynamically remove the air_quality channel from the Core400S model
    * If this is confirmed dynamically remove the air_quality_ppm25 channel from the Core200S and Core300S models
 4. Look at protocol mapping the V1 specification for the LV prefixed model. 
-5. Look at adding support for the moisture unit also supported by the python lib. 
+5. Confirm untested Humidity Unit Classic300S Support. 
 6. Look at potentially other equipment supported by the VeSync API.
 
 ### Credits
@@ -26,10 +26,11 @@ The binding code is based on a lot of work done by other developers:
 
 This binding supports the follow thing types:
 
-| Thing       | Thing Type | Discovery | Description      |  
-|-------------|------------|-----------|------------------|
-| Bridge      | Bridge     | Manual    | A single connection to the VeSync API  |
-| AirPurifier | Thing      | Automatic | A Air Purifier supporting V2 e.g. Core200S/Core300S or Core400S unit |
+| Thing        | Thing Type | Discovery | Description      |  
+|--------------|------------|-----------|------------------|
+| Bridge       | Bridge     | Manual    | A single connection to the VeSync API  |
+| AirPurifier  | Thing      | Automatic | A Air Purifier supporting V2 e.g. Core200S/Core300S or Core400S unit |
+| AirHumidifier| Thing      | Automatic | A Air Humidifier supporting V2 e.g. Classic300S |
 
 This binding was developed from the great work in the listed projects.
 
@@ -75,6 +76,25 @@ Channel names in **bold** are read/write, everything else is read-only
 | config-auto-mode       | String                  | Config: The mode of operation when auto is active         |
 | config-auto-room-size  | Number                  | Config: The room size set when auto utilises the room size|
 
+### AirHumidifier Thing
+
+| Channel                    | Type                    | Description                                               | Questions |
+|----------------------------|-------------------------|-----------------------------------------------------------|-----------|
+| **enabled**                | Switch                  | Whether the hardware device is enabled (Switched on)      ||
+| **display**                | Switch                  | Whether the display is enabled (display is shown)         ||
+| water-lacking              | Switch                  | Indicator whether the unit is lacking water               | Does this reflect as low water - or no water? |
+| humidity-high              | Switch                  | Indicator for high humidity                               | Does this indicate a currently high humidity measurement in the room? |
+| water-tank-lifted          | Switch                  | Indicator for whether the water tank is removed           | Is this description correct?|
+| stop-at-target-level       | Switch                  | Indicator for the current level humidification will stop at| Is this correct? |
+| humidity                   | Number:Dimensionless    | Indicator for the current humidity level                  | Is this correct? |
+| mist-level                 | Number:Dimensionless    | The current mist level set (0-9)                          | Is this correct? |
+| **mist-virtual-level**     | Number:Dimensionless    | What is this?                                             | Please confirm what this represents? |
+| **humidifier-mode**        | String                  | The current mode of operation [auto,sleep]                |
+| **night_light_brightness** | Number                  | The night light brightness 0 - 100 %                     | Is this correct and a percentage value?|
+| **config-display**         | Switch                  | Config: Whether the display is enabled                    |
+| **config-stop-at-target**  | Switch                  | Config: Whether the unit is set to stop when the target is reached |
+| **config-target-humidity** | Number:Dimensionless    | Config: What the target humidity is set to reach |
+
 ## Full Example
 
 ### Configuration (*.things)
@@ -101,18 +121,19 @@ Device's will be found communicated with via the MAC Id first and if unsuccessfu
 | deviceName             | String                  | The name given to the device under Settings -> Device Name          |
 | macId                  | String                  | The mac for the device under Settings -> Device Info -> MAC Address |
 
-#### Core 200S/300S/400S Model
+#### Air Purifiers Core 200S/300S/400S Models & Air Humidifier Classic300S Model
 
 ```
 Bridge vesync:bridge:vesyncServers [username="<USERNAME>", password="<PASSWORD>"] {
 	AirPurifier loungeAirFilter [deviceName="<DEVICE NAME FROM APP>"]
 	AirPurifier bedroomAirFilter [deviceName="<DEVICE NAME FROM APP>"]
+	AirHumidifier loungeHumidifier [deviceName="<DEVICE NAME FROM APP>"]
 }
 ```
 
 ### Configuration (*.items)
 
-#### Core 400S Model
+#### Air Purifier Core 400S Model
 
 ```
 Switch               LoungeAPPower        	   "Lounge Air Purifier Power"                                  { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:enabled" }
@@ -130,17 +151,17 @@ DateTime             LoungeAPTimerExpire           "Lounge Air Purifier Timer Ex
 Number               LoungeAPSchedulesCount 	   "Lounge Air Purifier Schedules Count"                        { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:schedules-count" }
 ```
 
-#### Core 200S/300S Model
+#### Air Purifier Core 200S/300S Model
 
 ```
 Switch               LoungeAPPower        	   "Lounge Air Purifier Power"                                  { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:enabled" }
 Switch               LoungeAPDisplay      	   "Lounge Air Purifier Display"                                { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:config-display" }
-String               LoungeAPNightLightMode		   "Lounge Air Purifier Night Light Mode"                              { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:night-light-mode" }
+String               LoungeAPNightLightMode		   "Lounge Air Purifier Night Light Mode"               { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:night-light-mode" }
 Switch               LoungeAPControlsLock          "Lounge Air Purifier Controls Locked"                        { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:child-lock" }
 Number:Dimensionless LoungeAPFilterRemainingUse    "Lounge Air Purifier Filter Remaining [%.0f %%]"             { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:filter-life-percentage" }
 String               LoungeAPMode                  "Lounge Air Purifier Mode [%s]"                              { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:fan-mode" }
 Number:Dimensionless LoungeAPManualFanSpeed        "Lounge Air Purifier Manual Fan Speed"                       { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:manual-fan-speed" }
-Number:Dimensionless LoungeAPAirQuality		   "Lounge Air Purifier Air Quality [%.0f%]"              { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:air-quality" }
+Number:Dimensionless LoungeAPAirQuality		   "Lounge Air Purifier Air Quality [%.0f%]"                    { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:air-quality" }
 Number               LoungeAPErrorCode     	   "Lounge Air Purifier Error Code"                             { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:error-code" }
 String               LoungeAPAutoMode		   "Lounge Air Purifier Auto Mode"                              { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:config-auto-mode" }
 Number               LoungeAPAutoRoomSize 	   "Lounge Air Purifier Auto Room Size [%.0f% sqft]"            { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:config-auto-room-size" }
@@ -149,9 +170,25 @@ DateTime             LoungeAPTimerExpire           "Lounge Air Purifier Timer Ex
 Number               LoungeAPSchedulesCount 	   "Lounge Air Purifier Schedules Count"                        { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:schedules-count" }
 ```
 
+#### Air Humidifier Classic 300S Model
+
+```
+Switch               LoungeAHPower             "Lounge Air Humidifier Power"                                  { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:enabled" }
+Switch               LoungeAHDisplay           "Lounge Air Humidifier Display"                                { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:config-display" }
+Number:Dimensionless LoungeAHNightLightLevel   "Lounge Air Humidifier Night Light Level [%.0f %%]"            { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:night_light_brightness" }
+String               LoungeAHMode              "Lounge Air Humidifier Mode"                                   { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:humidifier-mode" }
+Switch               LoungeAHWaterLacking      "Lounge Air Humidifier Water Lacking"                          { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:water-lacking" }
+Switch               LoungeAHHighHumidity      "Lounge Air Humidifier High Humidity"                          { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:humidity-high" }
+Switch               LoungeAHWaterTankRemoved  "Lounge Air Humidifier Water Tank Removed"                     { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:water-tank-lifted" }
+Number:Dimensionless LoungeAHHumidity          "Lounge Air Humidifier Measured Humidity"                      { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:humidity" }
+Switch               LoungeAHTargetStop        "Lounge Air Humidifier Stop at target"                         { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:config-stop-at-target" }
+Number:Dimensionless LoungeAHTarget            "Lounge Air Humidifier Target Humidity"                        { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:config-target-humidity" }
+Number:Dimensionless LoungeAHMistLevel         "Lounge Air Humidifier Mist Level"                             { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:mist-virtual-level" }
+```
+
 ### Configuration (*.sitemap)
 
-#### Core 400S Model
+#### Air Purifier Core 400S Model
 
 ```
 Frame {
@@ -167,7 +204,7 @@ Frame {
 }
 ```
 
-#### Core 200S/300S Model
+#### Air Purifier Core 200S/300S Model
 
 This is untested but based on data from pyvesync.
 
