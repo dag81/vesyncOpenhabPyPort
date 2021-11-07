@@ -205,6 +205,11 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
             updateStatus(ThingStatus.ONLINE);
         }
 
+        if (!"0".equals(humidifierStatus.result.getCode())) {
+            logger.warn("Check correct Thing type has been set - API gave a unexpected response for an Air Humidifier");
+            return;
+        }
+
         updateState(DEVICE_CHANNEL_ENABLED, OnOffType.from(humidifierStatus.result.result.enabled));
         updateState(DEVICE_CHANNEL_DISPLAY_ENABLED, OnOffType.from(humidifierStatus.result.result.display));
         updateState(DEVICE_CHANNEL_WATER_LACKS, OnOffType.from(humidifierStatus.result.result.water_lacks));

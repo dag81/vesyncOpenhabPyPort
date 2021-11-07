@@ -261,6 +261,11 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
             updateStatus(ThingStatus.ONLINE);
         }
 
+        if (!"0".equals(purifierStatus.result.getCode())) {
+            logger.warn("Check Thing type has been set - API gave a unexpected response for an Air Purifier");
+            return;
+        }
+
         updateState(DEVICE_CHANNEL_ENABLED, OnOffType.from(purifierStatus.result.result.enabled));
         updateState(DEVICE_CHANNEL_CHILD_LOCK_ENABLED, OnOffType.from(purifierStatus.result.result.childLock));
         updateState(DEVICE_CHANNEL_DISPLAY_ENABLED, OnOffType.from(purifierStatus.result.result.display));
