@@ -142,12 +142,9 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                             logger.warn("Target Humidity greater than 9 - adjusting to 9 as the valid API value");
                             targetMistLevel = 9;
                         }
-
                         sendV2BypassControlCommand("setVirtualLevel",
                                 new VesyncRequestManagedDeviceBypassV2.SetLevelPayload(0, "mist", targetMistLevel));
-
                         break;
-
                 }
             } else if (command instanceof StringType) {
                 switch (channelUID.getId()) {
@@ -157,7 +154,6 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                                     command.toString());
                             return;
                         }
-
                         sendV2BypassControlCommand("setHumidityMode",
                                 new VesyncRequestManagedDeviceBypassV2.SetMode(command.toString()));
                         break;
