@@ -279,7 +279,7 @@
 		<item-type>Switch</item-type>
 		<label>Water Low or Empty</label>
 		<description>Indicator if the devices water is low or empty?</description>
-		<state readOnly="false"/>
+		<state readOnly="true"/>
 	</channel-type>
 
 	<channel-type id="deviceHighHumidityType">
@@ -293,7 +293,7 @@
 		<item-type>Switch</item-type>
 		<label>Water Tank Removed</label>
 		<description>Indicator if the device is reporting the water tank as removed?</description>
-		<state readOnly="false"/>
+		<state readOnly="true"/>
 	</channel-type>
 
 	<channel-type id="deviceAutomaticStopReachTargetType">
@@ -328,7 +328,7 @@
 		<item-type>String</item-type>
 		<label>Operation mode</label>
 		<description>The operating mode the air humidifier is currently set to</description>
-		<state readOnly="false">
+		<state readOnly="true">
 			<options>
 				<option value="auto">Auto</option>
 				<option value="sleep">Sleeping Auto</option>

@@ -74,6 +74,16 @@ public class VesyncRequestManagedDeviceBypassV2 extends VesyncAuthenticatedReque
         public int id = -1;
     }
 
+    public static class EnabledPayload extends EmptyPayload {
+
+        public EnabledPayload(final boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        @SerializedName("enabled")
+        public boolean enabled = true;
+    }
+
     public static class SetLevelPayload extends EmptyPayload {
 
         public SetLevelPayload(final int id, final String type, final int level) {

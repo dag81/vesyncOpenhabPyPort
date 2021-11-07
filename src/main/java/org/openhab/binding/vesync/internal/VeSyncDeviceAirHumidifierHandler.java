@@ -30,6 +30,7 @@ import org.openhab.core.thing.Thing;
 import org.openhab.core.thing.ThingStatus;
 import org.openhab.core.thing.ThingTypeUID;
 import org.openhab.core.types.Command;
+import org.openhab.core.types.RefreshType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,6 +83,33 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
 
     @Override
     public void handleCommand(final ChannelUID channelUID, final Command command) {
+        final String deviceType = getThing().getProperties().get(DEVICE_PROP_DEVICE_TYPE);
+        if (deviceType == null)
+            return;
+
+        scheduler.submit(() -> {
+
+            if (command instanceof OnOffType) {
+                switch (channelUID.getId()) {
+                    case DEVICE_CHANNEL_ENABLED:
+                        sendV2BypassControlCommand("setSwitch", new VesyncRequestManagedDeviceBypassV2.SetSwitchPayload(
+                                command.equals(OnOffType.ON), 0));
+                        break;
+                    case DEVICE_CHANNEL_AF_CONFIG_DISPLAY:
+                        sendV2BypassControlCommand("setDisplay",
+                                new VesyncRequestManagedDeviceBypassV2.SetState(command.equals(OnOffType.ON)));
+                        break;
+                    case DEVICE_CHANNEL_STOP_AT_TARGET:
+                        sendV2BypassControlCommand("setAutomaticStop",
+                                new VesyncRequestManagedDeviceBypassV2.EnabledPayload(command.equals(OnOffType.ON)));
+                        break;
+                }
+            } else if (command instanceof RefreshType) {
+                pollForUpdate();
+            } else {
+                logger.trace("UNKNOWN COMMAND: {} {}", command.getClass().toString(), channelUID);
+            }
+        });
     }
 
     @Override
