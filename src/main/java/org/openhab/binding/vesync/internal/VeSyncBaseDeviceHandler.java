@@ -172,6 +172,10 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
         if (newProps != null && !newProps.isEmpty()) {
             this.updateProperties(newProps);
             customiseChannels();
+            if (!isDeviceSupported()) {
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.HANDLER_REGISTERING_ERROR,
+                        "Device Model or Type not supported by this thing");
+            }
         }
     }
 
@@ -280,6 +284,7 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
 
     @Override
     public void initialize() {
+
         // Sanity check basic setup
         if (getBridgeHandler() == null) {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.BRIDGE_UNINITIALIZED, "Missing bridge for API link");
@@ -290,10 +295,15 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
 
         deviceLookupKey = getValidatedIdString();
 
+        // Populate device props - this is required for polling, to cross-check the device model.
+        updateDeviceMetaData();
+
         // If the base device class marks it as offline there is a issue that will prevent normal operation
         if (getThing().getStatus().equals(ThingStatus.OFFLINE)) {
             return;
         }
+        // This will force the bridge to push the configuration parameters for polling to the handler
+        ((VeSyncBridgeHandler) getBridgeHandler()).updateThing(this);
 
         // Give the bridge time to build the datamaps of the devices
         scheduler.schedule(() -> {
@@ -409,5 +419,10 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
     private volatile long latestReadBackMillis = 0;
 
     public void updateBridgeBasedPolls(VeSyncBridgeConfiguration config) {
+    }
+
+    // Sub-classes should override this to return true, if the meta-data supports the device data read.
+    protected boolean isDeviceSupported() {
+        return false;
     }
 }

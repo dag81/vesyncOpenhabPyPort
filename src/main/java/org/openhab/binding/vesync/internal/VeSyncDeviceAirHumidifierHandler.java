@@ -85,6 +85,14 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
     }
 
     @Override
+    protected boolean isDeviceSupported() {
+        final String deviceType = getThing().getProperties().get(DEVICE_PROP_DEVICE_TYPE);
+        if (deviceType == null)
+            return false;
+        return SUPPORTED_DEVICE_TYPES.contains(deviceType);
+    }
+
+    @Override
     public void handleCommand(final ChannelUID channelUID, final Command command) {
         final String deviceType = getThing().getProperties().get(DEVICE_PROP_DEVICE_TYPE);
         if (deviceType == null)

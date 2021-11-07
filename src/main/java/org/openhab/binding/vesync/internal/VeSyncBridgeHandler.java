@@ -171,12 +171,10 @@ public class VeSyncBridgeHandler extends BaseBridgeHandler implements VeSyncClie
         });
     }
 
-    /*
-     * public void updateThing(ThingHandler handler) {
-     * final VeSyncBridgeConfiguration config = getConfigAs(VeSyncBridgeConfiguration.class);
-     * updateThing(config,handler);
-     * }
-     */
+    public void updateThing(ThingHandler handler) {
+        final VeSyncBridgeConfiguration config = getConfigAs(VeSyncBridgeConfiguration.class);
+        updateThing(config, handler);
+    }
 
     private void updateThing(VeSyncBridgeConfiguration config, @Nullable ThingHandler handler) {
         if (handler instanceof VeSyncBaseDeviceHandler) {
