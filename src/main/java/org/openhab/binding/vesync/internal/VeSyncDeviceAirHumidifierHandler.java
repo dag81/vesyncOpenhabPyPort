@@ -24,6 +24,7 @@ import org.openhab.binding.vesync.internal.dto.responses.VesyncV2BypassHumidifie
 import org.openhab.core.cache.ExpiringCache;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.QuantityType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
@@ -103,6 +104,22 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                         sendV2BypassControlCommand("setAutomaticStop",
                                 new VesyncRequestManagedDeviceBypassV2.EnabledPayload(command.equals(OnOffType.ON)));
                         break;
+                }
+            } else if (command instanceof QuantityType) {
+                switch (channelUID.getId()) {
+                    case DEVICE_CHANNEL_NIGHT_LIGHT_LEVEL:
+
+                        int requestedLevel = ((QuantityType<?>) command).intValue();
+                        if (requestedLevel < 0) {
+                            logger.warn("Night light level less than 0 - adjusting to 0 as the valid API value");
+                            requestedLevel = 0;
+                        } else if (requestedLevel > 100) {
+                            logger.warn("Night light level greater than 100 - adjusting to 100 as the valid API value");
+                            requestedLevel = 0;
+                        }
+
+                        sendV2BypassControlCommand("setNightLightBrightness",
+                                new VesyncRequestManagedDeviceBypassV2.SetNightLightBrightness(requestedLevel));
                 }
             } else if (command instanceof RefreshType) {
                 pollForUpdate();

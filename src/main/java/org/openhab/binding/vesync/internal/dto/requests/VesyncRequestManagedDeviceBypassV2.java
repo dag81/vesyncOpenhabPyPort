@@ -122,6 +122,16 @@ public class VesyncRequestManagedDeviceBypassV2 extends VesyncAuthenticatedReque
         public String nightLight = "";
     }
 
+    public static class SetNightLightBrightness extends EmptyPayload {
+
+        public SetNightLightBrightness(final int state) {
+            this.nightLightLevel = state;
+        }
+
+        @SerializedName("night_light_brightness")
+        public int nightLightLevel = 0;
+    }
+
     public static class SetChildLock extends EmptyPayload {
 
         public SetChildLock(final boolean childLock) {

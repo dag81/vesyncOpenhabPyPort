@@ -340,7 +340,7 @@
 		<item-type>Number:Dimensionless</item-type>
 		<label>Night Light Level</label>
 		<description>System representation of night light brightness level?</description>
-		<state readOnly="true" pattern="%.0f"/>
+		<state readOnly="false" pattern="%.0f"/>
 	</channel-type>
 
 
