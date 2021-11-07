@@ -91,6 +91,39 @@ public class VesyncRequestManagedDeviceBypassV2Test {
     }
 
     @Test
+    public void checkSetTargetHumidityPayload() {
+        final VesyncRequestManagedDeviceBypassV2.SetTargetHumidity test0Paylaod = new VesyncRequestManagedDeviceBypassV2.SetTargetHumidity(0);
+        final String contentTest1 = VeSyncConstants.GSON.toJson(test0Paylaod);
+        assertEquals(true, contentTest1.contains("\"target_humidity\": 0"));
+
+        final VesyncRequestManagedDeviceBypassV2.SetTargetHumidity test100Paylaod = new VesyncRequestManagedDeviceBypassV2.SetTargetHumidity(100);
+        final String contentTest2 = VeSyncConstants.GSON.toJson(test100Paylaod);
+        assertEquals(true, contentTest2.contains("\"target_humidity\": 100"));
+    }
+
+    @Test
+    public void checkSetNightLightBrightnessPayload() {
+        final VesyncRequestManagedDeviceBypassV2.SetNightLightBrightness test0Paylaod = new VesyncRequestManagedDeviceBypassV2.SetNightLightBrightness(0);
+        final String contentTest1 = VeSyncConstants.GSON.toJson(test0Paylaod);
+        assertEquals(true, contentTest1.contains("\"night_light_brightness\": 0"));
+
+        final VesyncRequestManagedDeviceBypassV2.SetNightLightBrightness test100Paylaod = new VesyncRequestManagedDeviceBypassV2.SetNightLightBrightness(100);
+        final String contentTest2 = VeSyncConstants.GSON.toJson(test100Paylaod);
+        assertEquals(true, contentTest2.contains("\"night_light_brightness\": 100"));
+    }
+
+    @Test
+    public void checkEnabledPayload() {
+        final VesyncRequestManagedDeviceBypassV2.EnabledPayload enabledOn = new VesyncRequestManagedDeviceBypassV2.EnabledPayload(true);
+        final String contentTest1 = VeSyncConstants.GSON.toJson(enabledOn);
+        assertEquals(true, contentTest1.contains("\"enabled\": true"));
+
+        final VesyncRequestManagedDeviceBypassV2.EnabledPayload enabledOff = new VesyncRequestManagedDeviceBypassV2.EnabledPayload(false);
+        final String contentTest2 = VeSyncConstants.GSON.toJson(enabledOff);
+        assertEquals(true, contentTest2.contains("\"enabled\": false"));
+    }
+
+    @Test
     public void checkLoginMethodJson() {
 
         String content = VeSyncConstants.GSON.toJson(new VesyncLoginCredentials("username", "passmd5"));
