@@ -156,7 +156,7 @@ Number               LoungeAPSchedulesCount 	   "Lounge Air Purifier Schedules C
 ```
 Switch               LoungeAPPower        	   "Lounge Air Purifier Power"                                  { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:enabled" }
 Switch               LoungeAPDisplay      	   "Lounge Air Purifier Display"                                { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:config-display" }
-String               LoungeAPNightLightMode		   "Lounge Air Purifier Night Light Mode"               { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:night-light-mode" }
+String               LoungeAPNightLightMode        "Lounge Air Purifier Night Light Mode"                       { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:night-light-mode" }
 Switch               LoungeAPControlsLock          "Lounge Air Purifier Controls Locked"                        { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:child-lock" }
 Number:Dimensionless LoungeAPFilterRemainingUse    "Lounge Air Purifier Filter Remaining [%.0f %%]"             { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:filter-life-percentage" }
 String               LoungeAPMode                  "Lounge Air Purifier Mode [%s]"                              { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:fan-mode" }
@@ -220,4 +220,23 @@ Frame {
    Switch item=LoungeAPMode label="Mode" mappings=[manual="Manual Fan Control", sleep="Sleeping"] icon="settings"
    Text   item=LoungeAPErrorCode label="Error Code [%.0f]"
    Switch item=LoungeAPManualFanSpeed label="Manual Fan Speed [%.0f]" mappings=[1="1", 2="2", 3="3"] icon="settings"                               
+}
+
+#### Air Humidifier Classic 300S Model
+
+This is untested but based on data from pyvesync.
+
+```
+Frame {
+   Switch item=LoungeAHPower
+   Switch item=LoungeAHDisplay
+   Slider item=LoungeAHNightLightLevel minValue=0 maxValue=100
+   Switch item=LoungeAHMode label="Mode" mappings=[auto="Auto", sleep="Sleeping"] icon="settings"
+   Text   icon="none" item=LoungeAHWaterLacking
+   Text   icon="none" item=LoungeAHHighHumidity
+   Text   icon="none" item=LoungeAHWaterTankRemoved
+   Text   icon="none" item=LoungeAHHumidity
+   Switch item=LoungeAHTargetStop
+   Slider item=LoungeAHTarget minValue=30 maxValue=80
+   Slider item=LoungeAHMistLevel minValue=0 maxValue=9
 }
