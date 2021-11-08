@@ -221,7 +221,7 @@ Frame {
    Text   item=LoungeAPErrorCode label="Error Code [%.0f]"
    Switch item=LoungeAPManualFanSpeed label="Manual Fan Speed [%.0f]" mappings=[1="1", 2="2", 3="3"] icon="settings"                               
 }
-
+```
 #### Air Humidifier Classic 300S Model
 
 This is untested but based on data from pyvesync.
@@ -240,3 +240,5 @@ Frame {
    Slider item=LoungeAHTarget minValue=30 maxValue=80
    Slider item=LoungeAHMistLevel minValue=0 maxValue=9
 }
+```
+
