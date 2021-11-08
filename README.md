@@ -4,6 +4,8 @@ It's current support is for the CoreXXXS air purifiers branded as Levoit which u
 
 Models supported are Core200S, Core300S and Core400S.
 
+Potentially it's supporting the Classic 300S Humidifier - awaiting feedback and information.
+
 ### Restrictions / TODO
 
 1. Add units to the air_quality_ppm25 channel
