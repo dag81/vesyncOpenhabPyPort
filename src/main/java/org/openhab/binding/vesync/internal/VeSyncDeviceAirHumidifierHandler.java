@@ -159,13 +159,14 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
             } else if (command instanceof StringType) {
                 switch (channelUID.getId()) {
                     case DEVICE_CHANNEL_HUMIDIFIER_MODE:
-                        if (!CLASSIC_300S_MODES.contains(command.toString())) {
+                        final String targetMode = command.toString().toLowerCase();
+                        if (!CLASSIC_300S_MODES.contains(targetMode)) {
                             logger.warn("Humidifier mode command for \"{}\" is not valid in the (Classic300S) API",
                                     command.toString());
                             return;
                         }
                         sendV2BypassControlCommand("setHumidityMode",
-                                new VesyncRequestManagedDeviceBypassV2.SetMode(command.toString()));
+                                new VesyncRequestManagedDeviceBypassV2.SetMode(targetMode));
                         break;
                 }
             } else if (command instanceof RefreshType) {
