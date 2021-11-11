@@ -144,9 +144,10 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
             } else if (command instanceof StringType) {
                 switch (channelUID.getId()) {
                     case DEVICE_CHANNEL_FAN_MODE_ENABLED:
+                        final String targetFanMode = command.toString().toLowerCase();
                         switch (deviceType) {
                             case DEV_TYPE_CORE_400S:
-                                if (!CORE_400S_FAN_MODES.contains(command.toString())) {
+                                if (!CORE_400S_FAN_MODES.contains(targetFanMode)) {
                                     logger.warn("Fan mode command for \"{}\" is not valid in the (Core400S) API",
                                             command.toString());
                                     return;
@@ -154,7 +155,7 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
                                 break;
                             case DEV_TYPE_CORE_200S:
                             case DEV_TYPE_CORE_300S:
-                                if (!CORE_200S300S_FAN_MODES.contains(command.toString())) {
+                                if (!CORE_200S300S_FAN_MODES.contains(targetFanMode)) {
                                     logger.warn(
                                             "Fan mode command for \"{}\" is not valid in the (Core200S/Core300S) API",
                                             command.toString());
@@ -164,16 +165,17 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
                         }
 
                         sendV2BypassControlCommand("setPurifierMode",
-                                new VesyncRequestManagedDeviceBypassV2.SetMode(command.toString()));
+                                new VesyncRequestManagedDeviceBypassV2.SetMode(targetFanMode));
                         break;
                     case DEVICE_CHANNEL_AF_NIGHT_LIGHT:
+                        final String targetNightLightMode = command.toString().toLowerCase();
                         switch (deviceType) {
                             case DEV_TYPE_CORE_400S:
                                 logger.warn("Core400S API does not support night light");
                                 return;
                             case DEV_TYPE_CORE_200S:
                             case DEV_TYPE_CORE_300S:
-                                if (!CORE_200S300S_NIGHT_LIGHT_MODES.contains(command.toString())) {
+                                if (!CORE_200S300S_NIGHT_LIGHT_MODES.contains(targetNightLightMode)) {
                                     logger.warn(
                                             "Night light mode command for \"{}\" is not valid in the (Core200S/Core300S) API",
                                             command.toString());
@@ -181,7 +183,7 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
                                 }
 
                                 sendV2BypassControlCommand("setNightLight",
-                                        new VesyncRequestManagedDeviceBypassV2.SetNightLight(command.toString()));
+                                        new VesyncRequestManagedDeviceBypassV2.SetNightLight(targetNightLightMode));
 
                                 break;
                         }
