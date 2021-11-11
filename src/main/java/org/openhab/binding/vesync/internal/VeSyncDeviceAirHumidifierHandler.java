@@ -107,12 +107,10 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                                 command.equals(OnOffType.ON), 0));
                         break;
                     case DEVICE_CHANNEL_DISPLAY_ENABLED:
-                    case DEVICE_CHANNEL_AF_CONFIG_DISPLAY:
                         sendV2BypassControlCommand("setDisplay",
                                 new VesyncRequestManagedDeviceBypassV2.SetState(command.equals(OnOffType.ON)));
                         break;
                     case DEVICE_CHANNEL_STOP_AT_TARGET:
-                    case DEVICE_CHANNEL_CONFIG_AUTO_STOP:
                         sendV2BypassControlCommand("setAutomaticStop",
                                 new VesyncRequestManagedDeviceBypassV2.EnabledPayload(command.equals(OnOffType.ON)));
                         break;
@@ -143,14 +141,26 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                         sendV2BypassControlCommand("setTargetHumidity",
                                 new VesyncRequestManagedDeviceBypassV2.SetTargetHumidity(targetHumidity));
                         break;
-                    case DEVICE_CHANNEL_MIST_VIRTUAL_LEVEL:
+                    case DEVICE_CHANNEL_MIST_LEVEL:
                         int targetMistLevel = ((QuantityType<?>) command).intValue();
-                        if (targetMistLevel < 0) {
-                            logger.warn("Target Humidity less than 0 - adjusting to 0 as the valid API value");
-                            targetMistLevel = 0;
-                        } else if (targetMistLevel > 9) {
-                            logger.warn("Target Humidity greater than 9 - adjusting to 9 as the valid API value");
-                            targetMistLevel = 9;
+                        if (targetMistLevel < 1) {
+                            logger.warn("Target Humidity less than 1 - adjusting to 1 as the valid API value");
+                            targetMistLevel = 1;
+                        } else if (targetMistLevel > 3) {
+                            logger.warn("Target Humidity greater than 3 - adjusting to 3 as the valid API value");
+                            targetMistLevel = 3;
+                        }
+                        // Re-map to what appears to be bitwise encoding of the states
+                        switch (targetMistLevel) {
+                            case 1:
+                                targetMistLevel = 1;
+                                break;
+                            case 2:
+                                targetMistLevel = 5;
+                                break;
+                            case 3:
+                                targetMistLevel = 9;
+                                break;
                         }
                         sendV2BypassControlCommand("setVirtualLevel",
                                 new VesyncRequestManagedDeviceBypassV2.SetLevelPayload(0, "mist", targetMistLevel));
@@ -230,16 +240,11 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                 OnOffType.from(humidifierStatus.result.result.automatic_stop_reach_target));
         updateState(DEVICE_CHANNEL_HUMIDITY, new DecimalType(humidifierStatus.result.result.humidity));
         updateState(DEVICE_CHANNEL_MIST_LEVEL, new DecimalType(humidifierStatus.result.result.mist_level));
-        updateState(DEVICE_CHANNEL_MIST_VIRTUAL_LEVEL,
-                new DecimalType(humidifierStatus.result.result.mist_virtual_level));
+
         updateState(DEVICE_CHANNEL_HUMIDIFIER_MODE, new StringType(humidifierStatus.result.result.mode));
         updateState(DEVICE_CHANNEL_NIGHT_LIGHT_LEVEL,
                 new DecimalType(humidifierStatus.result.result.night_light_brightness));
 
-        updateState(DEVICE_CHANNEL_AF_CONFIG_DISPLAY,
-                OnOffType.from(humidifierStatus.result.result.configuration.display));
-        updateState(DEVICE_CHANNEL_CONFIG_AUTO_STOP,
-                OnOffType.from(humidifierStatus.result.result.configuration.automaticStop));
         updateState(DEVICE_CHANNEL_CONFIG_TARGET_HUMIDITY,
                 new DecimalType(humidifierStatus.result.result.configuration.autoTargetHumidity));
     }

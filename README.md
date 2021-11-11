@@ -73,7 +73,6 @@ Channel names in **bold** are read/write, everything else is read-only
 | timer-remain           | Number                  | The seconds left on the timer at the last poll            |
 | timer-expiry           | DateTime                | The expected expiry time of the current timer             |
 | schedules-count        | Number                  | The number schedules configured                           |
-| config-display         | Switch                  | Config: Whether the display is enabled                    |
 | config-display-forever | Switch                  | Config: Whether the display will disable when not active  |
 | config-auto-mode       | String                  | Config: The mode of operation when auto is active         |
 | config-auto-room-size  | Number                  | Config: The room size set when auto utilises the room size|
@@ -87,14 +86,11 @@ Channel names in **bold** are read/write, everything else is read-only
 | water-lacking              | Switch                  | Indicator whether the unit is lacking water               | Does this reflect as low water - or no water? |
 | humidity-high              | Switch                  | Indicator for high humidity                               | Does this indicate a currently high humidity measurement in the room? |
 | water-tank-lifted          | Switch                  | Indicator for whether the water tank is removed           | Is this description correct?|
-| stop-at-target-level       | Switch                  | Indicator for the current level humidification will stop at| Is this correct? |
-| humidity                   | Number:Dimensionless    | Indicator for the current humidity level                  | Is this correct? |
-| mist-level                 | Number:Dimensionless    | The current mist level set (0-9)                          | Is this correct? |
-| **mist-virtual-level**     | Number:Dimensionless    | What is this?                                             | Please confirm what this represents? |
+| **stop-at-target-level**   | Switch                  | Whether the unit is set to stop when the target is reached|
+| humidity                   | Number:Dimensionless    | Indicator for the currently measured humidity level       |
+| **mist-level**             | Number:Dimensionless    | The current mist level set (1-3)                          |
 | **humidifier-mode**        | String                  | The current mode of operation [auto,sleep]                |
 | **night_light_brightness** | Number                  | The night light brightness 0 - 100 %                     | Is this correct and a percentage value?|
-| **config-display**         | Switch                  | Config: Whether the display is enabled                    |
-| **config-stop-at-target**  | Switch                  | Config: Whether the unit is set to stop when the target is reached |
 | **config-target-humidity** | Number:Dimensionless    | Config: What the target humidity is set to reach |
 
 ## Full Example
@@ -139,7 +135,7 @@ Bridge vesync:bridge:vesyncServers [username="<USERNAME>", password="<PASSWORD>"
 
 ```
 Switch               LoungeAPPower        	   "Lounge Air Purifier Power"                                  { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:enabled" }
-Switch               LoungeAPDisplay      	   "Lounge Air Purifier Display"                                { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:config-display" }
+Switch               LoungeAPDisplay      	   "Lounge Air Purifier Display"                                { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:display" }
 Switch               LoungeAPControlsLock          "Lounge Air Purifier Controls Locked"                        { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:child-lock" }
 Number:Dimensionless LoungeAPFilterRemainingUse    "Lounge Air Purifier Filter Remaining [%.0f %%]"             { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:filter-life-percentage" }
 String               LoungeAPMode                  "Lounge Air Purifier Mode [%s]"                              { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:fan-mode" }
@@ -157,7 +153,7 @@ Number               LoungeAPSchedulesCount 	   "Lounge Air Purifier Schedules C
 
 ```
 Switch               LoungeAPPower        	   "Lounge Air Purifier Power"                                  { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:enabled" }
-Switch               LoungeAPDisplay      	   "Lounge Air Purifier Display"                                { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:config-display" }
+Switch               LoungeAPDisplay      	   "Lounge Air Purifier Display"                                { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:display" }
 String               LoungeAPNightLightMode        "Lounge Air Purifier Night Light Mode"                       { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:night-light-mode" }
 Switch               LoungeAPControlsLock          "Lounge Air Purifier Controls Locked"                        { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:child-lock" }
 Number:Dimensionless LoungeAPFilterRemainingUse    "Lounge Air Purifier Filter Remaining [%.0f %%]"             { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:filter-life-percentage" }
@@ -176,14 +172,14 @@ Number               LoungeAPSchedulesCount 	   "Lounge Air Purifier Schedules C
 
 ```
 Switch               LoungeAHPower             "Lounge Air Humidifier Power"                                  { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:enabled" }
-Switch               LoungeAHDisplay           "Lounge Air Humidifier Display"                                { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:config-display" }
+Switch               LoungeAHDisplay           "Lounge Air Humidifier Display"                                { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:display" }
 Number:Dimensionless LoungeAHNightLightLevel   "Lounge Air Humidifier Night Light Level [%.0f %%]"            { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:night_light_brightness" }
 String               LoungeAHMode              "Lounge Air Humidifier Mode"                                   { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:humidifier-mode" }
 Switch               LoungeAHWaterLacking      "Lounge Air Humidifier Water Lacking"                          { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:water-lacking" }
 Switch               LoungeAHHighHumidity      "Lounge Air Humidifier High Humidity"                          { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:humidity-high" }
 Switch               LoungeAHWaterTankRemoved  "Lounge Air Humidifier Water Tank Removed"                     { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:water-tank-lifted" }
 Number:Dimensionless LoungeAHHumidity          "Lounge Air Humidifier Measured Humidity"                      { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:humidity" }
-Switch               LoungeAHTargetStop        "Lounge Air Humidifier Stop at target"                         { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:config-stop-at-target" }
+Switch               LoungeAHTargetStop        "Lounge Air Humidifier Stop at target"                         { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:stop-at-target-level" }
 Number:Dimensionless LoungeAHTarget            "Lounge Air Humidifier Target Humidity"                        { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:config-target-humidity" }
 Number:Dimensionless LoungeAHMistLevel         "Lounge Air Humidifier Mist Level"                             { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:mist-virtual-level" }
 ```
