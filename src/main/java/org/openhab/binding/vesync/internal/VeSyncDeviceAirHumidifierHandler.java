@@ -48,7 +48,7 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
     // "Device Type" values
     public final static String DEV_TYPE_CLASSIC_300S = "Classic300S";
 
-    private final static List<String> CLASSIC_300S_MODES = Arrays.asList("auto", "sleep");
+    private final static List<String> CLASSIC_300S_MODES = Arrays.asList("auto", "manual", "sleep");
 
     public final static List<String> SUPPORTED_DEVICE_TYPES = Arrays.asList(DEV_TYPE_CLASSIC_300S);
 
