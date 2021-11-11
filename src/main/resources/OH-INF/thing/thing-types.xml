@@ -60,8 +60,7 @@
 			<channel id="manual-fan-speed" typeId="airPurifierFanLevelType"/>
 			<channel id="error-code" typeId="deviceErrorCodeType"/>
 			<channel id="air-quality" typeId="deviceAirQualityBasicType"/>
-			<channel id="air-quality-ppm25" typeId="deviceAirQualityBasicType"/>
-			<channel id="config-display" typeId="deviceAFConfigDisplay"/>
+			<channel id="air-quality-ppm25" typeId="deviceAirQualityBasicType"/>			
 			<channel id="config-display-forever" typeId="deviceAFConfigDisplayForever"/>
 			<channel id="config-auto-mode" typeId="deviceAFConfigAutoPrefType"/>
 			<channel id="timer-remain" typeId="deviceAFTimerOff"/>
@@ -110,11 +109,8 @@
 			<channel id="stop-at-target-level" typeId="deviceAutomaticStopReachTargetType"/>
 			<channel id="humidity" typeId="deviceHumidityType"/>
 			<channel id="mist-level" typeId="deviceMistLevelType"/>
-			<channel id="mist-virtual-level" typeId="deviceMistVirtualLevelType"/>
 			<channel id="humidifier-mode" typeId="airHumidifierModeType"/>
 			<channel id="night_light_brightness" typeId="nightLightBrightnessType"/>
-			<channel id="config-display" typeId="deviceAFConfigDisplay"/>
-			<channel id="config-stop-at-target" typeId="deviceConfigStopAtTarget"/>
 			<channel id="config-target-humidity" typeId="deviceConfigTargetHumidity"/>
 		</channels>
 
@@ -223,20 +219,6 @@
 		<state readOnly="true" pattern="%.0f"/>
 	</channel-type>
 
-	<channel-type id="deviceAFConfigDisplay">
-		<item-type>Switch</item-type>
-		<label>Config: Display</label>
-		<description>Configuration: If the devices display is enabled</description>
-		<state readOnly="false"/>
-	</channel-type>
-
-	<channel-type id="deviceConfigStopAtTarget">
-		<item-type>Switch</item-type>
-		<label>Config: Stop At Target</label>
-		<description>Configuration: If the device should stop when the target is reached</description>
-		<state readOnly="false"/>
-	</channel-type>
-
 	<channel-type id="deviceAFConfigDisplayForever">
 		<item-type>Switch</item-type>
 		<label>Config: Display Forever</label>
@@ -310,7 +292,7 @@
 		<item-type>Switch</item-type>
 		<label>Stop @ Target</label>
 		<description>Indicator if the device is set to stop when the target has been reached</description>
-		<state readOnly="true"/>
+		<state readOnly="false"/>
 	</channel-type>
 
 	<channel-type id="deviceHumidityType">
@@ -331,13 +313,6 @@
 		<item-type>Number:Dimensionless</item-type>
 		<label>Mist Level</label>
 		<description>System representation of mist level</description>
-		<state readOnly="false" pattern="%.0f"/>
-	</channel-type>
-
-	<channel-type id="deviceMistVirtualLevelType">
-		<item-type>Number:Dimensionless</item-type>
-		<label>Virtual Mist Level</label>
-		<description>System representation of virtual mist level?</description>
 		<state readOnly="false" pattern="%.0f"/>
 	</channel-type>
 

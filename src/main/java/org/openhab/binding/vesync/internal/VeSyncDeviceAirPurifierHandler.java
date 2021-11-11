@@ -132,7 +132,7 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
                         sendV2BypassControlCommand("setSwitch", new VesyncRequestManagedDeviceBypassV2.SetSwitchPayload(
                                 command.equals(OnOffType.ON), 0));
                         break;
-                    case DEVICE_CHANNEL_AF_CONFIG_DISPLAY:
+                    case DEVICE_CHANNEL_DISPLAY_ENABLED:
                         sendV2BypassControlCommand("setDisplay",
                                 new VesyncRequestManagedDeviceBypassV2.SetState(command.equals(OnOffType.ON)));
                         break;
@@ -287,8 +287,6 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
         updateState(DEVICE_CHANNEL_AIRQUALITY_BASIC, new DecimalType(purifierStatus.result.result.airQuality));
         updateState(DEVICE_CHANNEL_AIRQUALITY_PPM25, new DecimalType(purifierStatus.result.result.airQualityValue));
 
-        updateState(DEVICE_CHANNEL_AF_CONFIG_DISPLAY,
-                OnOffType.from(purifierStatus.result.result.configuration.display));
         updateState(DEVICE_CHANNEL_AF_CONFIG_DISPLAY_FOREVER,
                 OnOffType.from(purifierStatus.result.result.configuration.displayForever));
 
