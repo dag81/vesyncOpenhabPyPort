@@ -121,11 +121,12 @@ public class VesyncV2ApiHelper {
                 if (resultsPage != null) {
                     for (VesyncManagedDevicesPage.Result.VesyncManagedDeviceBase device : resultsPage.result.list) {
                         logger.debug(
-                                "Found device : {}, type: {}, deviceType: {}, connectionState: {}, deviceStatus: {}, deviceRegion: {}, cid: {}, configModule: {}, macID: {}",
+                                "Found device : {}, type: {}, deviceType: {}, connectionState: {}, deviceStatus: {}, deviceRegion: {}, cid: {}, configModule: {}, macID: {}, uuidL {}",
                                 device.getDeviceName(), device.getType(), device.getDeviceType(),
                                 device.getConnectionStatus(), device.getDeviceStatus(), device.getDeviceRegion(),
-                                device.getCid(), device.getConfigModule(), device.getMacId());
+                                device.getCid(), device.getConfigModule(), device.getMacId(), device.getUuid());
                         // Update the mac address -> device table
+
                         generatedMacLookup.put(device.getMacId(), device);
                     }
                 }

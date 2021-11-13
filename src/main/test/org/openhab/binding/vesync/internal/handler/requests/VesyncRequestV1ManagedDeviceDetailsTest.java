@@ -12,30 +12,30 @@
  */
 package org.openhab.binding.vesync.internal.handler.requests;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.junit.Test;
 import org.openhab.binding.vesync.internal.AuthenticationException;
 import org.openhab.binding.vesync.internal.VeSyncConstants;
-import org.openhab.binding.vesync.internal.dto.requests.VesyncAuthenticatedRequest;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncLoginCredentials;
-import org.openhab.binding.vesync.internal.dto.responses.VesyncLoginResponse;
+import org.openhab.binding.vesync.internal.dto.requests.VesyncRequestManagedDevicesPage;
+import org.openhab.binding.vesync.internal.dto.requests.VesyncRequestV1ManagedDeviceDetails;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * The {@link VesyncLoginCredentials} class implements unit test case for {@link VesyncLoginResponse}
+ * The {@link VesyncRequestV1ManagedDeviceDetails} class implements unit test case for
+ * {@link VesyncRequestManagedDevicesPage}
  *
  * @author David Goodyear - Initial contribution
  */
 @NonNullByDefault
-public class VesyncAuthenticatedRequestTest {
+public class VesyncRequestV1ManagedDeviceDetailsTest {
 
-    public final static VesyncLoginResponse.VesyncUserSession testUser = VeSyncConstants.GSON.fromJson(
-            org.openhab.binding.vesync.internal.handler.responses.VesyncLoginResponseTest.testGoodLoginResponseBody,
-            VesyncLoginResponse.class).result;
+    // Verified content URLS
+    // https://smartapi.vesync.com/131airPurifier/v1/device/deviceDetail
 
     @Test
     public void checkBaseFieldsExist() {
@@ -54,20 +54,18 @@ public class VesyncAuthenticatedRequestTest {
     }
 
     @Test
-    public void checkAuthenicationData() {
-
-        // Simulate as the code flow should run - parse data and then use it
-        VesyncLoginResponse response = VeSyncConstants.GSON
-                .fromJson(org.openhab.binding.vesync.internal.handler.responses.VesyncLoginResponseTest.testGoodLoginResponseBody, VesyncLoginResponse.class);
+    public void checkRequestDevicesFields() {
 
         String content = "";
-
         try {
-            content = VeSyncConstants.GSON.toJson(new VesyncAuthenticatedRequest(response.result));
+            content = VeSyncConstants.GSON
+                    .toJson(new VesyncRequestV1ManagedDeviceDetails(VesyncAuthenticatedRequestTest.testUser, "MyDeviceUUID"));
         } catch (AuthenticationException ae) {
 
         }
 
+        assertEquals(true, content.contains("\"uuid\": \"MyDeviceUUID\""));
+        assertEquals(true, content.contains("\"mobileId\": \"1234567890123456\""));
         assertEquals(true, content.contains("\"token\": \"AccessTokenString=\""));
         assertEquals(true, content.contains("\"accountID\": \"5328043\""));
     }

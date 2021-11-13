@@ -15,7 +15,9 @@ package org.openhab.binding.vesync.internal.handler.requests;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jetty.security.Authenticator;
 import org.junit.Test;
+import org.openhab.binding.vesync.internal.AuthenticationException;
 import org.openhab.binding.vesync.internal.VeSyncConstants;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncLoginCredentials;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncRequestManagedDevicesPage;
@@ -50,8 +52,15 @@ public class VesyncRequestManagedDevicesPageTest {
 
     @Test
     public void checkRequestDevicesFields() {
-        String content = VeSyncConstants.GSON
-                .toJson(new VesyncRequestManagedDevicesPage(org.openhab.binding.vesync.internal.handler.requests.VesyncAuthenticatedRequestTest.testUser, 1, 100));
+
+        String content = "";
+        try {
+            content = VeSyncConstants.GSON
+                    .toJson(new VesyncRequestManagedDevicesPage(org.openhab.binding.vesync.internal.handler.requests.VesyncAuthenticatedRequestTest.testUser, 1, 100));
+        } catch (AuthenticationException ae) {
+
+        }
+
 
         assertEquals(true, content.contains("\"method\": \"devices\""));
         assertEquals(true, content.contains("\"pageNo\": \"1\""));

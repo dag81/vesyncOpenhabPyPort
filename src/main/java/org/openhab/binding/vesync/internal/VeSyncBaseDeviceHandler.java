@@ -16,17 +16,16 @@ import static org.openhab.binding.vesync.internal.VeSyncConstants.*;
 
 import java.time.Duration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.vesync.internal.api.VesyncV2ApiHelper;
+import org.openhab.binding.vesync.internal.dto.requests.VesyncAuthenticatedRequest;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncRequestManagedDeviceBypassV2;
 import org.openhab.binding.vesync.internal.dto.responses.VesyncManagedDevicesPage;
 import org.openhab.core.cache.ExpiringCache;
@@ -62,9 +61,9 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
     private @Nullable ScheduledFuture<?> backgroundPollingScheduler;
     private Object pollConfigLock = new Object();
 
-    protected List<Channel> findChannelById(final String channelGroupId) {
-        return getThing().getChannels().stream().filter(x -> x.getUID().getId().equals(channelGroupId))
-                .collect(Collectors.toList());
+    protected @Nullable Channel findChannelById(final String channelGroupId) {
+        // return getThing().getChannels().stream().anyMatch(x -> x.getUID().getId().equals(channelGroupId));
+        return getThing().getChannel(channelGroupId);
     }
 
     protected ExpiringCache<String> lastPollResultCache = new ExpiringCache<>(Duration.ofSeconds(CACHE_TIMEOUT_SECOND),
@@ -200,7 +199,8 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
         newProps.put(DEVICE_PROP_DEVICE_MAC_ID, metadata.getMacId());
         newProps.put(DEVICE_PROP_DEVICE_NAME, metadata.getDeviceName());
         newProps.put(DEVICE_PROP_DEVICE_TYPE, metadata.getDeviceType());
-        newProps.put(DEVICE_PROP_DEVICE_UUID, metadata.getUuid().replace("-", ""));
+        // newProps.put(DEVICE_PROP_DEVICE_UUID, metadata.getUuid().replace("-", ""));
+        newProps.put(DEVICE_PROP_DEVICE_UUID, metadata.getUuid());
         return newProps;
     }
 
@@ -347,6 +347,35 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
         if (!result.equals(EMPTY_STRING) && readbackDevice)
             performReadbackPoll();
         return result;
+    }
+
+    public final String sendV1Command(final String method, final String url, final VesyncAuthenticatedRequest request) {
+        if (ThingStatus.OFFLINE.equals(this.thing.getStatus())) {
+            logger.debug("Command blocked as device is offline");
+            return EMPTY_STRING;
+        }
+
+        try {
+            if (MARKER_INVALID_DEVICE_KEY.equals(deviceLookupKey)) {
+                deviceLookupKey = getValidatedIdString();
+            }
+            VeSyncClient client = getVeSyncClient();
+            if (client != null)
+                return client.reqV2Authorized(url, deviceLookupKey, request);
+            else {
+                throw new DeviceUnknownException("Missing client");
+            }
+        } catch (AuthenticationException e) {
+            logger.debug("Auth exception {}", e.getMessage());
+            return EMPTY_STRING;
+        } catch (final DeviceUnknownException e) {
+            logger.debug("Device unknown exception {}", e.getMessage());
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.HANDLER_REGISTERING_ERROR,
+                    "Check configuration details");
+            // In case the name is updated server side - request the scan rate is increased
+            requestBridgeFreqScanMetadataIfReq();
+            return EMPTY_STRING;
+        }
     }
 
     /**

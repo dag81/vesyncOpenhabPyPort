@@ -16,13 +16,16 @@ import static org.openhab.binding.vesync.internal.VeSyncConstants.*;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncRequestManagedDeviceBypassV2;
+import org.openhab.binding.vesync.internal.dto.requests.VesyncRequestV1ManagedDeviceDetails;
 import org.openhab.binding.vesync.internal.dto.responses.VesyncV2BypassPurifierStatus;
+import org.openhab.binding.vesync.internal.dto.responses.v1.VesyncV1AirPurifierDeviceDetailsResponse;
 import org.openhab.core.cache.ExpiringCache;
 import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.types.DateTimeType;
@@ -55,8 +58,9 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
     public final static String DEV_TYPE_CORE_400S = "Core400S";
     public final static String DEV_TYPE_CORE_300S = "Core300S";
     public final static String DEV_TYPE_CORE_200S = "Core200S";
+    public final static String DEV_TYPE_LV_PUR131S = "LV-PUR131S";
     public final static List<String> SUPPORTED_DEVICE_TYPES = Arrays.asList(DEV_TYPE_CORE_400S, DEV_TYPE_CORE_300S,
-            DEV_TYPE_CORE_200S);
+            DEV_TYPE_CORE_200S, DEV_TYPE_LV_PUR131S);
 
     private final static List<String> CORE_400S_FAN_MODES = Arrays.asList("auto", "manual", "sleep");
     private final static List<String> CORE_200S300S_FAN_MODES = Arrays.asList("manual", "sleep");
@@ -78,13 +82,33 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
 
     @Override
     protected void customiseChannels() {
-        List<Channel> channelsToBeRemoved = List.of();
+        List<Channel> channelsToBeRemoved = new ArrayList<Channel>();
         String deviceType = getThing().getProperties().get(DEVICE_PROP_DEVICE_TYPE);
         if (deviceType != null) {
+            String[] toRemove = null;
             switch (deviceType) {
+                /*
+                 * case DEV_TYPE_CORE_400S:
+                 * channelsToBeRemoved.add(findChannelById(DEVICE_CHANNEL_AF_NIGHT_LIGHT));
+                 * break;
+                 */
                 case DEV_TYPE_CORE_400S:
-                    channelsToBeRemoved = this.findChannelById(DEVICE_CHANNEL_AF_NIGHT_LIGHT);
+                    toRemove = new String[] { DEVICE_CHANNEL_AF_NIGHT_LIGHT };
                     break;
+                case DEV_TYPE_LV_PUR131S:
+                    toRemove = new String[] { DEVICE_CHANNEL_AF_NIGHT_LIGHT, DEVICE_CHANNEL_AF_CONFIG_AUTO_ROOM_SIZE,
+                            DEVICE_CHANNEL_AF_CONFIG_AUTO_MODE_PREF, DEVICE_CHANNEL_AF_AUTO_OFF_CALC_TIME,
+                            DEVICE_CHANNEL_AIR_FILTER_LIFE_PERCENTAGE_REMAINING, DEVICE_CHANNEL_AIRQUALITY_PPM25,
+                            DEVICE_CHANNEL_AF_AUTO_OFF_CALC_TIME, DEVICE_CHANNEL_AF_SCHEDULES_COUNT,
+                            DEVICE_CHANNEL_AF_CONFIG_DISPLAY_FOREVER, DEVICE_CHANNEL_AF_AUTO_OFF_SECONDS };
+                    break;
+            }
+            if (toRemove != null) {
+                for (String name : toRemove) {
+                    Channel ch = getThing().getChannel(name);
+                    if (ch != null)
+                        channelsToBeRemoved.add(ch);
+                }
             }
 
             final ThingBuilder builder = editThing().withoutChannels(channelsToBeRemoved);
@@ -234,7 +258,77 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
 
     @Override
     protected void pollForDeviceData(final ExpiringCache<String> cachedResponse) {
+        final String deviceType = getThing().getProperties().get(DEVICE_PROP_DEVICE_TYPE);
+        if (deviceType == null)
+            return;
 
+        switch (deviceType) {
+            case DEV_TYPE_CORE_400S:
+            case DEV_TYPE_CORE_300S:
+            case DEV_TYPE_CORE_200S:
+                processV2BypassPoll(cachedResponse);
+                break;
+            case DEV_TYPE_LV_PUR131S:
+                processV1AirPurifierPoll(cachedResponse);
+                break;
+        }
+    }
+
+    private void processV1AirPurifierPoll(final ExpiringCache<String> cachedResponse) {
+        final String deviceUuid = getThing().getProperties().get(DEVICE_PROP_DEVICE_UUID);
+        if (deviceUuid == null)
+            return;
+
+        String response;
+        VesyncV1AirPurifierDeviceDetailsResponse purifierStatus;
+        synchronized (pollLock) {
+
+            response = cachedResponse.getValue();
+            boolean cachedDataUsed = response != null;
+            if (response == null) {
+                logger.trace("Requesting fresh response");
+                response = sendV1Command("POST", "https://smartapi.vesync.com/131airPurifier/v1/device/deviceDetail",
+                        new VesyncRequestV1ManagedDeviceDetails(deviceUuid));
+            } else {
+                logger.trace("Using cached response {}", response);
+            }
+
+            if (response.equals(EMPTY_STRING))
+                return;
+
+            purifierStatus = VeSyncConstants.GSON.fromJson(response, VesyncV1AirPurifierDeviceDetailsResponse.class);
+
+            if (purifierStatus == null)
+                return;
+
+            if (!cachedDataUsed) {
+                cachedResponse.putValue(response);
+            }
+        }
+
+        // Bail and update the status of the thing - it will be updated to online by the next search
+        // that detects it is online.
+        if (purifierStatus.isDeviceOnline()) {
+            updateStatus(ThingStatus.ONLINE);
+        } else {
+            updateStatus(ThingStatus.OFFLINE);
+            return;
+        }
+
+        if (!"0".equals(purifierStatus.getCode())) {
+            logger.warn("Check Thing type has been set - API gave a unexpected response for an Air Purifier");
+            return;
+        }
+
+        updateState(DEVICE_CHANNEL_ENABLED, OnOffType.from("on".equals(purifierStatus.getDeviceStatus())));
+        updateState(DEVICE_CHANNEL_CHILD_LOCK_ENABLED, OnOffType.from("on".equals(purifierStatus.getChildLock())));
+        updateState(DEVICE_CHANNEL_FAN_MODE_ENABLED, new StringType(purifierStatus.getMode()));
+        updateState(DEVICE_CHANNEL_FAN_SPEED_ENABLED, new DecimalType(String.valueOf(purifierStatus.getLevel())));
+        updateState(DEVICE_CHANNEL_DISPLAY_ENABLED, OnOffType.from("on".equals(purifierStatus.getScreenStatus())));
+        updateState(DEVICE_CHANNEL_AIRQUALITY_BASIC, new DecimalType(purifierStatus.getAirQuality()));
+    }
+
+    private void processV2BypassPoll(final ExpiringCache<String> cachedResponse) {
         String response;
         VesyncV2BypassPurifierStatus purifierStatus;
         synchronized (pollLock) {
@@ -279,7 +373,7 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
         updateState(DEVICE_CHANNEL_ENABLED, OnOffType.from(purifierStatus.result.result.enabled));
         updateState(DEVICE_CHANNEL_CHILD_LOCK_ENABLED, OnOffType.from(purifierStatus.result.result.childLock));
         updateState(DEVICE_CHANNEL_DISPLAY_ENABLED, OnOffType.from(purifierStatus.result.result.display));
-        updateState(DEVICE_CHANNEL_AIR_FILTER_LIFE_PERCENTAGE_ENABLED,
+        updateState(DEVICE_CHANNEL_AIR_FILTER_LIFE_PERCENTAGE_REMAINING,
                 new DecimalType(purifierStatus.result.result.filterLife));
         updateState(DEVICE_CHANNEL_FAN_MODE_ENABLED, new StringType(purifierStatus.result.result.mode));
         updateState(DEVICE_CHANNEL_FAN_SPEED_ENABLED, new DecimalType(purifierStatus.result.result.level));

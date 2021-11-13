@@ -114,7 +114,8 @@ public class VeSyncDiscoveryService extends AbstractDiscoveryService
     public void HandleMetadataRetrieved(VeSyncBridgeHandler handler) {
         bridgeHandler.getAirPurifiersMetadata().map(apMeta -> {
             final Map<String, Object> properties = new HashMap<>(6);
-            final String deviceUUID = apMeta.getUuid().replace("-", "");
+            // final String deviceUUID = apMeta.getUuid().replace("-", "");
+            final String deviceUUID = apMeta.getUuid();
             properties.put(DEVICE_PROP_DEVICE_NAME, apMeta.getDeviceName());
             properties.put(DEVICE_PROP_DEVICE_TYPE, apMeta.getDeviceType());
             properties.put(DEVICE_PROP_DEVICE_MAC_ID, apMeta.getMacId());
@@ -127,7 +128,8 @@ public class VeSyncDiscoveryService extends AbstractDiscoveryService
         // Temporary until refactoring
         bridgeHandler.getAirHumidifiersMetadata().map(apMeta -> {
             final Map<String, Object> properties = new HashMap<>(6);
-            final String deviceUUID = apMeta.getUuid().replace("-", "");
+            // final String deviceUUID = apMeta.getUuid().replace("-", "");
+            final String deviceUUID = apMeta.getUuid();
             properties.put(DEVICE_PROP_DEVICE_NAME, apMeta.getDeviceName());
             properties.put(DEVICE_PROP_DEVICE_TYPE, apMeta.getDeviceType());
             properties.put(DEVICE_PROP_DEVICE_MAC_ID, apMeta.getMacId());

@@ -52,7 +52,7 @@ public class VeSyncConstants {
     public static final String DEVICE_CHANNEL_ENABLED = "enabled";
     public static final String DEVICE_CHANNEL_DISPLAY_ENABLED = "display";
     public static final String DEVICE_CHANNEL_CHILD_LOCK_ENABLED = "child-lock";
-    public static final String DEVICE_CHANNEL_AIR_FILTER_LIFE_PERCENTAGE_ENABLED = "filter-life-percentage";
+    public static final String DEVICE_CHANNEL_AIR_FILTER_LIFE_PERCENTAGE_REMAINING = "filter-life-percentage";
     public static final String DEVICE_CHANNEL_FAN_MODE_ENABLED = "fan-mode";
     public static final String DEVICE_CHANNEL_FAN_SPEED_ENABLED = "manual-fan-speed";
     public static final String DEVICE_CHANNEL_ERROR_CODE = "error-code";
