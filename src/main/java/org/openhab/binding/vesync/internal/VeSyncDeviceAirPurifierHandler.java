@@ -16,10 +16,11 @@ import static org.openhab.binding.vesync.internal.VeSyncConstants.*;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+
+import javax.validation.constraints.NotNull;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncRequestManagedDeviceBypassV2;
@@ -33,12 +34,10 @@ import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.QuantityType;
 import org.openhab.core.library.types.StringType;
-import org.openhab.core.thing.Channel;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
 import org.openhab.core.thing.ThingStatus;
 import org.openhab.core.thing.ThingTypeUID;
-import org.openhab.core.thing.binding.builder.ThingBuilder;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.RefreshType;
 import org.slf4j.Logger;
@@ -81,17 +80,11 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
     }
 
     @Override
-    protected void customiseChannels() {
-        List<Channel> channelsToBeRemoved = new ArrayList<Channel>();
-        String deviceType = getThing().getProperties().get(DEVICE_PROP_DEVICE_TYPE);
+    protected @NotNull String[] getChannelsToRemove() {
+        String[] toRemove = new String[] {};
+        final String deviceType = getThing().getProperties().get(DEVICE_PROP_DEVICE_TYPE);
         if (deviceType != null) {
-            String[] toRemove = null;
             switch (deviceType) {
-                /*
-                 * case DEV_TYPE_CORE_400S:
-                 * channelsToBeRemoved.add(findChannelById(DEVICE_CHANNEL_AF_NIGHT_LIGHT));
-                 * break;
-                 */
                 case DEV_TYPE_CORE_400S:
                     toRemove = new String[] { DEVICE_CHANNEL_AF_NIGHT_LIGHT };
                     break;
@@ -103,17 +96,8 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
                             DEVICE_CHANNEL_AF_CONFIG_DISPLAY_FOREVER, DEVICE_CHANNEL_AF_AUTO_OFF_SECONDS };
                     break;
             }
-            if (toRemove != null) {
-                for (String name : toRemove) {
-                    Channel ch = getThing().getChannel(name);
-                    if (ch != null)
-                        channelsToBeRemoved.add(ch);
-                }
-            }
-
-            final ThingBuilder builder = editThing().withoutChannels(channelsToBeRemoved);
-            updateThing(builder.build());
         }
+        return toRemove;
     }
 
     @Override

@@ -15,7 +15,9 @@ package org.openhab.binding.vesync.internal;
 import static org.openhab.binding.vesync.internal.VeSyncConstants.*;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -38,6 +40,7 @@ import org.openhab.core.thing.ThingStatusDetail;
 import org.openhab.core.thing.binding.BaseThingHandler;
 import org.openhab.core.thing.binding.BridgeHandler;
 import org.openhab.core.thing.binding.ThingHandler;
+import org.openhab.core.thing.binding.builder.ThingBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -170,7 +173,7 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
 
         if (newProps != null && !newProps.isEmpty()) {
             this.updateProperties(newProps);
-            customiseChannels();
+            removeChannels();
             if (!isDeviceSupported()) {
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.HANDLER_REGISTERING_ERROR,
                         "Device Model or Type not supported by this thing");
@@ -182,6 +185,23 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
      * Override this in classes that extend this, to
      */
     protected void customiseChannels() {
+    }
+
+    protected String[] getChannelsToRemove() {
+        return new String[] {};
+    }
+
+    private void removeChannels() {
+        final String[] channelsToRemove = getChannelsToRemove();
+        final List<Channel> channelsToBeRemoved = new ArrayList<Channel>();
+        for (String name : channelsToRemove) {
+            Channel ch = getThing().getChannel(name);
+            if (ch != null)
+                channelsToBeRemoved.add(ch);
+        }
+
+        final ThingBuilder builder = editThing().withoutChannels(channelsToBeRemoved);
+        updateThing(builder.build());
     }
 
     /**
