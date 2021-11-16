@@ -17,6 +17,7 @@ import static org.openhab.binding.vesync.internal.VeSyncConstants.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncRequestManagedDeviceBypassV2;
@@ -49,6 +50,7 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
     public final static String DEV_TYPE_CLASSIC_300S = "Classic300S";
 
     private final static List<String> CLASSIC_300S_MODES = Arrays.asList("auto", "sleep");
+    private final static List<String> CLASSIC_300S_NIGHT_LIGHT_MODES = Arrays.asList("on", "dim", "off");
 
     public final static List<String> SUPPORTED_DEVICE_TYPES = Arrays.asList(DEV_TYPE_CLASSIC_300S);
 
@@ -117,18 +119,6 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                 }
             } else if (command instanceof QuantityType) {
                 switch (channelUID.getId()) {
-                    case DEVICE_CHANNEL_NIGHT_LIGHT_LEVEL:
-                        int nightLightLevel = ((QuantityType<?>) command).intValue();
-                        if (nightLightLevel < 0) {
-                            logger.warn("Night light level less than 0 - adjusting to 0 as the valid API value");
-                            nightLightLevel = 0;
-                        } else if (nightLightLevel > 100) {
-                            logger.warn("Night light level greater than 100 - adjusting to 100 as the valid API value");
-                            nightLightLevel = 0;
-                        }
-                        sendV2BypassControlCommand("setNightLightBrightness",
-                                new VesyncRequestManagedDeviceBypassV2.SetNightLightBrightness(nightLightLevel));
-                        break;
                     case DEVICE_CHANNEL_CONFIG_TARGET_HUMIDITY:
                         int targetHumidity = ((QuantityType<?>) command).intValue();
                         if (targetHumidity < 30) {
@@ -167,17 +157,43 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                         break;
                 }
             } else if (command instanceof StringType) {
+                final String targetMode = command.toString().toLowerCase();
                 switch (channelUID.getId()) {
                     case DEVICE_CHANNEL_HUMIDIFIER_MODE:
-                        final String targetMode = command.toString().toLowerCase();
                         if (!CLASSIC_300S_MODES.contains(targetMode)) {
-                            logger.warn("Humidifier mode command for \"{}\" is not valid in the (Classic300S) API",
-                                    command.toString());
+                            logger.warn(
+                                    "Humidifier mode command for \"{}\" is not valid in the (Classic300S) API possible options {}",
+                                    command.toString(),
+                                    CLASSIC_300S_NIGHT_LIGHT_MODES.stream().collect(Collectors.joining(",")));
                             return;
                         }
                         sendV2BypassControlCommand("setHumidityMode",
                                 new VesyncRequestManagedDeviceBypassV2.SetMode(targetMode));
                         break;
+                    case DEVICE_CHANNEL_NIGHT_LIGHT_LEVEL:
+                        if (!CLASSIC_300S_NIGHT_LIGHT_MODES.contains(targetMode)) {
+                            logger.warn(
+                                    "Humidifier night light mode command for \"{}\" is not valid in the (Classic300S) API possible options {}",
+                                    command.toString(),
+                                    CLASSIC_300S_NIGHT_LIGHT_MODES.stream().collect(Collectors.joining(",")));
+                            return;
+                        }
+                        int targetValue = 0;
+                        switch (targetMode) {
+                            case "off":
+                                targetValue = 0;
+                                break;
+                            case "dim":
+                                targetValue = 50;
+                                break;
+                            case "on":
+                                targetValue = 100;
+                                break;
+                            default:
+                                return; // should never hit
+                        }
+                        sendV2BypassControlCommand("setNightLightBrightness",
+                                new VesyncRequestManagedDeviceBypassV2.SetNightLightBrightness(targetValue));
                 }
             } else if (command instanceof RefreshType) {
                 pollForUpdate();
@@ -242,8 +258,15 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
         updateState(DEVICE_CHANNEL_MIST_LEVEL, new DecimalType(humidifierStatus.result.result.mist_level));
 
         updateState(DEVICE_CHANNEL_HUMIDIFIER_MODE, new StringType(humidifierStatus.result.result.mode));
-        updateState(DEVICE_CHANNEL_NIGHT_LIGHT_LEVEL,
-                new DecimalType(humidifierStatus.result.result.night_light_brightness));
+
+        // Map the numeric that only applies to the same modes as the Air Filter 300S series.
+        if (humidifierStatus.result.result.night_light_brightness == 0) {
+            updateState(DEVICE_CHANNEL_AF_NIGHT_LIGHT, new StringType("off"));
+        } else if (humidifierStatus.result.result.night_light_brightness == 100) {
+            updateState(DEVICE_CHANNEL_AF_NIGHT_LIGHT, new StringType("on"));
+        } else {
+            updateState(DEVICE_CHANNEL_AF_NIGHT_LIGHT, new StringType("dim"));
+        }
 
         updateState(DEVICE_CHANNEL_CONFIG_TARGET_HUMIDITY,
                 new DecimalType(humidifierStatus.result.result.configuration.autoTargetHumidity));

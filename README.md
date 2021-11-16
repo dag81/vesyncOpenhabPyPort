@@ -90,7 +90,7 @@ Channel names in **bold** are read/write, everything else is read-only
 | humidity                   | Number:Dimensionless    | Indicator for the currently measured humidity level       |
 | **mist-level**             | Number:Dimensionless    | The current mist level set (1-3)                          |
 | **humidifier-mode**        | String                  | The current mode of operation [auto,sleep]                |
-| **night_light_brightness** | Number                  | The night light brightness 0 - 100 %                     | Is this correct and a percentage value?|
+| **night_light_mode**       | String                  | The night light mode [on,dim,off]                         ||                                                                                           
 | **config-target-humidity** | Number:Dimensionless    | Config: What the target humidity is set to reach |
 
 ## Full Example
@@ -173,7 +173,7 @@ Number               LoungeAPSchedulesCount 	   "Lounge Air Purifier Schedules C
 ```
 Switch               LoungeAHPower             "Lounge Air Humidifier Power"                                  { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:enabled" }
 Switch               LoungeAHDisplay           "Lounge Air Humidifier Display"                                { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:display" }
-Number:Dimensionless LoungeAHNightLightLevel   "Lounge Air Humidifier Night Light Level [%.0f %%]"            { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:night_light_brightness" }
+String               LoungeAHNightLightMode    "Lounge Air Humidifier Night Light Mode"                       { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:night-light-mode }
 String               LoungeAHMode              "Lounge Air Humidifier Mode"                                   { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:humidifier-mode" }
 Switch               LoungeAHWaterLacking      "Lounge Air Humidifier Water Lacking"                          { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:water-lacking" }
 Switch               LoungeAHHighHumidity      "Lounge Air Humidifier High Humidity"                          { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:humidity-high" }
@@ -211,7 +211,7 @@ Frame {
    Switch item=LoungeAPPower label="Power"
    Text   item=LoungeAPFilterRemainingUse label="Filter Remaining"
    Switch item=LoungeAPDisplay label="Display"
-   Switch item=LoungeAPNightLightMode label="Mode" mappings=[on="On", dim="Dimmed", off="Off"] icon="settings"
+   Switch item=LoungeAPNightLightMode label="Night Light Mode" mappings=[on="On", dim="Dimmed", off="Off"] icon="settings"
    Text   item=LoungeAPAirQuality label="Air Quality [%.0f]"                
    Switch item=LoungeAPControlsLock label="Controls Locked"
    Text   item=LoungeAPTimerExpiry label="Timer Shutdown @" icon="clock"
@@ -228,7 +228,7 @@ This is untested but based on data from pyvesync.
 Frame {
    Switch item=LoungeAHPower
    Switch item=LoungeAHDisplay
-   Slider item=LoungeAHNightLightLevel minValue=0 maxValue=100
+   Switch item=LoungeAHNightLightMode label="Night Light Mode" mappings=[on="On", dim="Dimmed", off="Off"] icon="settings"
    Switch item=LoungeAHMode label="Mode" mappings=[auto="Auto", sleep="Sleeping"] icon="settings"
    Text   icon="none" item=LoungeAHWaterLacking
    Text   icon="none" item=LoungeAHHighHumidity
@@ -236,7 +236,6 @@ Frame {
    Text   icon="none" item=LoungeAHHumidity
    Switch item=LoungeAHTargetStop
    Slider item=LoungeAHTarget minValue=30 maxValue=80
-   Slider item=LoungeAHMistLevel minValue=0 maxValue=9
+   Slider item=LoungeAHMistLevel minValue=1 maxValue=3
 }
 ```
-

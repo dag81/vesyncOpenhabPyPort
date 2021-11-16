@@ -110,7 +110,7 @@
 			<channel id="humidity" typeId="deviceHumidityType"/>
 			<channel id="mist-level" typeId="deviceMistLevelType"/>
 			<channel id="humidifier-mode" typeId="airHumidifierModeType"/>
-			<channel id="night_light_brightness" typeId="nightLightBrightnessType"/>
+			<channel id="night_light_mode" typeId="deviceAFNightLight"/>
 			<channel id="config-target-humidity" typeId="deviceConfigTargetHumidity"/>
 		</channels>
 
