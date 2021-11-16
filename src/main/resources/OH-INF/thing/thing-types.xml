@@ -323,6 +323,7 @@
 		<state readOnly="false">
 			<options>
 				<option value="auto">Auto</option>
+				<option value="manual">Manual Control</option>
 				<option value="sleep">Sleeping Auto</option>
 			</options>
 		</state>
