@@ -174,7 +174,7 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                         sendV2BypassControlCommand("setHumidityMode",
                                 new VesyncRequestManagedDeviceBypassV2.SetMode(targetMode));
                         break;
-                    case DEVICE_CHANNEL_NIGHT_LIGHT_LEVEL:
+                    case DEVICE_CHANNEL_AF_NIGHT_LIGHT:
                         if (!CLASSIC_300S_NIGHT_LIGHT_MODES.contains(targetMode)) {
                             logger.warn(
                                     "Humidifier night light mode command for \"{}\" is not valid in the (Classic300S) API possible options {}",
