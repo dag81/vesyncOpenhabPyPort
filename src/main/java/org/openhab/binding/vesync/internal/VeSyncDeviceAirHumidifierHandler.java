@@ -130,7 +130,7 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                         }
 
                         sendV2BypassControlCommand("setHumidityMode",
-                                new VesyncRequestManagedDeviceBypassV2.SetMode("manual"), false);
+                                new VesyncRequestManagedDeviceBypassV2.SetMode("auto"), false);
 
                         sendV2BypassControlCommand("setTargetHumidity",
                                 new VesyncRequestManagedDeviceBypassV2.SetTargetHumidity(targetHumidity));
