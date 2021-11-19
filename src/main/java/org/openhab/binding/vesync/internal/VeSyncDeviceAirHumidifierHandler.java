@@ -128,6 +128,10 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                             logger.warn("Target Humidity greater than 80 - adjusting to 80 as the valid API value");
                             targetHumidity = 80;
                         }
+
+                        sendV2BypassControlCommand("setHumidityMode",
+                                new VesyncRequestManagedDeviceBypassV2.SetMode("manual"), false);
+
                         sendV2BypassControlCommand("setTargetHumidity",
                                 new VesyncRequestManagedDeviceBypassV2.SetTargetHumidity(targetHumidity));
                         break;
