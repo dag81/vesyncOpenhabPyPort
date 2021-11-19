@@ -96,6 +96,6 @@ public class VesyncV1AirPurifierDeviceDetailsResponse extends VesyncResponse {
     }
 
     public boolean isDeviceOnline() {
-        return connectionStatus.equals("online");
+        return "online".equals(connectionStatus);
     }
 }

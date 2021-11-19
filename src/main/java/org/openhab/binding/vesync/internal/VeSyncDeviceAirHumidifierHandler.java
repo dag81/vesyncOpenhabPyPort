@@ -182,7 +182,7 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                                     CLASSIC_300S_NIGHT_LIGHT_MODES.stream().collect(Collectors.joining(",")));
                             return;
                         }
-                        int targetValue = 0;
+                        int targetValue = -1;
                         switch (targetMode) {
                             case "off":
                                 targetValue = 0;

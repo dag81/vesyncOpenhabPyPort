@@ -220,6 +220,7 @@ Frame {
    Switch item=LoungeAPManualFanSpeed label="Manual Fan Speed [%.0f]" mappings=[1="1", 2="2", 3="3"] icon="settings"                               
 }
 ```
+
 #### Air Humidifier Classic 300S Model
 
 This is untested but based on data from pyvesync.
