@@ -31,6 +31,7 @@ public interface VeSyncProtocolConstants {
     // Common Commands
     String DEVICE_SET_SWITCH = "setSwitch";
     String DEVICE_SET_DISPLAY = "setDisplay";
+    String DEVICE_SET_LEVEL = "setLevel";
 
     // Humidifier Commands
     String DEVICE_SET_AUTOMATIC_STOP = "setAutomaticStop";
@@ -38,6 +39,14 @@ public interface VeSyncProtocolConstants {
     String DEVICE_SET_TARGET_HUMIDITY_MODE = "setTargetHumidity";
     String DEVICE_SET_VIRTUAL_LEVEL = "setVirtualLevel";
     String DEVICE_SET_NIGHT_LIGHT_BRIGHTNESS = "setNightLightBrightness";
-    
+    String DEVICE_GET_HUMIDIFIER_STATUS = "getHumidifierStatus";
+
     String DEVICE_LEVEL_TYPE_MIST = "mist";
+
+    // Air Purifier Commands
+    String DEVICE_SET_PURIFIER_MODE = "setPurifierMode";
+    String DEVICE_SET_CHILD_LOCK = "setChildLock";
+    String DEVICE_SET_NIGHT_LIGHT = "setNightLight";
+    String DEVICE_GET_PURIFIER_STATUS = "getPurifierStatus";
+    String DEVICE_LEVEL_TYPE_WIND = "wind";
 }

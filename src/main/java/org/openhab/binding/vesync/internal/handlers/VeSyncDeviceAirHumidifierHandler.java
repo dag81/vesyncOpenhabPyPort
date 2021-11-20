@@ -220,7 +220,7 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler im
             boolean cachedDataUsed = response != null;
             if (response == null) {
                 logger.trace("Requesting fresh response");
-                response = sendV2BypassCommand("getHumidifierStatus",
+                response = sendV2BypassCommand(DEVICE_GET_HUMIDIFIER_STATUS,
                         new VesyncRequestManagedDeviceBypassV2.EmptyPayload());
             } else {
                 logger.trace("Using cached response {}", response);
