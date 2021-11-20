@@ -21,6 +21,7 @@ import java.util.Set;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.vesync.internal.VeSyncBridgeConfiguration;
 import org.openhab.binding.vesync.internal.VeSyncConstants;
+import org.openhab.binding.vesync.internal.dto.requests.VeSyncProtocolConstants;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncRequestManagedDeviceBypassV2;
 import org.openhab.binding.vesync.internal.dto.responses.VesyncV2BypassHumidifierStatus;
 import org.openhab.core.cache.ExpiringCache;
@@ -44,14 +45,14 @@ import org.slf4j.LoggerFactory;
  * @author David Goodyear - Initial contribution
  */
 @NonNullByDefault
-public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
+public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler implements VeSyncProtocolConstants {
 
     public final static int DEFAULT_AIR_PURIFIER_POLL_RATE = 120;
     // "Device Type" values
     public final static String DEV_TYPE_CLASSIC_300S = "Classic300S";
 
-    private final static List<String> CLASSIC_300S_MODES = Arrays.asList("auto", "manual", "sleep");
-    private final static List<String> CLASSIC_300S_NIGHT_LIGHT_MODES = Arrays.asList("on", "dim", "off");
+    private final static List<String> CLASSIC_300S_MODES = Arrays.asList(MODE_AUTO, MODE_MANUAL, MODE_SLEEP);
+    private final static List<String> CLASSIC_300S_NIGHT_LIGHT_MODES = Arrays.asList(MODE_ON, MODE_DIM, MODE_OFF);
 
     public final static List<String> SUPPORTED_DEVICE_TYPES = List.of(DEV_TYPE_CLASSIC_300S);
 
@@ -106,15 +107,16 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
             if (command instanceof OnOffType) {
                 switch (channelUID.getId()) {
                     case DEVICE_CHANNEL_ENABLED:
-                        sendV2BypassControlCommand("setSwitch", new VesyncRequestManagedDeviceBypassV2.SetSwitchPayload(
-                                command.equals(OnOffType.ON), 0));
+                        sendV2BypassControlCommand(DEVICE_SET_SWITCH,
+                                new VesyncRequestManagedDeviceBypassV2.SetSwitchPayload(command.equals(OnOffType.ON),
+                                        0));
                         break;
                     case DEVICE_CHANNEL_DISPLAY_ENABLED:
-                        sendV2BypassControlCommand("setDisplay",
+                        sendV2BypassControlCommand(DEVICE_SET_DISPLAY,
                                 new VesyncRequestManagedDeviceBypassV2.SetState(command.equals(OnOffType.ON)));
                         break;
                     case DEVICE_CHANNEL_STOP_AT_TARGET:
-                        sendV2BypassControlCommand("setAutomaticStop",
+                        sendV2BypassControlCommand(DEVICE_SET_AUTOMATIC_STOP,
                                 new VesyncRequestManagedDeviceBypassV2.EnabledPayload(command.equals(OnOffType.ON)));
                         break;
                 }
@@ -130,10 +132,10 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                             targetHumidity = 80;
                         }
 
-                        sendV2BypassControlCommand("setHumidityMode",
-                                new VesyncRequestManagedDeviceBypassV2.SetMode("auto"), false);
+                        sendV2BypassControlCommand(DEVICE_SET_HUMIDITY_MODE,
+                                new VesyncRequestManagedDeviceBypassV2.SetMode(MODE_AUTO), false);
 
-                        sendV2BypassControlCommand("setTargetHumidity",
+                        sendV2BypassControlCommand(DEVICE_SET_TARGET_HUMIDITY_MODE,
                                 new VesyncRequestManagedDeviceBypassV2.SetTargetHumidity(targetHumidity));
                         break;
                     case DEVICE_CHANNEL_MIST_LEVEL:
@@ -157,8 +159,9 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                                 targetMistLevel = 9;
                                 break;
                         }
-                        sendV2BypassControlCommand("setVirtualLevel",
-                                new VesyncRequestManagedDeviceBypassV2.SetLevelPayload(0, "mist", targetMistLevel));
+                        sendV2BypassControlCommand(DEVICE_SET_VIRTUAL_LEVEL,
+                                new VesyncRequestManagedDeviceBypassV2.SetLevelPayload(0, DEVICE_LEVEL_TYPE_MIST,
+                                        targetMistLevel));
                         break;
                 }
             } else if (command instanceof StringType) {
@@ -171,7 +174,7 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                                     command, String.join(",", CLASSIC_300S_NIGHT_LIGHT_MODES));
                             return;
                         }
-                        sendV2BypassControlCommand("setHumidityMode",
+                        sendV2BypassControlCommand(DEVICE_SET_HUMIDITY_MODE,
                                 new VesyncRequestManagedDeviceBypassV2.SetMode(targetMode));
                         break;
                     case DEVICE_CHANNEL_AF_NIGHT_LIGHT:
@@ -183,19 +186,19 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                         }
                         int targetValue;
                         switch (targetMode) {
-                            case "off":
+                            case MODE_OFF:
                                 targetValue = 0;
                                 break;
-                            case "dim":
+                            case MODE_DIM:
                                 targetValue = 50;
                                 break;
-                            case "on":
+                            case MODE_ON:
                                 targetValue = 100;
                                 break;
                             default:
                                 return; // should never hit
                         }
-                        sendV2BypassControlCommand("setNightLightBrightness",
+                        sendV2BypassControlCommand(DEVICE_SET_NIGHT_LIGHT_BRIGHTNESS,
                                 new VesyncRequestManagedDeviceBypassV2.SetNightLightBrightness(targetValue));
                 }
             } else if (command instanceof RefreshType) {
@@ -264,11 +267,11 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
 
         // Map the numeric that only applies to the same modes as the Air Filter 300S series.
         if (humidifierStatus.result.result.night_light_brightness == 0) {
-            updateState(DEVICE_CHANNEL_AF_NIGHT_LIGHT, new StringType("off"));
+            updateState(DEVICE_CHANNEL_AF_NIGHT_LIGHT, new StringType(MODE_OFF));
         } else if (humidifierStatus.result.result.night_light_brightness == 100) {
-            updateState(DEVICE_CHANNEL_AF_NIGHT_LIGHT, new StringType("on"));
+            updateState(DEVICE_CHANNEL_AF_NIGHT_LIGHT, new StringType(MODE_ON));
         } else {
-            updateState(DEVICE_CHANNEL_AF_NIGHT_LIGHT, new StringType("dim"));
+            updateState(DEVICE_CHANNEL_AF_NIGHT_LIGHT, new StringType(MODE_DIM));
         }
 
         updateState(DEVICE_CHANNEL_CONFIG_TARGET_HUMIDITY,

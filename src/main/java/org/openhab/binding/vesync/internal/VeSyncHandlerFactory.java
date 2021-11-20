@@ -56,7 +56,7 @@ public class VeSyncHandlerFactory extends BaseThingHandlerFactory {
 
     @Override
     protected @Nullable ThingHandler createHandler(Thing thing) {
-        ThingTypeUID thingTypeUID = thing.getThingTypeUID();
+        final ThingTypeUID thingTypeUID = thing.getThingTypeUID();
 
         if (VeSyncDeviceAirPurifierHandler.SUPPORTED_THING_TYPES_UIDS.contains(thingTypeUID)) {
             return new VeSyncDeviceAirPurifierHandler(thing);
@@ -90,12 +90,11 @@ public class VeSyncHandlerFactory extends BaseThingHandlerFactory {
         // otherwise fallback to the default
         if (VeSyncDeviceAirPurifierHandler.SUPPORTED_THING_TYPES_UIDS.contains(thingTypeUID)
                 || VeSyncDeviceAirHumidifierHandler.SUPPORTED_THING_TYPES_UIDS.contains(thingTypeUID)) {
-            ThingUID deviceUID = getDeviceUID(thingTypeUID, thingUID, configuration, bridgeUID);
+            final ThingUID deviceUID = getDeviceUID(thingTypeUID, thingUID, configuration, bridgeUID);
             return super.createThing(thingTypeUID, configuration, deviceUID, bridgeUID);
         } else if (VeSyncHandlerFactory.SUPPORTED_THING_TYPES_UIDS.contains(thingTypeUID)) {
             return super.createThing(thingTypeUID, configuration, thingUID, bridgeUID);
         } else
-
             throw new IllegalArgumentException(
                     "The thing type " + thingTypeUID + " is not supported by the VeSync binding.");
     }
