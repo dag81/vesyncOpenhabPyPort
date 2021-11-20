@@ -113,7 +113,7 @@ public class VesyncV2ApiHelper {
 
                 VesyncManagedDevicesPage resultsPage = VeSyncConstants.GSON.fromJson(result,
                         VesyncManagedDevicesPage.class);
-                if (resultsPage == null || resultsPage.result.getTotal().equals(resultsPage.result.getPageSize())) {
+                if (resultsPage == null || !resultsPage.result.getTotal().equals(resultsPage.result.getPageSize())) {
                     finished = true;
                 } else {
                     ++pageNo;
