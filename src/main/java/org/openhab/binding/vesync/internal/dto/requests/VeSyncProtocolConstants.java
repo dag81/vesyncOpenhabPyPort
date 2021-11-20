@@ -49,4 +49,13 @@ public interface VeSyncProtocolConstants {
     String DEVICE_SET_NIGHT_LIGHT = "setNightLight";
     String DEVICE_GET_PURIFIER_STATUS = "getPurifierStatus";
     String DEVICE_LEVEL_TYPE_WIND = "wind";
+
+    /**
+     * Base URL for AUTHENTICATION REQUESTS
+     */
+    String PROTOCOL = "https";
+    String HOST_ENDPOINT = PROTOCOL + "://smartapi.vesync.com/cloud";
+    String V1_LOGIN_ENDPOINT = HOST_ENDPOINT + "/v1/user/login";
+    String V1_MANAGED_DEVICES_ENDPOINT = HOST_ENDPOINT + "/v1/deviceManaged/devices";
+    String V2_BYPASS_ENDPOINT = HOST_ENDPOINT + "/v2/deviceManaged/bypassV2";
 }

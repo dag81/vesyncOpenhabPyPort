@@ -12,6 +12,8 @@
  */
 package org.openhab.binding.vesync.internal.api;
 
+import static org.openhab.binding.vesync.internal.dto.requests.VeSyncProtocolConstants.*;
+
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -107,7 +109,7 @@ public class VesyncV2ApiHelper {
             while (!finished) {
                 reqDevPage.pageNo = String.valueOf(pageNo);
                 reqDevPage.pageSize = String.valueOf(100);
-                final String result = reqV1Authorized(MANAGER_UPDATE, reqDevPage);
+                final String result = reqV1Authorized(V1_MANAGED_DEVICES_ENDPOINT, reqDevPage);
 
                 VesyncManagedDevicesPage resultsPage = VeSyncConstants.GSON.fromJson(result,
                         VesyncManagedDevicesPage.class);
@@ -231,7 +233,7 @@ public class VesyncV2ApiHelper {
     private VesyncLoginResponse processLogin(String username, String password, String timezone)
             throws AuthenticationException {
         try {
-            Request request = httpClient.POST(LOGIN_URL);
+            Request request = httpClient.POST(V1_LOGIN_ENDPOINT);
 
             // No headers for login
             request.content(new StringContentProvider(
@@ -259,12 +261,4 @@ public class VesyncV2ApiHelper {
             throw new AuthenticationException(e);
         }
     }
-
-    /**
-     * Base URL for AUTHENTICATION REQUESTS
-     */
-    public final static String BASE_URL = "https://smartapi.vesync.com/cloud/v2/deviceManaged/bypassV2";
-    public final static String LOGIN_URL = "https://smartapi.vesync.com/cloud/v1/user/login";
-    public final static String MANAGER_UPDATE = "https://smartapi.vesync.com/cloud/v1/deviceManaged/devices";
-    public final static String BYPASS_V2_URL = "https://smartapi.vesync.com/cloud/v2/deviceManaged/bypassV2";
 }
