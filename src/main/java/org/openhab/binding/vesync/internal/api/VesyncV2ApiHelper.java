@@ -113,7 +113,7 @@ public class VesyncV2ApiHelper {
 
                 VesyncManagedDevicesPage resultsPage = VeSyncConstants.GSON.fromJson(result,
                         VesyncManagedDevicesPage.class);
-                if (resultsPage == null || resultsPage.result.getTotal() != resultsPage.result.getPageSize()) {
+                if (resultsPage == null || resultsPage.result.getTotal().equals(resultsPage.result.getPageSize())) {
                     finished = true;
                 } else {
                     ++pageNo;
@@ -163,10 +163,8 @@ public class VesyncV2ApiHelper {
 
     public String reqV1Authorized(final String url, final VesyncAuthenticatedRequest requestData)
             throws AuthenticationException {
-        String result = null;
         try {
-            result = directReqV1Authorized(url, requestData);
-            return result;
+            return directReqV1Authorized(url, requestData);
         } catch (final AuthenticationException ae) {
             // logger.warn("Attempt another login");
             // logger.warn("Wait for login completion");
@@ -252,8 +250,7 @@ public class VesyncV2ApiHelper {
                     throw new AuthenticationException("Invalid / unexpected JSON response from login");
                 }
             } else {
-                logger.warn("Login Failed - HTTP Response Code: {}", response.getStatus());
-                logger.warn("HTTP Failed - Response Msg: {}", response.getReason());
+                logger.warn("Login Failed - HTTP Response Code: {} - {}", response.getStatus(), response.getReason());
                 throw new AuthenticationException(
                         "HTTP response " + response.getStatus() + " - " + response.getReason());
             }
