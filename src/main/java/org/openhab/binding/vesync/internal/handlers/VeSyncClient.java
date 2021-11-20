@@ -10,14 +10,15 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.vesync.internal;
+package org.openhab.binding.vesync.internal.handlers;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncAuthenticatedRequest;
+import org.openhab.binding.vesync.internal.exceptions.AuthenticationException;
+import org.openhab.binding.vesync.internal.exceptions.DeviceUnknownException;
 
 /**
- * The {@link VeSyncDeviceAirPurifierHandler} is responsible for handling commands, which are
- * sent to one of the channels.
+ * The {@link VeSyncClient} is TBC.
  *
  * @author David Goodyear - Initial contribution
  */

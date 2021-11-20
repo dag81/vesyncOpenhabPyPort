@@ -19,6 +19,9 @@ import java.util.Set;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.vesync.internal.api.VesyncV2ApiHelper;
+import org.openhab.binding.vesync.internal.handlers.VeSyncBridgeHandler;
+import org.openhab.binding.vesync.internal.handlers.VeSyncDeviceAirHumidifierHandler;
+import org.openhab.binding.vesync.internal.handlers.VeSyncDeviceAirPurifierHandler;
 import org.openhab.core.config.core.Configuration;
 import org.openhab.core.io.net.http.HttpClientFactory;
 import org.openhab.core.thing.Bridge;
@@ -44,7 +47,7 @@ public class VeSyncHandlerFactory extends BaseThingHandlerFactory {
     private static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Set.of(THING_TYPE_SAMPLE, THING_TYPE_BRIDGE,
             THING_TYPE_AIR_PURIFIER, THING_TYPE_AIR_HUMIDIFIER);
 
-    private VesyncV2ApiHelper api = new VesyncV2ApiHelper(this);
+    private final VesyncV2ApiHelper api = new VesyncV2ApiHelper(this);
 
     @Override
     public boolean supportsThingType(ThingTypeUID thingTypeUID) {

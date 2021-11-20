@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.vesync.internal;
+package org.openhab.binding.vesync.internal.exceptions;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 

@@ -32,9 +32,6 @@ import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.util.StringContentProvider;
 import org.eclipse.jetty.http.HttpHeader;
-import org.openhab.binding.vesync.internal.AuthenticationException;
-import org.openhab.binding.vesync.internal.DeviceUnknownException;
-import org.openhab.binding.vesync.internal.VeSyncBridgeHandler;
 import org.openhab.binding.vesync.internal.VeSyncConstants;
 import org.openhab.binding.vesync.internal.VeSyncHandlerFactory;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncAuthenticatedRequest;
@@ -44,6 +41,9 @@ import org.openhab.binding.vesync.internal.dto.requests.VesyncRequestManagedDevi
 import org.openhab.binding.vesync.internal.dto.responses.VesyncLoginResponse;
 import org.openhab.binding.vesync.internal.dto.responses.VesyncManagedDevicesPage;
 import org.openhab.binding.vesync.internal.dto.responses.VesyncResponse;
+import org.openhab.binding.vesync.internal.exceptions.AuthenticationException;
+import org.openhab.binding.vesync.internal.exceptions.DeviceUnknownException;
+import org.openhab.binding.vesync.internal.handlers.VeSyncBridgeHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

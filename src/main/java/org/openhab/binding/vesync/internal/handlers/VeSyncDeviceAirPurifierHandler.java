@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.vesync.internal;
+package org.openhab.binding.vesync.internal.handlers;
 
 import static org.openhab.binding.vesync.internal.VeSyncConstants.*;
 
@@ -23,6 +23,8 @@ import java.util.Set;
 import javax.validation.constraints.NotNull;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.openhab.binding.vesync.internal.VeSyncBridgeConfiguration;
+import org.openhab.binding.vesync.internal.VeSyncConstants;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncRequestManagedDeviceBypassV2;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncRequestV1ManagedDeviceDetails;
 import org.openhab.binding.vesync.internal.dto.responses.VesyncV2BypassPurifierStatus;
@@ -104,7 +106,7 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
     public void updateBridgeBasedPolls(final VeSyncBridgeConfiguration config) {
         Integer pollRate = config.airPurifierPollInterval;
         if (pollRate == null)
-            pollRate = Integer.valueOf(DEFAULT_AIR_PURIFIER_POLL_RATE);
+            pollRate = DEFAULT_AIR_PURIFIER_POLL_RATE;
 
         if (ThingStatus.OFFLINE.equals(getThing().getStatus())) {
             setBackgroundPollInterval(-1);
@@ -156,8 +158,9 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
                         switch (deviceType) {
                             case DEV_TYPE_CORE_400S:
                                 if (!CORE_400S_FAN_MODES.contains(targetFanMode)) {
-                                    logger.warn("Fan mode command for \"{}\" is not valid in the (Core400S) API",
-                                            command.toString());
+                                    logger.warn(
+                                            "Fan mode command for \"{}\" is not valid in the (Core400S) API possible options {}",
+                                            command, String.join(",", CORE_400S_FAN_MODES));
                                     return;
                                 }
                                 break;
@@ -165,8 +168,8 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
                             case DEV_TYPE_CORE_300S:
                                 if (!CORE_200S300S_FAN_MODES.contains(targetFanMode)) {
                                     logger.warn(
-                                            "Fan mode command for \"{}\" is not valid in the (Core200S/Core300S) API",
-                                            command.toString());
+                                            "Fan mode command for \"{}\" is not valid in the (Core200S/Core300S) API possible options {}",
+                                            command, String.join(",", CORE_200S300S_FAN_MODES));
                                     return;
                                 }
                                 break;
@@ -185,8 +188,8 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
                             case DEV_TYPE_CORE_300S:
                                 if (!CORE_200S300S_NIGHT_LIGHT_MODES.contains(targetNightLightMode)) {
                                     logger.warn(
-                                            "Night light mode command for \"{}\" is not valid in the (Core200S/Core300S) API",
-                                            command.toString());
+                                            "Night light mode command for \"{}\" is not valid in the (Core200S/Core300S) API possible options {}",
+                                            command, String.join(",", CORE_200S300S_NIGHT_LIGHT_MODES));
                                     return;
                                 }
 
@@ -392,5 +395,5 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
         }
     }
 
-    private Object pollLock = new Object();
+    private final Object pollLock = new Object();
 }

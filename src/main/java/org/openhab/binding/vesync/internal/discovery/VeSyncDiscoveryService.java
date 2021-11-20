@@ -21,7 +21,7 @@ import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
-import org.openhab.binding.vesync.internal.VeSyncBridgeHandler;
+import org.openhab.binding.vesync.internal.handlers.VeSyncBridgeHandler;
 import org.openhab.core.config.discovery.AbstractDiscoveryService;
 import org.openhab.core.config.discovery.DiscoveryResultBuilder;
 import org.openhab.core.config.discovery.DiscoveryService;
@@ -124,7 +124,7 @@ public class VeSyncDiscoveryService extends AbstractDiscoveryService
             properties.put(DEVICE_PROP_CONFIG_DEVICE_NAME, apMeta.getDeviceName());
             return DiscoveryResultBuilder.create(new ThingUID(THING_TYPE_AIR_PURIFIER, bridgeUID, deviceUUID))
                     .withLabel(apMeta.getDeviceName()).withBridge(bridgeUID).withProperties(properties).build();
-        }).forEach(x -> thingDiscovered(x));
+        }).forEach(this::thingDiscovered);
         // Temporary until refactoring
         bridgeHandler.getAirHumidifiersMetadata().map(apMeta -> {
             final Map<String, Object> properties = new HashMap<>(6);
@@ -138,6 +138,6 @@ public class VeSyncDiscoveryService extends AbstractDiscoveryService
             properties.put(DEVICE_PROP_CONFIG_DEVICE_NAME, apMeta.getDeviceName());
             return DiscoveryResultBuilder.create(new ThingUID(THING_TYPE_AIR_HUMIDIFIER, bridgeUID, deviceUUID))
                     .withLabel(apMeta.getDeviceName()).withBridge(bridgeUID).withProperties(properties).build();
-        }).forEach(x -> thingDiscovered(x));
+        }).forEach(this::thingDiscovered);
     }
 }

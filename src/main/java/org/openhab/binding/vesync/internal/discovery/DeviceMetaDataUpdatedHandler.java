@@ -13,7 +13,7 @@
 package org.openhab.binding.vesync.internal.discovery;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.openhab.binding.vesync.internal.VeSyncBridgeHandler;
+import org.openhab.binding.vesync.internal.handlers.VeSyncBridgeHandler;
 
 /**
  * The {@link DeviceMetaDataUpdatedHandler} enables call-backs for when the device meta-data is updated from a bridge.

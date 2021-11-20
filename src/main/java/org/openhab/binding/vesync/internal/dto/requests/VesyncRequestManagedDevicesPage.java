@@ -12,8 +12,8 @@
  */
 package org.openhab.binding.vesync.internal.dto.requests;
 
-import org.openhab.binding.vesync.internal.AuthenticationException;
 import org.openhab.binding.vesync.internal.dto.responses.VesyncLoginResponse;
+import org.openhab.binding.vesync.internal.exceptions.AuthenticationException;
 
 import com.google.gson.annotations.SerializedName;
 

@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.vesync.internal;
+package org.openhab.binding.vesync.internal.handlers;
 
 import static org.openhab.binding.vesync.internal.VeSyncConstants.*;
 
@@ -26,12 +26,15 @@ import javax.validation.constraints.NotNull;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.openhab.binding.vesync.internal.VeSyncBridgeConfiguration;
 import org.openhab.binding.vesync.internal.api.VesyncV2ApiHelper;
 import org.openhab.binding.vesync.internal.discovery.DeviceMetaDataUpdatedHandler;
 import org.openhab.binding.vesync.internal.discovery.VeSyncDiscoveryService;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncAuthenticatedRequest;
 import org.openhab.binding.vesync.internal.dto.responses.VesyncLoginResponse;
 import org.openhab.binding.vesync.internal.dto.responses.VesyncManagedDevicesPage;
+import org.openhab.binding.vesync.internal.exceptions.AuthenticationException;
+import org.openhab.binding.vesync.internal.exceptions.DeviceUnknownException;
 import org.openhab.core.thing.Bridge;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
@@ -74,7 +77,7 @@ public class VeSyncBridgeHandler extends BaseBridgeHandler implements VeSyncClie
     }
 
     private volatile int backgroundScanTime = -1;
-    private Object scanConfigLock = new Object();
+    private final Object scanConfigLock = new Object();
 
     protected void checkIfIncreaseScanRateRequired() {
         logger.trace("Checking if increased background scanning for new devices / base information is required");
@@ -118,7 +121,7 @@ public class VeSyncBridgeHandler extends BaseBridgeHandler implements VeSyncClie
                 }
                 if (seconds > 0) {
                     backgroundDiscoveryPollingJob = scheduler.scheduleWithFixedDelay(
-                            () -> runDeviceScanSequenceNoAuthErrors(), seconds, seconds, TimeUnit.SECONDS);
+                            this::runDeviceScanSequenceNoAuthErrors, seconds, seconds, TimeUnit.SECONDS);
                 }
                 backgroundScanTime = seconds;
             }
@@ -133,7 +136,7 @@ public class VeSyncBridgeHandler extends BaseBridgeHandler implements VeSyncClie
         handlers.remove(dmduh);
     }
 
-    private CopyOnWriteArrayList<DeviceMetaDataUpdatedHandler> handlers = new CopyOnWriteArrayList<>();
+    private final CopyOnWriteArrayList<DeviceMetaDataUpdatedHandler> handlers = new CopyOnWriteArrayList<>();
 
     public void runDeviceScanSequenceNoAuthErrors() {
         try {
@@ -141,7 +144,6 @@ public class VeSyncBridgeHandler extends BaseBridgeHandler implements VeSyncClie
             updateStatus(ThingStatus.ONLINE);
         } catch (AuthenticationException ae) {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, "Check login credentials");
-            return;
         }
     }
 
@@ -166,9 +168,7 @@ public class VeSyncBridgeHandler extends BaseBridgeHandler implements VeSyncClie
 
     protected void updateThings() {
         final VeSyncBridgeConfiguration config = getConfigAs(VeSyncBridgeConfiguration.class);
-        getThing().getThings().forEach((th) -> {
-            updateThing(config, th.getHandler());
-        });
+        getThing().getThings().forEach((th) -> updateThing(config, th.getHandler()));
     }
 
     public void updateThing(ThingHandler handler) {

@@ -10,16 +10,17 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.vesync.internal;
+package org.openhab.binding.vesync.internal.handlers;
 
 import static org.openhab.binding.vesync.internal.VeSyncConstants.*;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.openhab.binding.vesync.internal.VeSyncBridgeConfiguration;
+import org.openhab.binding.vesync.internal.VeSyncConstants;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncRequestManagedDeviceBypassV2;
 import org.openhab.binding.vesync.internal.dto.responses.VesyncV2BypassHumidifierStatus;
 import org.openhab.core.cache.ExpiringCache;
@@ -52,7 +53,7 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
     private final static List<String> CLASSIC_300S_MODES = Arrays.asList("auto", "manual", "sleep");
     private final static List<String> CLASSIC_300S_NIGHT_LIGHT_MODES = Arrays.asList("on", "dim", "off");
 
-    public final static List<String> SUPPORTED_DEVICE_TYPES = Arrays.asList(DEV_TYPE_CLASSIC_300S);
+    public final static List<String> SUPPORTED_DEVICE_TYPES = List.of(DEV_TYPE_CLASSIC_300S);
 
     private final Logger logger = LoggerFactory.getLogger(VeSyncDeviceAirHumidifierHandler.class);
 
@@ -72,7 +73,7 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
     public void updateBridgeBasedPolls(final VeSyncBridgeConfiguration config) {
         Integer pollRate = config.airPurifierPollInterval;
         if (pollRate == null)
-            pollRate = Integer.valueOf(DEFAULT_AIR_PURIFIER_POLL_RATE);
+            pollRate = DEFAULT_AIR_PURIFIER_POLL_RATE;
 
         if (ThingStatus.OFFLINE.equals(getThing().getStatus())) {
             setBackgroundPollInterval(-1);
@@ -167,8 +168,7 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                         if (!CLASSIC_300S_MODES.contains(targetMode)) {
                             logger.warn(
                                     "Humidifier mode command for \"{}\" is not valid in the (Classic300S) API possible options {}",
-                                    command.toString(),
-                                    CLASSIC_300S_NIGHT_LIGHT_MODES.stream().collect(Collectors.joining(",")));
+                                    command, String.join(",", CLASSIC_300S_NIGHT_LIGHT_MODES));
                             return;
                         }
                         sendV2BypassControlCommand("setHumidityMode",
@@ -178,11 +178,10 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                         if (!CLASSIC_300S_NIGHT_LIGHT_MODES.contains(targetMode)) {
                             logger.warn(
                                     "Humidifier night light mode command for \"{}\" is not valid in the (Classic300S) API possible options {}",
-                                    command.toString(),
-                                    CLASSIC_300S_NIGHT_LIGHT_MODES.stream().collect(Collectors.joining(",")));
+                                    command, String.join(",", CLASSIC_300S_NIGHT_LIGHT_MODES));
                             return;
                         }
-                        int targetValue = -1;
+                        int targetValue;
                         switch (targetMode) {
                             case "off":
                                 targetValue = 0;
@@ -276,5 +275,5 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                 new DecimalType(humidifierStatus.result.result.configuration.autoTargetHumidity));
     }
 
-    private Object pollLock = new Object();
+    private final Object pollLock = new Object();
 }

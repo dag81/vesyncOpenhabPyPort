@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.vesync.internal;
+package org.openhab.binding.vesync.internal.handlers;
 
 import static org.openhab.binding.vesync.internal.VeSyncConstants.*;
 
@@ -26,10 +26,14 @@ import javax.validation.constraints.NotNull;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.openhab.binding.vesync.internal.VeSyncBridgeConfiguration;
+import org.openhab.binding.vesync.internal.VeSyncDeviceConfiguration;
 import org.openhab.binding.vesync.internal.api.VesyncV2ApiHelper;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncAuthenticatedRequest;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncRequestManagedDeviceBypassV2;
 import org.openhab.binding.vesync.internal.dto.responses.VesyncManagedDevicesPage;
+import org.openhab.binding.vesync.internal.exceptions.AuthenticationException;
+import org.openhab.binding.vesync.internal.exceptions.DeviceUnknownException;
 import org.openhab.core.cache.ExpiringCache;
 import org.openhab.core.thing.Bridge;
 import org.openhab.core.thing.Channel;
@@ -62,7 +66,7 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
     private int activePollRate = -2; // -1 is used to deactivate the poll, so default to a different value
 
     private @Nullable ScheduledFuture<?> backgroundPollingScheduler;
-    private Object pollConfigLock = new Object();
+    private final Object pollConfigLock = new Object();
 
     protected @Nullable Channel findChannelById(final String channelGroupId) {
         // return getThing().getChannels().stream().anyMatch(x -> x.getUID().getId().equals(channelGroupId));
@@ -80,9 +84,7 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
     public void channelLinked(ChannelUID channelUID) {
         super.channelLinked(channelUID);
 
-        scheduler.execute(() -> {
-            pollForUpdate();
-        });
+        scheduler.execute(this::pollForUpdate);
     }
 
     protected void setBackgroundPollInterval(final int seconds) {
@@ -101,7 +103,7 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
             }
             if (seconds > 0) {
                 logger.trace("Device data is polling every {} seconds", seconds);
-                backgroundPollingScheduler = scheduler.scheduleWithFixedDelay(() -> pollForUpdate(), seconds, seconds,
+                backgroundPollingScheduler = scheduler.scheduleWithFixedDelay(this::pollForUpdate, seconds, seconds,
                         TimeUnit.SECONDS);
             }
             activePollRate = seconds;
@@ -193,7 +195,7 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
 
     private void removeChannels() {
         final String[] channelsToRemove = getChannelsToRemove();
-        final List<Channel> channelsToBeRemoved = new ArrayList<Channel>();
+        final List<Channel> channelsToBeRemoved = new ArrayList<>();
         for (String name : channelsToRemove) {
             Channel ch = getThing().getChannel(name);
             if (ch != null)
@@ -205,7 +207,7 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
     }
 
     /**
-     * Extract the common properities for all devices, from the given meta-data of a device.
+     * Extract the common properties for all devices, from the given meta-data of a device.
      * 
      * @param metadata - the meta-data of a device
      * @return - Map of common props
@@ -238,8 +240,7 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
             }
             ThingHandler handler = bridge.getHandler();
             if (handler instanceof VeSyncClient) {
-                VeSyncClient bridgeHandler = (VeSyncClient) handler;
-                veSyncClient = bridgeHandler;
+                veSyncClient = (VeSyncClient) handler;
             } else {
                 return null;
             }
@@ -306,7 +307,8 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
     public void initialize() {
 
         // Sanity check basic setup
-        if (getBridgeHandler() == null) {
+        final VeSyncBridgeHandler bridge = (VeSyncBridgeHandler) getBridgeHandler();
+        if (bridge == null) {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.BRIDGE_UNINITIALIZED, "Missing bridge for API link");
             return;
         } else {
@@ -318,17 +320,15 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
         // Populate device props - this is required for polling, to cross-check the device model.
         updateDeviceMetaData();
 
-        // If the base device class marks it as offline there is a issue that will prevent normal operation
+        // If the base device class marks it as offline there is an issue that will prevent normal operation
         if (getThing().getStatus().equals(ThingStatus.OFFLINE)) {
             return;
         }
         // This will force the bridge to push the configuration parameters for polling to the handler
-        ((VeSyncBridgeHandler) getBridgeHandler()).updateThing(this);
+        bridge.updateThing(this);
 
         // Give the bridge time to build the datamaps of the devices
-        scheduler.schedule(() -> {
-            pollForUpdate();
-        }, 10, TimeUnit.SECONDS);
+        scheduler.schedule(this::pollForUpdate, 10, TimeUnit.SECONDS);
     }
 
     public void pollForUpdate() {
