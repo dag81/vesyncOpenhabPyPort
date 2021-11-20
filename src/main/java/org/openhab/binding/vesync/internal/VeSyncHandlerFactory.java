@@ -44,7 +44,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(configurationPid = "binding.vesync", service = ThingHandlerFactory.class)
 public class VeSyncHandlerFactory extends BaseThingHandlerFactory {
 
-    private static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Set.of(THING_TYPE_SAMPLE, THING_TYPE_BRIDGE,
+    private static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Set.of(THING_TYPE_BRIDGE,
             THING_TYPE_AIR_PURIFIER, THING_TYPE_AIR_HUMIDIFIER);
 
     private final VesyncV2ApiHelper api = new VesyncV2ApiHelper(this);

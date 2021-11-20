@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.junit.Test;
-import org.openhab.binding.vesync.internal.AuthenticationException;
+import org.openhab.binding.vesync.internal.exceptions.AuthenticationException;
 import org.openhab.binding.vesync.internal.VeSyncConstants;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncAuthenticatedRequest;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncLoginCredentials;

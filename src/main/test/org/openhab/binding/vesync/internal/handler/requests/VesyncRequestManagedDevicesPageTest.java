@@ -15,9 +15,8 @@ package org.openhab.binding.vesync.internal.handler.requests;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.eclipse.jetty.security.Authenticator;
 import org.junit.Test;
-import org.openhab.binding.vesync.internal.AuthenticationException;
+import org.openhab.binding.vesync.internal.exceptions.AuthenticationException;
 import org.openhab.binding.vesync.internal.VeSyncConstants;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncLoginCredentials;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncRequestManagedDevicesPage;

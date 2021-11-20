@@ -41,7 +41,6 @@ public class VeSyncConstants {
     public static final ThingTypeUID THING_TYPE_BRIDGE = new ThingTypeUID(BINDING_ID, "bridge");
     public static final ThingTypeUID THING_TYPE_AIR_PURIFIER = new ThingTypeUID(BINDING_ID, "AirPurifier");
     public static final ThingTypeUID THING_TYPE_AIR_HUMIDIFIER = new ThingTypeUID(BINDING_ID, "AirHumidifier");
-    public static final ThingTypeUID THING_TYPE_SAMPLE = new ThingTypeUID(BINDING_ID, "sample");
 
     // Thing configuration properties
     public static final String DEVICE_MAC_ID = "macAddress";
@@ -59,7 +58,6 @@ public class VeSyncConstants {
     public static final String DEVICE_CHANNEL_AIRQUALITY_BASIC = "air-quality";
     public static final String DEVICE_CHANNEL_AIRQUALITY_PPM25 = "air-quality-ppm25";
 
-    public static final String DEVICE_CHANNEL_AF_CONFIG_DISPLAY = "config-display";
     public static final String DEVICE_CHANNEL_AF_CONFIG_DISPLAY_FOREVER = "config-display-forever";
     public static final String DEVICE_CHANNEL_AF_CONFIG_AUTO_MODE_PREF = "config-auto-mode";
 
@@ -76,11 +74,8 @@ public class VeSyncConstants {
     public static final String DEVICE_CHANNEL_STOP_AT_TARGET = "stop-at-target-level";
     public static final String DEVICE_CHANNEL_HUMIDITY = "humidity";
     public static final String DEVICE_CHANNEL_MIST_LEVEL = "mist-level";
-    public static final String DEVICE_CHANNEL_MIST_VIRTUAL_LEVEL = "mist-virtual-level";
     public static final String DEVICE_CHANNEL_HUMIDIFIER_MODE = "humidifier-mode";
-    public static final String DEVICE_CHANNEL_NIGHT_LIGHT_LEVEL = "night_light_brightness";
 
-    public static final String DEVICE_CHANNEL_CONFIG_AUTO_STOP = "config-stop-at-target";
     public static final String DEVICE_CHANNEL_CONFIG_TARGET_HUMIDITY = "config-target-humidity";
 
     // Property name constants
