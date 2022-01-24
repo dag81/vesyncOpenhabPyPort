@@ -67,6 +67,12 @@ public class VesyncV2BypassHumidifierStatus extends VesyncResponse {
             @SerializedName("night_light_brightness")
             public int night_light_brightness;
 
+            @SerializedName("warm_enabled")
+            public boolean warn_enabled;
+
+            @SerializedName("warm_level")
+            public int warm_level;
+
             public class HumidityPurifierConfig {
                 @SerializedName("auto_target_humidity")
                 public int autoTargetHumidity;

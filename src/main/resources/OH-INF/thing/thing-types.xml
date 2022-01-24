@@ -112,6 +112,8 @@
 			<channel id="humidifier-mode" typeId="airHumidifierModeType"/>
 			<channel id="night-light-mode" typeId="deviceAFNightLight"/>
 			<channel id="config-target-humidity" typeId="deviceConfigTargetHumidity"/>
+			<channel id="warm-enabled" typeId="warmModeEnabled"/>
+			<channel id="warm-level" typeId="warmLevel"/>
 		</channels>
 
 		<properties>
@@ -333,6 +335,20 @@
 		<item-type>Number:Dimensionless</item-type>
 		<label>Night Light Level</label>
 		<description>System representation of night light brightness level?</description>
+		<state readOnly="false" pattern="%.0f"/>
+	</channel-type>
+
+	<channel-type id="warmModeEnabled">
+		<item-type>Switch</item-type>
+		<label>Warm Mode Enabled</label>
+		<description>Indicator if the device is set to warm mist</description>
+		<state readOnly="false"/>
+	</channel-type>
+
+	<channel-type id="warmLevel">
+		<item-type>Number:Dimensionless</item-type>
+		<label>Warm Level</label>
+		<description>Warm Level</description>
 		<state readOnly="false" pattern="%.0f"/>
 	</channel-type>
 

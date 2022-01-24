@@ -75,6 +75,8 @@ public class VeSyncConstants {
     public static final String DEVICE_CHANNEL_HUMIDITY = "humidity";
     public static final String DEVICE_CHANNEL_MIST_LEVEL = "mist-level";
     public static final String DEVICE_CHANNEL_HUMIDIFIER_MODE = "humidifier-mode";
+    public static final String DEVICE_CHANNEL_WARM_ENABLED = "warm-enabled";
+    public static final String DEVICE_CHANNEL_WARM_LEVEL = "warm-level";
 
     public static final String DEVICE_CHANNEL_CONFIG_TARGET_HUMIDITY = "config-target-humidity";
 
