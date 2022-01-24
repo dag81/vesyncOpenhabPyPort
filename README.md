@@ -4,7 +4,7 @@ It's current support is for the CoreXXXS air purifiers branded as Levoit which u
 
 Models supported are Core200S, Core300S and Core400S.
 
-Potentially it's supporting the Classic 300S Humidifier - awaiting feedback and information.
+Externally verified support of Classic 300S and 600S Humidifier's.
 
 ### Restrictions / TODO
 
@@ -13,9 +13,8 @@ Potentially it's supporting the Classic 300S Humidifier - awaiting feedback and 
 3. Confirm the suspected behaviour that air_quality is relevant only to the Core200S and Core300S models, and maps to some sort of visual display on the devices. 
    * If this is confirmed dynamically remove the air_quality channel from the Core400S model
    * If this is confirmed dynamically remove the air_quality_ppm25 channel from the Core200S and Core300S models
-4. Look at protocol mapping the V1 specification for the LV prefixed model. 
-5. Confirm untested Humidity Unit Classic300S Support. 
-6. Look at potentially other equipment supported by the VeSync API.
+4. Look at protocol mapping the V1 specification for the LV prefixed model.
+5. Look at potentially other equipment supported by the VeSync API.
 
 ### Credits
 
@@ -28,11 +27,11 @@ The binding code is based on a lot of work done by other developers:
 
 This binding supports the follow thing types:
 
-| Thing        | Thing Type | Discovery | Description      |  
-|--------------|------------|-----------|------------------|
-| Bridge       | Bridge     | Manual    | A single connection to the VeSync API  |
+| Thing        | Thing Type | Discovery | Description                                                          |  
+|--------------|------------|-----------|----------------------------------------------------------------------|
+| Bridge       | Bridge     | Manual    | A single connection to the VeSync API                                |
 | AirPurifier  | Thing      | Automatic | A Air Purifier supporting V2 e.g. Core200S/Core300S or Core400S unit |
-| AirHumidifier| Thing      | Automatic | A Air Humidifier supporting V2 e.g. Classic300S |
+| AirHumidifier| Thing      | Automatic | A Air Humidifier supporting V2 e.g. Classic300S or 600s               |
 
 This binding was developed from the great work in the listed projects.
 
@@ -79,19 +78,19 @@ Channel names in **bold** are read/write, everything else is read-only
 
 ### AirHumidifier Thing
 
-| Channel                    | Type                    | Description                                               | Questions |
-|----------------------------|-------------------------|-----------------------------------------------------------|-----------|
-| **enabled**                | Switch                  | Whether the hardware device is enabled (Switched on)      ||
-| **display**                | Switch                  | Whether the display is enabled (display is shown)         ||
-| water-lacking              | Switch                  | Indicator whether the unit is lacking water               | Does this reflect as low water - or no water? |
-| humidity-high              | Switch                  | Indicator for high humidity                               | Does this indicate a currently high humidity measurement in the room? |
-| water-tank-lifted          | Switch                  | Indicator for whether the water tank is removed           | Is this description correct?|
-| **stop-at-target-level**   | Switch                  | Whether the unit is set to stop when the target is reached|
-| humidity                   | Number:Dimensionless    | Indicator for the currently measured humidity level       |
-| **mist-level**             | Number:Dimensionless    | The current mist level set (1-3)                          |
-| **humidifier-mode**        | String                  | The current mode of operation [auto,sleep]                |
-| **night_light_mode**       | String                  | The night light mode [on,dim,off]                         ||                                                                                           
-| **config-target-humidity** | Number:Dimensionless    | Config: What the target humidity is set to reach |
+| Channel                    | Type                    | Description                                               | Model's Support    | 
+|----------------------------|-------------------------|-----------------------------------------------------------|-------------------|
+| **enabled**                | Switch                  | Whether the hardware device is enabled (Switched on)      | 300S, 600S        |
+| **display**                | Switch                  | Whether the display is enabled (display is shown)         | 300S, 600S        |
+| water-lacking              | Switch                  | Indicator whether the unit is lacking water               | 300S, 600S        |
+| humidity-high              | Switch                  | Indicator for high humidity                               | 300S, 600S |
+| water-tank-lifted          | Switch                  | Indicator for whether the water tank is removed           | 300S, 600S |
+| **stop-at-target-level**   | Switch                  | Whether the unit is set to stop when the target is reached| 300S, 600S |
+| humidity                   | Number:Dimensionless    | Indicator for the currently measured humidity level       | 300S, 600S |
+| **mist-level**             | Number:Dimensionless    | The current mist level set (1-3)                          | 300S, 600S |
+| **humidifier-mode**        | String                  | The current mode of operation [auto,sleep]                | 300S, 600S |
+| **night_light_mode**       | String                  | The night light mode [on,dim,off]                         | 300S       |
+| **config-target-humidity** | Number:Dimensionless    | Config: What the target humidity is set to reach | 300S, 600S |
 
 ## Full Example
 
@@ -230,6 +229,23 @@ Frame {
    Switch item=LoungeAHPower
    Switch item=LoungeAHDisplay
    Switch item=LoungeAHNightLightMode label="Night Light Mode" mappings=[on="On", dim="Dimmed", off="Off"] icon="settings"
+   Switch item=LoungeAHMode label="Mode" mappings=[auto="Auto", sleep="Sleeping"] icon="settings"
+   Text   icon="none" item=LoungeAHWaterLacking
+   Text   icon="none" item=LoungeAHHighHumidity
+   Text   icon="none" item=LoungeAHWaterTankRemoved
+   Text   icon="none" item=LoungeAHHumidity
+   Switch item=LoungeAHTargetStop
+   Slider item=LoungeAHTarget minValue=30 maxValue=80
+   Slider item=LoungeAHMistLevel minValue=1 maxValue=3
+}
+```
+
+#### Air Humidifier Classic 600S Model
+
+```
+Frame {
+   Switch item=LoungeAHPower
+   Switch item=LoungeAHDisplay
    Switch item=LoungeAHMode label="Mode" mappings=[auto="Auto", sleep="Sleeping"] icon="settings"
    Text   icon="none" item=LoungeAHWaterLacking
    Text   icon="none" item=LoungeAHHighHumidity

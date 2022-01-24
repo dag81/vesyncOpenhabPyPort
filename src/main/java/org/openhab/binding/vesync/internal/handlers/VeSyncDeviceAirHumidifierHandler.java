@@ -50,15 +50,30 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
     public final static int DEFAULT_AIR_PURIFIER_POLL_RATE = 120;
     // "Device Type" values
     public final static String DEV_TYPE_CLASSIC_300S = "Classic300S";
+    public final static String DEV_TYPE_600S = "LUH-A602S-WUS";
 
-    private final static List<String> CLASSIC_300S_MODES = Arrays.asList(MODE_AUTO, MODE_MANUAL, MODE_SLEEP);
+    private final static List<String> CLASSIC_300S_600S_MODES = Arrays.asList(MODE_AUTO, MODE_MANUAL, MODE_SLEEP);
     private final static List<String> CLASSIC_300S_NIGHT_LIGHT_MODES = Arrays.asList(MODE_ON, MODE_DIM, MODE_OFF);
 
-    public final static List<String> SUPPORTED_DEVICE_TYPES = List.of(DEV_TYPE_CLASSIC_300S);
+    public final static List<String> SUPPORTED_DEVICE_TYPES = List.of(DEV_TYPE_CLASSIC_300S, DEV_TYPE_600S);
 
     private final Logger logger = LoggerFactory.getLogger(VeSyncDeviceAirHumidifierHandler.class);
 
     public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Set.of(THING_TYPE_AIR_HUMIDIFIER);
+
+    @Override
+    protected String[] getChannelsToRemove() {
+        String[] toRemove = new String[] {};
+        final String deviceType = getThing().getProperties().get(DEVICE_PROP_DEVICE_TYPE);
+        if (deviceType != null) {
+            switch (deviceType) {
+                case DEV_TYPE_600S:
+                    toRemove = new String[] { DEVICE_CHANNEL_AF_NIGHT_LIGHT };
+                    break;
+            }
+        }
+        return toRemove;
+    }
 
     public VeSyncDeviceAirHumidifierHandler(Thing thing) {
         super(thing);
@@ -168,9 +183,9 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                 final String targetMode = command.toString().toLowerCase();
                 switch (channelUID.getId()) {
                     case DEVICE_CHANNEL_HUMIDIFIER_MODE:
-                        if (!CLASSIC_300S_MODES.contains(targetMode)) {
+                        if (!CLASSIC_300S_600S_MODES.contains(targetMode)) {
                             logger.warn(
-                                    "Humidifier mode command for \"{}\" is not valid in the (Classic300S) API possible options {}",
+                                    "Humidifier mode command for \"{}\" is not valid in the (Classic300S/600S) API possible options {}",
                                     command, String.join(",", CLASSIC_300S_NIGHT_LIGHT_MODES));
                             return;
                         }
@@ -178,6 +193,10 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                                 new VesyncRequestManagedDeviceBypassV2.SetMode(targetMode));
                         break;
                     case DEVICE_CHANNEL_AF_NIGHT_LIGHT:
+                        if (DEV_TYPE_600S.equals(deviceType)) {
+                            logger.warn("Humidifier night light is not valid for your device ({}})", deviceType);
+                            return;
+                        }
                         if (!CLASSIC_300S_NIGHT_LIGHT_MODES.contains(targetMode)) {
                             logger.warn(
                                     "Humidifier night light mode command for \"{}\" is not valid in the (Classic300S) API possible options {}",
@@ -253,6 +272,8 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
             return;
         }
 
+        final String deviceType = getThing().getProperties().get(DEVICE_PROP_DEVICE_TYPE);
+
         updateState(DEVICE_CHANNEL_ENABLED, OnOffType.from(humidifierStatus.result.result.enabled));
         updateState(DEVICE_CHANNEL_DISPLAY_ENABLED, OnOffType.from(humidifierStatus.result.result.display));
         updateState(DEVICE_CHANNEL_WATER_LACKS, OnOffType.from(humidifierStatus.result.result.water_lacks));
@@ -265,13 +286,16 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
 
         updateState(DEVICE_CHANNEL_HUMIDIFIER_MODE, new StringType(humidifierStatus.result.result.mode));
 
-        // Map the numeric that only applies to the same modes as the Air Filter 300S series.
-        if (humidifierStatus.result.result.night_light_brightness == 0) {
-            updateState(DEVICE_CHANNEL_AF_NIGHT_LIGHT, new StringType(MODE_OFF));
-        } else if (humidifierStatus.result.result.night_light_brightness == 100) {
-            updateState(DEVICE_CHANNEL_AF_NIGHT_LIGHT, new StringType(MODE_ON));
-        } else {
-            updateState(DEVICE_CHANNEL_AF_NIGHT_LIGHT, new StringType(MODE_DIM));
+        // Only the 300S supports nightlight currently of tested devices.
+        if (deviceType.equals(DEV_TYPE_CLASSIC_300S)) {
+            // Map the numeric that only applies to the same modes as the Air Filter 300S series.
+            if (humidifierStatus.result.result.night_light_brightness == 0) {
+                updateState(DEVICE_CHANNEL_AF_NIGHT_LIGHT, new StringType(MODE_OFF));
+            } else if (humidifierStatus.result.result.night_light_brightness == 100) {
+                updateState(DEVICE_CHANNEL_AF_NIGHT_LIGHT, new StringType(MODE_ON));
+            } else {
+                updateState(DEVICE_CHANNEL_AF_NIGHT_LIGHT, new StringType(MODE_DIM));
+            }
         }
 
         updateState(DEVICE_CHANNEL_CONFIG_TARGET_HUMIDITY,
