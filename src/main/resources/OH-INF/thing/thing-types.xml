@@ -30,14 +30,9 @@
 				<description>Enable background scanning for new devices.</description>
 				<default>false</default>
 			</parameter>
-			<parameter name="pollingInterval" type="integer" min="60" step="1" unit="s">
-				<label>Polling Interval</label>
-				<description>Seconds between fetching values from the Hue bridge. Default is 60.</description>
-				<default>60</default>
-			</parameter>
 			<parameter name="airPurifierPollInterval" type="integer" min="5" step="1" unit="s">
-				<label>Polling Interval For Air Filters</label>
-				<description>Seconds between fetching background updates about the air purifiers.</description>
+				<label>Polling Interval For Air Filters / Humidifiers</label>
+				<description>Seconds between fetching background updates about the air purifiers / humidifiers.</description>
 				<default>5</default>
 			</parameter>
 		</config-description>
