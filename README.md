@@ -34,7 +34,8 @@ This binding supports the follow thing types:
 
 This binding was developed from the great work in the listed projects.
 
-The only unit it has been tested against is the Core400S unit, **I'm looking for others to confirm** my queries regarding **the Core200S and Core300S** units.
+The only Air Filter unit it has been tested against is the Core400S unit, **I'm looking for others to confirm** my queries regarding **the Core200S and Core300S** units.
+The ***Classic 300S Humidifier*** has been tested, and ***600S with current warm mode restrictions***.
 
 ## Discovery
 
