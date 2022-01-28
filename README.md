@@ -103,8 +103,7 @@ Channel names in **bold** are read/write, everything else is read-only
 | password               | String                  | The password as used in the VeSync mobile application |
 | airPurifierPollInterval| String                  | The poll interval for air filters / humidifers        |
 
-* Note Air PPM Levels don't usually change quickly - 60s seems reasonable if OpenHab is controlling it and your
-  don't want near instant feedback of physical interactions with the devices.
+* Note Air PPM Levels don't usually change quickly - 60s seems reasonable if OpenHab is controlling it and your don't want near instant feedback of physical interactions with the devices.
 
 #### AirPurifier configuration parameters
 
@@ -222,6 +221,7 @@ Frame {
 #### Air Purifier Core 200S/300S Model
 
 * This is untested but based on data from pyvesync.
+
 ```
 Frame {
    Switch item=LoungeAPPower label="Power"
