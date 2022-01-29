@@ -7,7 +7,7 @@ Air Humidifier models supported are Classic 300S, 600S (excluding writing suppor
 
 Potentially supported models:
 
-Air Humidifier Classic 200S (Same as 300S without the nightlight from initial checks)
+Air Humidifier Classic 200S / Dual 200S (Same as 300S without the nightlight from initial checks)
 
 ### Restrictions / TODO
 
@@ -19,7 +19,7 @@ Air Humidifier Classic 200S (Same as 300S without the nightlight from initial ch
 4. Look at protocol mapping the V1 specification for the LV prefixed model.
 5. Look at potentially other equipment supported by the VeSync API.
 6. Add remaining write commands to complete Humidifier 600S support, (enabled & level).
-7. Adjust Humidifier 200S support based on feedback
+7. Adjust Humidifier 200S & Dual200S support based on feedback, given initial conversion.
 
 
 ### Credits
@@ -85,19 +85,19 @@ Channel names in **bold** are read/write, everything else is read-only
 
 ### AirHumidifier Thing
 
-| Channel                    | Type                    | Description                                                | Model's Supported | 
-|----------------------------|-------------------------|------------------------------------------------------------|-------------------|
-| **enabled**                | Switch                  | Whether the hardware device is enabled (Switched on)       | 200S, 300S, 600S  |
-| **display**                | Switch                  | Whether the display is enabled (display is shown)          | 200S, 300S, 600S  |
-| water-lacking              | Switch                  | Indicator whether the unit is lacking water                | 200S, 300S, 600S  |
-| humidity-high              | Switch                  | Indicator for high humidity                                | 200S, 300S, 600S  |
-| water-tank-lifted          | Switch                  | Indicator for whether the water tank is removed            | 200S, 300S, 600S  |
-| **stop-at-target-level**   | Switch                  | Whether the unit is set to stop when the target is reached | 200S, 300S, 600S  |
-| humidity                   | Number:Dimensionless    | Indicator for the currently measured humidity level        | 200S, 300S, 600S  |
-| **mist-level**             | Number:Dimensionless    | The current mist level set (1-3)                           | 200S, 300S, 600S  |
-| **humidifier-mode**        | String                  | The current mode of operation [auto,sleep]                 | 200S, 300S, 600S  |
-| **night_light_mode**       | String                  | The night light mode [on,dim,off]                          | 300S              |
-| **config-target-humidity** | Number:Dimensionless    | Config: What the target humidity is set to reach           | 200S, 300S, 600S  |
+| Channel                    | Type                    | Description                                                | Model's Supported          | 
+|----------------------------|-------------------------|------------------------------------------------------------|----------------------------|
+| **enabled**                | Switch                  | Whether the hardware device is enabled (Switched on)       | 200S, Dual200S, 300S, 600S |
+| **display**                | Switch                  | Whether the display is enabled (display is shown)          | 200S, Dual200S, 300S, 600S |
+| water-lacking              | Switch                  | Indicator whether the unit is lacking water                | 200S, Dual200S, 300S, 600S |
+| humidity-high              | Switch                  | Indicator for high humidity                                | 200S, Dual200S, 300S, 600S |
+| water-tank-lifted          | Switch                  | Indicator for whether the water tank is removed            | 200S, Dual200S, 300S, 600S |
+| **stop-at-target-level**   | Switch                  | Whether the unit is set to stop when the target is reached | 200S, Dual200S, 300S, 600S |
+| humidity                   | Number:Dimensionless    | Indicator for the currently measured humidity level        | 200S, Dual200S, 300S, 600S |
+| **mist-level**             | Number:Dimensionless    | The current mist level set (1-3)                           | 200S, Dual200S, 300S, 600S |
+| **humidifier-mode**        | String                  | The current mode of operation [auto,sleep]                 | 200S, Dual200S, 300S, 600S |
+| **night_light_mode**       | String                  | The night light mode [on,dim,off]                          | 300S                       |
+| **config-target-humidity** | Number:Dimensionless    | Config: What the target humidity is set to reach           | 200S, Dual200S, 300S, 600S |
 
 ## Full Example
 
@@ -177,7 +177,7 @@ DateTime             LoungeAPTimerExpire           "Lounge Air Purifier Timer Ex
 Number               LoungeAPSchedulesCount 	   "Lounge Air Purifier Schedules Count"                        { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:schedules-count" }
 ```
 
-#### Air Humidifier Classic 200S Model
+#### Air Humidifier Classic 200S / Dual 200S Model
 
 ```
 Switch               LoungeAHPower             "Lounge Air Humidifier Power"                                  { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:enabled" }
@@ -260,7 +260,7 @@ Frame {
 }
 ```
 
-#### Air Humidifier Classic 200S Model
+#### Air Humidifier Classic 200S / Dual 200S Model
 
 * Untested
 

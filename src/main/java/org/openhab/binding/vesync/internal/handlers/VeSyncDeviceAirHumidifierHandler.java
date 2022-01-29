@@ -49,6 +49,7 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
 
     public final static int DEFAULT_AIR_PURIFIER_POLL_RATE = 120;
     // "Device Type" values
+    public final static String DEV_TYPE_DUAL_200S = "Dual200S";
     public final static String DEV_TYPE_CLASSIC_200S = "Classic200S";
     public final static String DEV_TYPE_CLASSIC_300S = "Classic300S";
     public final static String DEV_TYPE_600S = "LUH-A602S-WUS";
@@ -56,8 +57,8 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
     private final static List<String> CLASSIC_300S_600S_MODES = Arrays.asList(MODE_AUTO, MODE_MANUAL, MODE_SLEEP);
     private final static List<String> CLASSIC_300S_NIGHT_LIGHT_MODES = Arrays.asList(MODE_ON, MODE_DIM, MODE_OFF);
 
-    public final static List<String> SUPPORTED_DEVICE_TYPES = List.of(DEV_TYPE_CLASSIC_200S, DEV_TYPE_CLASSIC_300S,
-            DEV_TYPE_600S);
+    public final static List<String> SUPPORTED_DEVICE_TYPES = List.of(DEV_TYPE_DUAL_200S, DEV_TYPE_CLASSIC_200S,
+            DEV_TYPE_CLASSIC_300S, DEV_TYPE_600S);
 
     private final Logger logger = LoggerFactory.getLogger(VeSyncDeviceAirHumidifierHandler.class);
 
@@ -72,6 +73,7 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                 case DEV_TYPE_CLASSIC_300S:
                     toRemove = new String[] { DEVICE_CHANNEL_WARM_ENABLED, DEVICE_CHANNEL_WARM_LEVEL };
                     break;
+                case DEV_TYPE_DUAL_200S:
                 case DEV_TYPE_CLASSIC_200S:
                 case DEV_TYPE_600S:
                     toRemove = new String[] { DEVICE_CHANNEL_AF_NIGHT_LIGHT };
@@ -205,7 +207,7 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                                 new VesyncRequestManagedDeviceBypassV2.SetMode(targetMode));
                         break;
                     case DEVICE_CHANNEL_AF_NIGHT_LIGHT:
-                        if (DEV_TYPE_600S.equals(deviceType)) {
+                        if (!DEV_TYPE_CLASSIC_300S.equals(deviceType)) {
                             logger.warn("Humidifier night light is not valid for your device ({}})", deviceType);
                             return;
                         }
