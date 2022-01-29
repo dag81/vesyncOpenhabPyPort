@@ -1,9 +1,13 @@
 # VeSync Binding
 
-It's current support is for the CoreXXXS air purifiers branded as Levoit which utilise the VeSync app.
+It's current support is for the CoreXXXS air purifiers branded as Levoit which utilise the VeSync app based on the V2 protocol.
 
 Air Filtering models supported are Core200S, Core300S and Core400S.
-Air Humidifer models supported are Classic 300S, 600S (excluding writing support for warm mode / level - see GitHub issue).
+Air Humidifier models supported are Classic 300S, 600S (excluding writing support for warm mode / level - see GitHub issue).
+
+Potentially supported models:
+
+Air Humidifier Classic 200S (Same as 300S without the nightlight from initial checks)
 
 ### Restrictions / TODO
 
@@ -14,6 +18,9 @@ Air Humidifer models supported are Classic 300S, 600S (excluding writing support
    * If this is confirmed dynamically remove the air_quality_ppm25 channel from the Core200S and Core300S models
 4. Look at protocol mapping the V1 specification for the LV prefixed model.
 5. Look at potentially other equipment supported by the VeSync API.
+6. Add remaining write commands to complete Humidifier 600S support, (enabled & level).
+7. Adjust Humidifier 200S support based on feedback
+
 
 ### Credits
 
@@ -80,17 +87,17 @@ Channel names in **bold** are read/write, everything else is read-only
 
 | Channel                    | Type                    | Description                                                | Model's Supported | 
 |----------------------------|-------------------------|------------------------------------------------------------|-------------------|
-| **enabled**                | Switch                  | Whether the hardware device is enabled (Switched on)       | 300S, 600S        |
-| **display**                | Switch                  | Whether the display is enabled (display is shown)          | 300S, 600S        |
-| water-lacking              | Switch                  | Indicator whether the unit is lacking water                | 300S, 600S        |
-| humidity-high              | Switch                  | Indicator for high humidity                                | 300S, 600S        |
-| water-tank-lifted          | Switch                  | Indicator for whether the water tank is removed            | 300S, 600S        |
-| **stop-at-target-level**   | Switch                  | Whether the unit is set to stop when the target is reached | 300S, 600S        |
-| humidity                   | Number:Dimensionless    | Indicator for the currently measured humidity level        | 300S, 600S        |
-| **mist-level**             | Number:Dimensionless    | The current mist level set (1-3)                           | 300S, 600S        |
-| **humidifier-mode**        | String                  | The current mode of operation [auto,sleep]                 | 300S, 600S        |
+| **enabled**                | Switch                  | Whether the hardware device is enabled (Switched on)       | 200S, 300S, 600S  |
+| **display**                | Switch                  | Whether the display is enabled (display is shown)          | 200S, 300S, 600S  |
+| water-lacking              | Switch                  | Indicator whether the unit is lacking water                | 200S, 300S, 600S  |
+| humidity-high              | Switch                  | Indicator for high humidity                                | 200S, 300S, 600S  |
+| water-tank-lifted          | Switch                  | Indicator for whether the water tank is removed            | 200S, 300S, 600S  |
+| **stop-at-target-level**   | Switch                  | Whether the unit is set to stop when the target is reached | 200S, 300S, 600S  |
+| humidity                   | Number:Dimensionless    | Indicator for the currently measured humidity level        | 200S, 300S, 600S  |
+| **mist-level**             | Number:Dimensionless    | The current mist level set (1-3)                           | 200S, 300S, 600S  |
+| **humidifier-mode**        | String                  | The current mode of operation [auto,sleep]                 | 200S, 300S, 600S  |
 | **night_light_mode**       | String                  | The night light mode [on,dim,off]                          | 300S              |
-| **config-target-humidity** | Number:Dimensionless    | Config: What the target humidity is set to reach           | 300S, 600S        |
+| **config-target-humidity** | Number:Dimensionless    | Config: What the target humidity is set to reach           | 200S, 300S, 600S  |
 
 ## Full Example
 
@@ -170,6 +177,21 @@ DateTime             LoungeAPTimerExpire           "Lounge Air Purifier Timer Ex
 Number               LoungeAPSchedulesCount 	   "Lounge Air Purifier Schedules Count"                        { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:schedules-count" }
 ```
 
+#### Air Humidifier Classic 200S Model
+
+```
+Switch               LoungeAHPower             "Lounge Air Humidifier Power"                                  { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:enabled" }
+Switch               LoungeAHDisplay           "Lounge Air Humidifier Display"                                { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:display" }
+String               LoungeAHMode              "Lounge Air Humidifier Mode"                                   { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:humidifier-mode" }
+Switch               LoungeAHWaterLacking      "Lounge Air Humidifier Water Lacking"                          { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:water-lacking" }
+Switch               LoungeAHHighHumidity      "Lounge Air Humidifier High Humidity"                          { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:humidity-high" }
+Switch               LoungeAHWaterTankRemoved  "Lounge Air Humidifier Water Tank Removed"                     { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:water-tank-lifted" }
+Number:Dimensionless LoungeAHHumidity          "Lounge Air Humidifier Measured Humidity"                      { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:humidity" }
+Switch               LoungeAHTargetStop        "Lounge Air Humidifier Stop at target"                         { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:stop-at-target-level" }
+Number:Dimensionless LoungeAHTarget            "Lounge Air Humidifier Target Humidity"                        { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:config-target-humidity" }
+Number:Dimensionless LoungeAHMistLevel         "Lounge Air Humidifier Mist Level"                             { channel="vesync:AirHumidifier:vesyncServers:loungeHumidifier:mist-virtual-level" }
+```
+
 #### Air Humidifier Classic 300S Model
 
 ```
@@ -238,9 +260,26 @@ Frame {
 }
 ```
 
-#### Air Humidifier Classic 300S Model
+#### Air Humidifier Classic 200S Model
 
-This is untested but based on data from pyvesync.
+* Untested
+
+```
+Frame {
+   Switch item=LoungeAHPower
+   Switch item=LoungeAHDisplay
+   Switch item=LoungeAHMode label="Mode" mappings=[auto="Auto", sleep="Sleeping"] icon="settings"
+   Text   icon="none" item=LoungeAHWaterLacking
+   Text   icon="none" item=LoungeAHHighHumidity
+   Text   icon="none" item=LoungeAHWaterTankRemoved
+   Text   icon="none" item=LoungeAHHumidity
+   Switch item=LoungeAHTargetStop
+   Slider item=LoungeAHTarget minValue=30 maxValue=80
+   Slider item=LoungeAHMistLevel minValue=1 maxValue=3
+}
+```
+
+#### Air Humidifier Classic 300S Model
 
 ```
 Frame {

@@ -49,13 +49,15 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
 
     public final static int DEFAULT_AIR_PURIFIER_POLL_RATE = 120;
     // "Device Type" values
+    public final static String DEV_TYPE_CLASSIC_200S = "Classic200S";
     public final static String DEV_TYPE_CLASSIC_300S = "Classic300S";
     public final static String DEV_TYPE_600S = "LUH-A602S-WUS";
 
     private final static List<String> CLASSIC_300S_600S_MODES = Arrays.asList(MODE_AUTO, MODE_MANUAL, MODE_SLEEP);
     private final static List<String> CLASSIC_300S_NIGHT_LIGHT_MODES = Arrays.asList(MODE_ON, MODE_DIM, MODE_OFF);
 
-    public final static List<String> SUPPORTED_DEVICE_TYPES = List.of(DEV_TYPE_CLASSIC_300S, DEV_TYPE_600S);
+    public final static List<String> SUPPORTED_DEVICE_TYPES = List.of(DEV_TYPE_CLASSIC_200S, DEV_TYPE_CLASSIC_300S,
+            DEV_TYPE_600S);
 
     private final Logger logger = LoggerFactory.getLogger(VeSyncDeviceAirHumidifierHandler.class);
 
@@ -70,6 +72,7 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                 case DEV_TYPE_CLASSIC_300S:
                     toRemove = new String[] { DEVICE_CHANNEL_WARM_ENABLED, DEVICE_CHANNEL_WARM_LEVEL };
                     break;
+                case DEV_TYPE_CLASSIC_200S:
                 case DEV_TYPE_600S:
                     toRemove = new String[] { DEVICE_CHANNEL_AF_NIGHT_LIGHT };
                     break;
@@ -137,6 +140,9 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                         sendV2BypassControlCommand(DEVICE_SET_AUTOMATIC_STOP,
                                 new VesyncRequestManagedDeviceBypassV2.EnabledPayload(command.equals(OnOffType.ON)));
                         break;
+                    case DEVICE_CHANNEL_WARM_ENABLED:
+                        logger.warn("Warm mode API is unknown in order to send the command");
+                        break;
                 }
             } else if (command instanceof QuantityType) {
                 switch (channelUID.getId()) {
@@ -180,6 +186,9 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                         sendV2BypassControlCommand(DEVICE_SET_VIRTUAL_LEVEL,
                                 new VesyncRequestManagedDeviceBypassV2.SetLevelPayload(0, DEVICE_LEVEL_TYPE_MIST,
                                         targetMistLevel));
+                        break;
+                    case DEVICE_CHANNEL_WARM_LEVEL:
+                        logger.warn("Warm level API is unknown in order to send the command");
                         break;
                 }
             } else if (command instanceof StringType) {
