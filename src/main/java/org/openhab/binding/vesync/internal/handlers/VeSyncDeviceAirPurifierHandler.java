@@ -65,6 +65,7 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
             DEV_TYPE_CORE_200S, DEV_TYPE_LV_PUR131S);
 
     private final static List<String> CORE_400S_FAN_MODES = Arrays.asList(MODE_AUTO, MODE_MANUAL, MODE_SLEEP);
+    private final static List<String> LV131S_FAN_MODES = CORE_400S_FAN_MODES;
     private final static List<String> CORE_200S300S_FAN_MODES = Arrays.asList(MODE_MANUAL, MODE_SLEEP);
     private final static List<String> CORE_200S300S_NIGHT_LIGHT_MODES = Arrays.asList(MODE_ON, MODE_DIM, MODE_OFF);
 
@@ -95,9 +96,10 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
                     toRemove = new String[] { DEVICE_CHANNEL_AF_NIGHT_LIGHT, DEVICE_CHANNEL_AF_CONFIG_AUTO_ROOM_SIZE,
                             DEVICE_CHANNEL_AF_CONFIG_AUTO_MODE_PREF, DEVICE_CHANNEL_AF_AUTO_OFF_CALC_TIME,
                             DEVICE_CHANNEL_AIR_FILTER_LIFE_PERCENTAGE_REMAINING, DEVICE_CHANNEL_AIRQUALITY_PPM25,
-                            DEVICE_CHANNEL_AF_AUTO_OFF_CALC_TIME, DEVICE_CHANNEL_AF_SCHEDULES_COUNT,
-                            DEVICE_CHANNEL_AF_CONFIG_DISPLAY_FOREVER, DEVICE_CHANNEL_AF_AUTO_OFF_SECONDS };
+                            DEVICE_CHANNEL_AF_SCHEDULES_COUNT, DEVICE_CHANNEL_AF_CONFIG_DISPLAY_FOREVER };
                     break;
+                default:
+                    toRemove = new String[] { DEVICE_CHANNEL_AF_AUTO_OFF_CALC_TIME, DEVICE_CHANNEL_AF_SCHEDULES_COUNT };
             }
         }
         return toRemove;
@@ -377,20 +379,20 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
         updateState(DEVICE_CHANNEL_AF_CONFIG_AUTO_MODE_PREF,
                 new StringType(purifierStatus.result.result.configuration.autoPreference.autoType));
 
-        updateState(DEVICE_CHANNEL_AF_AUTO_OFF_SECONDS,
-                new DecimalType(purifierStatus.result.result.extension.timerRemain));
-
-        if (purifierStatus.result.result.extension.timerRemain > 0) {
-            updateState(DEVICE_CHANNEL_AF_AUTO_OFF_CALC_TIME, new DateTimeType(LocalDateTime.now()
-                    .plus(purifierStatus.result.result.extension.timerRemain, ChronoUnit.SECONDS).toString()));
-        } else {
-            updateState(DEVICE_CHANNEL_AF_AUTO_OFF_CALC_TIME, new DateTimeItem("nullEnforcements").getState());
-        }
         updateState(DEVICE_CHANNEL_AF_CONFIG_AUTO_ROOM_SIZE,
                 new DecimalType(purifierStatus.result.result.configuration.autoPreference.roomSize));
 
-        updateState(DEVICE_CHANNEL_AF_SCHEDULES_COUNT,
-                new DecimalType(purifierStatus.result.result.extension.scheduleCount));
+        // Only 400S appears to have this JSON extension object
+        if (purifierStatus.result.result.extension != null) {
+            if (purifierStatus.result.result.extension.timerRemain > 0) {
+                updateState(DEVICE_CHANNEL_AF_AUTO_OFF_CALC_TIME, new DateTimeType(LocalDateTime.now()
+                        .plus(purifierStatus.result.result.extension.timerRemain, ChronoUnit.SECONDS).toString()));
+            } else {
+                updateState(DEVICE_CHANNEL_AF_AUTO_OFF_CALC_TIME, new DateTimeItem("nullEnforcements").getState());
+            }
+            updateState(DEVICE_CHANNEL_AF_SCHEDULES_COUNT,
+                    new DecimalType(purifierStatus.result.result.extension.scheduleCount));
+        }
 
         // Not applicable to 400S payload's
         if (purifierStatus.result.result.nightLight != null) {

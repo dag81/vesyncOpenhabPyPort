@@ -58,7 +58,6 @@
 			<channel id="air-quality-ppm25" typeId="deviceAirQualityBasicType"/>
 			<channel id="config-display-forever" typeId="deviceAFConfigDisplayForever"/>
 			<channel id="config-auto-mode" typeId="deviceAFConfigAutoPrefType"/>
-			<channel id="timer-remain" typeId="deviceAFTimerOff"/>
 			<channel id="timer-expiry" typeId="deviceAFTimerExpiry"/>
 			<channel id="config-auto-room-size" typeId="deviceAFConfigAutoPrefRoomSizeType"/>
 			<channel id="schedules-count" typeId="deviceAFConfigAutoScheduleCountType"/>
@@ -233,13 +232,6 @@
 				<option value="efficient">Auto (Room Size)</option>
 			</options>
 		</state>
-	</channel-type>
-
-	<channel-type id="deviceAFTimerOff">
-		<item-type>Number:Dimensionless</item-type>
-		<label>Auto Off Timer (Seconds)</label>
-		<description>Timer remaining</description>
-		<state readOnly="true" pattern="%.0f"/>
 	</channel-type>
 
 	<channel-type id="deviceAFTimerExpiry">
