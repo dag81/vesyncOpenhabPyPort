@@ -2,7 +2,7 @@
 
 It's current support is for the Air purifiers & Humidifer's branded as Levoit which utilise the VeSync app based on the V2 protocol.
 
-Air Filtering models supported are Core200S, Core300S and Core400S.
+Air Filtering models supported are Core200S, Core300S, Core400S, and Core600S.
 Air Humidifier models supported are Classic 300S, 600S (excluding writing support for warm mode / level - see GitHub issue).
 
 Potentially supported models:
@@ -20,6 +20,7 @@ Air Humidifier Classic 200S / Dual 200S (Same as 300S without the nightlight fro
 5. Look at potentially other equipment supported by the VeSync API.
 6. Add remaining write commands to complete Humidifier 600S support, (enabled & level).
 7. Adjust Humidifier 200S & Dual200S support based on feedback, given initial conversion.
+8. Get user confirmation Air Purifier model 600S works with all channels as expected.
 
 
 ### Credits
@@ -66,21 +67,21 @@ Channel names in **bold** are read/write, everything else is read-only
 
 | Channel                | Type                    | Description                                               | Model's Supported |  
 |------------------------|-------------------------|-----------------------------------------------------------|-------------------|
-| **enabled**            | Switch                  | Whether the hardware device is enabled (Switched on)      | 400S, 300S        |
-| **child-lock**         | Switch                  | Whether the child lock (display lock is enabled)          | 400S, 300S        |
-| **display**            | Switch                  | Whether the display is enabled (display is shown)         | 400S, 300S        |
-| **fan-mode**           | String                  | The operation mode of the fan                             | 400S, 300S        |
-| **manual-fan-speed**   | String                  | The speed of the fan when in manual mode                  | 400S, 300S        |
-| **night-light-mode**   | String                  | The night lights mode                                     | 400S, 300S        |
-| filter-life-percentage | Number:Dimensionless    | The remaining filter life as a percentage                 | 400S, 300S        |
-| air-quality            | Number                  | The air quality as represented by the Core200S / Core300S | 400S, 300S        |
-| air-quality-ppm25      | Number:Dimensionless    | The air quality as represented by the Core400S            | 400S, 300S        |
-| error-code             | Number                  | The error code reported by the device                     | 400S, 300S        |
-| timer-expiry           | DateTime                | The expected expiry time of the current timer             | 400S              |
-| schedules-count        | Number                  | The number schedules configured                           | 400S              |
-| config-display-forever | Switch                  | Config: Whether the display will disable when not active  | 400S, 300S        |
-| config-auto-mode       | String                  | Config: The mode of operation when auto is active         | 400S, 300S        |
-| config-auto-room-size  | Number                  | Config: The room size set when auto utilises the room size| 400S, 300S        |
+| **enabled**            | Switch                  | Whether the hardware device is enabled (Switched on)      | 600S, 400S, 300S  |
+| **child-lock**         | Switch                  | Whether the child lock (display lock is enabled)          | 600S, 400S, 300S  |
+| **display**            | Switch                  | Whether the display is enabled (display is shown)         | 600S, 400S, 300S  |
+| **fan-mode**           | String                  | The operation mode of the fan                             | 600S, 400S, 300S  |
+| **manual-fan-speed**   | String                  | The speed of the fan when in manual mode                  | 600S, 400S, 300S  |
+| **night-light-mode**   | String                  | The night lights mode                                     | 600S, 400S, 300S  |
+| filter-life-percentage | Number:Dimensionless    | The remaining filter life as a percentage                 | 600S, 400S, 300S  |
+| air-quality            | Number                  | The air quality as represented by the Core200S / Core300S | 600S, 400S, 300S  |
+| air-quality-ppm25      | Number:Dimensionless    | The air quality as represented by the Core400S            | 600S, 400S, 300S  |
+| error-code             | Number                  | The error code reported by the device                     | 600S, 400S, 300S  |
+| timer-expiry           | DateTime                | The expected expiry time of the current timer             | 600S, 400S        |
+| schedules-count        | Number                  | The number schedules configured                           | 600S, 400S        |
+| config-display-forever | Switch                  | Config: Whether the display will disable when not active  | 600S, 400S, 300S  |
+| config-auto-mode       | String                  | Config: The mode of operation when auto is active         | 600S, 400S, 300S  |
+| config-auto-room-size  | Number                  | Config: The room size set when auto utilises the room size| 600S, 400S, 300S  |
 
 ### AirHumidifier Thing
 
@@ -139,7 +140,7 @@ Bridge vesync:bridge:vesyncServers [username="<USERNAME>", password="<PASSWORD>"
 
 ### Configuration (*.items)
 
-#### Air Purifier Core 400S Model
+#### Air Purifier Core 400S / 600S Model
 
 ```
 Switch               LoungeAPPower        	   "Lounge Air Purifier Power"                                  { channel="vesync:AirPurifier:vesyncServers:loungeAirFilter:enabled" }
@@ -224,7 +225,7 @@ Number:Dimensionless LoungeAHMistLevel         "Lounge Air Humidifier Mist Level
 
 ### Configuration (*.sitemap)
 
-#### Air Purifier Core 400S Model
+#### Air Purifier Core 400S / 600S Model
 
 ```
 Frame {

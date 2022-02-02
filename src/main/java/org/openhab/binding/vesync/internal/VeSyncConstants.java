@@ -61,7 +61,6 @@ public class VeSyncConstants {
     public static final String DEVICE_CHANNEL_AF_CONFIG_DISPLAY_FOREVER = "config-display-forever";
     public static final String DEVICE_CHANNEL_AF_CONFIG_AUTO_MODE_PREF = "config-auto-mode";
 
-    public static final String DEVICE_CHANNEL_AF_AUTO_OFF_SECONDS = "timer-remain";
     public static final String DEVICE_CHANNEL_AF_AUTO_OFF_CALC_TIME = "timer-expiry";
     public static final String DEVICE_CHANNEL_AF_CONFIG_AUTO_ROOM_SIZE = "config-auto-room-size";
     public static final String DEVICE_CHANNEL_AF_SCHEDULES_COUNT = "schedules-count";

@@ -57,15 +57,16 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
 
     public final static int DEFAULT_AIR_PURIFIER_POLL_RATE = 120;
     // "Device Type" values
+    public final static String DEV_TYPE_CORE_600S = "LAP-C601S-WUS";
     public final static String DEV_TYPE_CORE_400S = "Core400S";
     public final static String DEV_TYPE_CORE_300S = "Core300S";
     public final static String DEV_TYPE_CORE_200S = "Core200S";
     public final static String DEV_TYPE_LV_PUR131S = "LV-PUR131S";
-    public final static List<String> SUPPORTED_DEVICE_TYPES = Arrays.asList(DEV_TYPE_CORE_400S, DEV_TYPE_CORE_300S,
-            DEV_TYPE_CORE_200S, DEV_TYPE_LV_PUR131S);
+    public final static List<String> SUPPORTED_DEVICE_TYPES = Arrays.asList(DEV_TYPE_CORE_600S, DEV_TYPE_CORE_400S,
+            DEV_TYPE_CORE_300S, DEV_TYPE_CORE_200S, DEV_TYPE_LV_PUR131S);
 
-    private final static List<String> CORE_400S_FAN_MODES = Arrays.asList(MODE_AUTO, MODE_MANUAL, MODE_SLEEP);
-    private final static List<String> LV131S_FAN_MODES = CORE_400S_FAN_MODES;
+    private final static List<String> CORE_400S600S_FAN_MODES = Arrays.asList(MODE_AUTO, MODE_MANUAL, MODE_SLEEP);
+    private final static List<String> LV131S_FAN_MODES = CORE_400S600S_FAN_MODES;
     private final static List<String> CORE_200S300S_FAN_MODES = Arrays.asList(MODE_MANUAL, MODE_SLEEP);
     private final static List<String> CORE_200S300S_NIGHT_LIGHT_MODES = Arrays.asList(MODE_ON, MODE_DIM, MODE_OFF);
 
@@ -90,7 +91,7 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
         if (deviceType != null) {
             switch (deviceType) {
                 case DEV_TYPE_CORE_400S:
-                    toRemove = new String[] { DEVICE_CHANNEL_AF_NIGHT_LIGHT };
+                    DEV_TYPE_CORE_600S: toRemove = new String[] { DEVICE_CHANNEL_AF_NIGHT_LIGHT };
                     break;
                 case DEV_TYPE_LV_PUR131S:
                     toRemove = new String[] { DEVICE_CHANNEL_AF_NIGHT_LIGHT, DEVICE_CHANNEL_AF_CONFIG_AUTO_ROOM_SIZE,
@@ -161,10 +162,10 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
                         final String targetFanMode = command.toString().toLowerCase();
                         switch (deviceType) {
                             case DEV_TYPE_CORE_400S:
-                                if (!CORE_400S_FAN_MODES.contains(targetFanMode)) {
+                                DEV_TYPE_CORE_600S: if (!CORE_400S600S_FAN_MODES.contains(targetFanMode)) {
                                     logger.warn(
                                             "Fan mode command for \"{}\" is not valid in the (Core400S) API possible options {}",
-                                            command, String.join(",", CORE_400S_FAN_MODES));
+                                            command, String.join(",", CORE_400S600S_FAN_MODES));
                                     return;
                                 }
                                 break;
@@ -186,7 +187,7 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
                         final String targetNightLightMode = command.toString().toLowerCase();
                         switch (deviceType) {
                             case DEV_TYPE_CORE_400S:
-                                logger.warn("Core400S API does not support night light");
+                                DEV_TYPE_CORE_600S: logger.warn("Core400S API does not support night light");
                                 return;
                             case DEV_TYPE_CORE_200S:
                             case DEV_TYPE_CORE_300S:
@@ -219,7 +220,7 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
 
                         switch (deviceType) {
                             case DEV_TYPE_CORE_400S:
-                                if (requestedLevel > 4) {
+                                DEV_TYPE_CORE_600S: if (requestedLevel > 4) {
                                     logger.warn(
                                             "Fan speed command greater than 4 - adjusting to 4 as the valid (Core400S) API value");
                                     requestedLevel = 4;
@@ -255,6 +256,7 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
             return;
 
         switch (deviceType) {
+            case DEV_TYPE_CORE_600S:
             case DEV_TYPE_CORE_400S:
             case DEV_TYPE_CORE_300S:
             case DEV_TYPE_CORE_200S:
