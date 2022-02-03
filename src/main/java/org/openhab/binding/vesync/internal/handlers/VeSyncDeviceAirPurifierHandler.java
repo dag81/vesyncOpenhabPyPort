@@ -59,13 +59,12 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
     // "Device Type" values
     public final static String DEV_TYPE_CORE_600S = "LAP-C601S-WUS";
     public final static String DEV_TYPE_CORE_400S = "Core400S";
-    public final static String DEV_TYPE_CORE_301S = "LUH-D301S-WEU";
     public final static String DEV_TYPE_CORE_300S = "Core300S";
     public final static String DEV_TYPE_CORE_201S = "LAP-C201S-AUSR";
     public final static String DEV_TYPE_CORE_200S = "Core200S";
     public final static String DEV_TYPE_LV_PUR131S = "LV-PUR131S";
     public final static List<String> SUPPORTED_DEVICE_TYPES = Arrays.asList(DEV_TYPE_CORE_600S, DEV_TYPE_CORE_400S,
-            DEV_TYPE_CORE_301S, DEV_TYPE_CORE_300S, DEV_TYPE_CORE_201S, DEV_TYPE_CORE_200S, DEV_TYPE_LV_PUR131S);
+            DEV_TYPE_CORE_300S, DEV_TYPE_CORE_201S, DEV_TYPE_CORE_200S, DEV_TYPE_LV_PUR131S);
 
     private final static List<String> CORE_400S600S_FAN_MODES = Arrays.asList(MODE_AUTO, MODE_MANUAL, MODE_SLEEP);
     private final static List<String> LV131S_FAN_MODES = CORE_400S600S_FAN_MODES;
@@ -174,7 +173,6 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
                             case DEV_TYPE_CORE_200S:
                             case DEV_TYPE_CORE_201S:
                             case DEV_TYPE_CORE_300S:
-                            case DEV_TYPE_CORE_301S:
                                 if (!CORE_200S300S_FAN_MODES.contains(targetFanMode)) {
                                     logger.warn(
                                             "Fan mode command for \"{}\" is not valid in the (Core200S/Core300S) API possible options {}",
@@ -196,7 +194,6 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
                             case DEV_TYPE_CORE_200S:
                             case DEV_TYPE_CORE_201S:
                             case DEV_TYPE_CORE_300S:
-                            case DEV_TYPE_CORE_301S:
                                 if (!CORE_200S300S_NIGHT_LIGHT_MODES.contains(targetNightLightMode)) {
                                     logger.warn(
                                             "Night light mode command for \"{}\" is not valid in the (Core200S/Core300S) API possible options {}",
@@ -235,7 +232,6 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
                             case DEV_TYPE_CORE_200S:
                             case DEV_TYPE_CORE_201S:
                             case DEV_TYPE_CORE_300S:
-                            case DEV_TYPE_CORE_301S:
                                 if (requestedLevel > 3) {
                                     logger.warn(
                                             "Fan speed command greater than 3 - adjusting to 3 as the valid (Core200S/Core300S) API value");
@@ -266,7 +262,6 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
         switch (deviceType) {
             case DEV_TYPE_CORE_600S:
             case DEV_TYPE_CORE_400S:
-            case DEV_TYPE_CORE_301S:
             case DEV_TYPE_CORE_300S:
             case DEV_TYPE_CORE_201S:
             case DEV_TYPE_CORE_200S:

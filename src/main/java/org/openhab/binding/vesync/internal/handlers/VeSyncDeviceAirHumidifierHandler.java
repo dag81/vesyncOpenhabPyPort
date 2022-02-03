@@ -51,6 +51,7 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
     // "Device Type" values
     public final static String DEV_TYPE_DUAL_200S = "Dual200S";
     public final static String DEV_TYPE_CLASSIC_200S = "Classic200S";
+    public final static String DEV_TYPE_CORE_301S = "LUH-D301S-WEU";
     public final static String DEV_TYPE_CLASSIC_300S = "Classic300S";
     public final static String DEV_TYPE_600S = "LUH-A602S-WUS";
 
@@ -71,6 +72,7 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
         if (deviceType != null) {
             switch (deviceType) {
                 case DEV_TYPE_CLASSIC_300S:
+                case DEV_TYPE_CORE_301S:
                     toRemove = new String[] { DEVICE_CHANNEL_WARM_ENABLED, DEVICE_CHANNEL_WARM_LEVEL };
                     break;
                 case DEV_TYPE_DUAL_200S:
@@ -207,7 +209,7 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                                 new VesyncRequestManagedDeviceBypassV2.SetMode(targetMode));
                         break;
                     case DEVICE_CHANNEL_AF_NIGHT_LIGHT:
-                        if (!DEV_TYPE_CLASSIC_300S.equals(deviceType)) {
+                        if (!DEV_TYPE_CLASSIC_300S.equals(deviceType) && !DEV_TYPE_CORE_301S.equals(deviceType)) {
                             logger.warn("Humidifier night light is not valid for your device ({}})", deviceType);
                             return;
                         }
@@ -301,7 +303,7 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
         updateState(DEVICE_CHANNEL_HUMIDIFIER_MODE, new StringType(humidifierStatus.result.result.mode));
 
         // Only the 300S supports nightlight currently of tested devices.
-        if (DEV_TYPE_CLASSIC_300S.equals(deviceType)) {
+        if (DEV_TYPE_CLASSIC_300S.equals(deviceType) || DEV_TYPE_CORE_301S.equals(deviceType)) {
             // Map the numeric that only applies to the same modes as the Air Filter 300S series.
             if (humidifierStatus.result.result.night_light_brightness == 0) {
                 updateState(DEVICE_CHANNEL_AF_NIGHT_LIGHT, new StringType(MODE_OFF));
