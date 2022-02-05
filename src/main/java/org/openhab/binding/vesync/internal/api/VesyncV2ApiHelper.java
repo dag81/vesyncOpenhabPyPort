@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2021 Contributors to the openHAB project
+ * Copyright (c) 2010-2022 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -35,7 +35,6 @@ import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.util.StringContentProvider;
 import org.eclipse.jetty.http.HttpHeader;
 import org.openhab.binding.vesync.internal.VeSyncConstants;
-import org.openhab.binding.vesync.internal.VeSyncHandlerFactory;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncAuthenticatedRequest;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncLoginCredentials;
 import org.openhab.binding.vesync.internal.dto.requests.VesyncRequestManagedDeviceBypassV2;
@@ -55,14 +54,13 @@ import org.slf4j.LoggerFactory;
 @NonNullByDefault
 public class VesyncV2ApiHelper {
 
-    private final Logger logger = LoggerFactory.getLogger(VesyncV2ApiHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(VesyncV2ApiHelper.class);
 
     private @NonNullByDefault({}) HttpClient httpClient;
 
     private volatile VesyncLoginResponse.@Nullable VesyncUserSession loggedInSession;
 
-    public VesyncV2ApiHelper(final VeSyncHandlerFactory bridge) {
-        // this.bridge = bridge;
+    public VesyncV2ApiHelper() {
         macLookup = new HashMap<>();
     }
 
@@ -89,7 +87,7 @@ public class VesyncV2ApiHelper {
         try {
             md5 = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
-            // logger.error("This version of Java does not support MD5 hashing");
+            VesyncV2ApiHelper.logger.error("This version of Java does not support MD5 hashing");
             return "";
         }
         byte[] handshakeHash = md5.digest(password.getBytes(StandardCharsets.UTF_8));
@@ -119,7 +117,6 @@ public class VesyncV2ApiHelper {
                     ++pageNo;
                 }
 
-                // logger.warn("Results in page {}", resultsPage.result.pageNo);
                 if (resultsPage != null) {
                     for (VesyncManagedDevicesPage.Result.VesyncManagedDeviceBase device : resultsPage.result.list) {
                         logger.debug(
@@ -127,8 +124,8 @@ public class VesyncV2ApiHelper {
                                 device.getDeviceName(), device.getType(), device.getDeviceType(),
                                 device.getConnectionStatus(), device.getDeviceStatus(), device.getDeviceRegion(),
                                 device.getCid(), device.getConfigModule(), device.getMacId(), device.getUuid());
-                        // Update the mac address -> device table
 
+                        // Update the mac address -> device table
                         generatedMacLookup.put(device.getMacId(), device);
                     }
                 }
@@ -166,10 +163,6 @@ public class VesyncV2ApiHelper {
         try {
             return directReqV1Authorized(url, requestData);
         } catch (final AuthenticationException ae) {
-            // logger.warn("Attempt another login");
-            // logger.warn("Wait for login completion");
-            // logger.warn("Try request again");
-            // logger.warn("Throw error if AuthenticationException persists");
             throw ae;
         }
     }

@@ -2,33 +2,30 @@
 
 It's current support is for the Air purifiers & Humidifer's branded as Levoit which utilise the VeSync app based on the V2 protocol.
 
-Air Filtering models supported are Core200S, Core300S, Core400S, and Core600S.
-Air Humidifier models supported are Classic 300S, 600S (excluding writing support for warm mode / level - see GitHub issue).
+### Verified Models
 
-Potentially supported models:
+Air Filtering models supported are Core300S, Core400S.
+Air Humidifier models supported are Classic 300S, 600S.
 
+### Awaiting User Verification Models
+
+Air Filtering models supported are Core200S and Core600S.
 Air Humidifier Classic 200S / Dual 200S (Same as 300S without the nightlight from initial checks)
 
 ### Restrictions / TODO
 
-1. Add units to the air_quality_ppm25 channel
-2. Confirm the night light for both reading and writing works against the Core200S and Core300S models 
-3. Confirm the suspected behaviour that air_quality is relevant only to the Core200S and Core300S models, and maps to some sort of visual display on the devices. 
-   * If this is confirmed dynamically remove the air_quality channel from the Core400S model
-   * If this is confirmed dynamically remove the air_quality_ppm25 channel from the Core200S and Core300S models
-4. Look at protocol mapping the V1 specification for the LV prefixed model.
-5. Look at potentially other equipment supported by the VeSync API.
-6. Add remaining write commands to complete Humidifier 600S support, (enabled & level).
-7. Adjust Humidifier 200S & Dual200S support based on feedback, given initial conversion.
-8. Get user confirmation Air Purifier model 600S works with all channels as expected.
-
+1. Look at protocol mapping the V1 specification for the LV prefixed model.
+2. Look at potentially other equipment supported by the VeSync API.
+3. Add remaining write commands to complete Humidifier 600S support, if warm mode is controllable.
+4. Adjust Filtering Core200S & Core600S support based on feedback, given initial conversion.
+5. Adjust Humidifier 200S & Dual200S support based on feedback, given initial conversion.
 
 ### Credits
 
 The binding code is based on a lot of work done by other developers:
 
 - Contributors of (https://github.com/webdjoe/pyvesync) - Python interface for VeSync
-- Rene Scherer, Holger Eisold - (https://www.openhab.org/addons/bindings/surepetcare) Sure Petcare Binding for OpenHab as a reference point for the starting blocks of this code 
+- Rene Scherer, Holger Eisold - (https://www.openhab.org/addons/bindings/surepetcare) Sure Petcare Binding for OpenHab as a reference point for the starting blocks of this code
 
 ## Supported Things
 
@@ -243,8 +240,6 @@ Frame {
 
 #### Air Purifier Core 200S/300S Model
 
-* The 200S is untested but based on data from pyvesync.
-
 ```
 Frame {
    Switch item=LoungeAPPower label="Power"
@@ -261,8 +256,6 @@ Frame {
 ```
 
 #### Air Humidifier Classic 200S / Dual 200S Model
-
-* Untested
 
 ```
 Frame {
@@ -298,8 +291,6 @@ Frame {
 ```
 
 #### Air Humidifier 600S Model
-
-* Warm mode support requires additional info to complete - see GitHub issue
 
 ```
 Frame {
