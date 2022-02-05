@@ -90,8 +90,8 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
         final String deviceType = getThing().getProperties().get(DEVICE_PROP_DEVICE_TYPE);
         if (deviceType != null) {
             switch (deviceType) {
-                case DEV_TYPE_CORE_400S:
                 case DEV_TYPE_CORE_600S:
+                case DEV_TYPE_CORE_400S:
                     toRemove = new String[] { DEVICE_CHANNEL_AF_NIGHT_LIGHT };
                     break;
                 case DEV_TYPE_LV_PUR131S:
@@ -162,8 +162,8 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
                     case DEVICE_CHANNEL_FAN_MODE_ENABLED:
                         final String targetFanMode = command.toString().toLowerCase();
                         switch (deviceType) {
-                            case DEV_TYPE_CORE_400S:
                             case DEV_TYPE_CORE_600S:
+                            case DEV_TYPE_CORE_400S:
                                 if (!CORE_400S600S_FAN_MODES.contains(targetFanMode)) {
                                     logger.warn(
                                             "Fan mode command for \"{}\" is not valid in the (Core400S) API possible options {}",
@@ -189,8 +189,8 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
                     case DEVICE_CHANNEL_AF_NIGHT_LIGHT:
                         final String targetNightLightMode = command.toString().toLowerCase();
                         switch (deviceType) {
-                            case DEV_TYPE_CORE_400S:
                             case DEV_TYPE_CORE_600S:
+                            case DEV_TYPE_CORE_400S:
                                 logger.warn("Core400S API does not support night light");
                                 return;
                             case DEV_TYPE_CORE_200S:
@@ -224,8 +224,8 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
                         }
 
                         switch (deviceType) {
-                            case DEV_TYPE_CORE_400S:
                             case DEV_TYPE_CORE_600S:
+                            case DEV_TYPE_CORE_400S:
                                 if (requestedLevel > 4) {
                                     logger.warn(
                                             "Fan speed command greater than 4 - adjusting to 4 as the valid (Core400S) API value");
