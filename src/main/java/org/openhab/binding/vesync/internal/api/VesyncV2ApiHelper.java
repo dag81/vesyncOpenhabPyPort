@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
 @NonNullByDefault
 public class VesyncV2ApiHelper {
 
-    private static final Logger logger = LoggerFactory.getLogger(VesyncV2ApiHelper.class);
+    private final Logger logger = LoggerFactory.getLogger(VesyncV2ApiHelper.class);
 
     private @NonNullByDefault({}) HttpClient httpClient;
 
@@ -80,14 +80,14 @@ public class VesyncV2ApiHelper {
     }
 
     public static @NotNull String calculateMd5(final @Nullable String password) {
-        if (password == null)
+        if (password == null) {
             return "";
+        }
         MessageDigest md5;
         StringBuilder md5Result = new StringBuilder();
         try {
             md5 = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
-            VesyncV2ApiHelper.logger.error("This version of Java does not support MD5 hashing");
             return "";
         }
         byte[] handshakeHash = md5.digest(password.getBytes(StandardCharsets.UTF_8));
@@ -98,7 +98,6 @@ public class VesyncV2ApiHelper {
     }
 
     public void discoverDevices() throws AuthenticationException {
-
         try {
             VesyncRequestManagedDevicesPage reqDevPage = new VesyncRequestManagedDevicesPage(loggedInSession);
             boolean finished = false;
@@ -139,11 +138,11 @@ public class VesyncV2ApiHelper {
 
     public String reqV2Authorized(final String url, final String macId, final VesyncAuthenticatedRequest requestData)
             throws AuthenticationException, DeviceUnknownException {
-
-        if (loggedInSession == null)
+        if (loggedInSession == null) {
             throw new AuthenticationException("User is not logged in");
+        }
         // Apply current session authentication data
-        requestData.ApplyAuthentication(loggedInSession);
+        requestData.applyAuthentication(loggedInSession);
 
         // Apply specific addressing parameters
         if (requestData instanceof VesyncRequestManagedDeviceBypassV2) {
@@ -181,7 +180,6 @@ public class VesyncV2ApiHelper {
 
             ContentResponse response = request.timeout(5, TimeUnit.SECONDS).send();
             if (response.getStatus() == HttpURLConnection.HTTP_OK) {
-
                 VesyncResponse commResponse = VeSyncConstants.GSON.fromJson(response.getContentAsString(),
                         VesyncResponse.class);
 
@@ -217,7 +215,7 @@ public class VesyncV2ApiHelper {
         }
     }
 
-    public void UpdateBridgeData(final VeSyncBridgeHandler bridge) {
+    public void updateBridgeData(final VeSyncBridgeHandler bridge) {
         bridge.handleNewUserSession(loggedInSession);
     }
 

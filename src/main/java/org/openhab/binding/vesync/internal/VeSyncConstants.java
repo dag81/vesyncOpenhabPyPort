@@ -50,34 +50,34 @@ public class VeSyncConstants {
     // Base Device Channel Names
     public static final String DEVICE_CHANNEL_ENABLED = "enabled";
     public static final String DEVICE_CHANNEL_DISPLAY_ENABLED = "display";
-    public static final String DEVICE_CHANNEL_CHILD_LOCK_ENABLED = "child-lock";
-    public static final String DEVICE_CHANNEL_AIR_FILTER_LIFE_PERCENTAGE_REMAINING = "filter-life-percentage";
-    public static final String DEVICE_CHANNEL_FAN_MODE_ENABLED = "fan-mode";
-    public static final String DEVICE_CHANNEL_FAN_SPEED_ENABLED = "manual-fan-speed";
-    public static final String DEVICE_CHANNEL_ERROR_CODE = "error-code";
-    public static final String DEVICE_CHANNEL_AIRQUALITY_BASIC = "air-quality";
-    public static final String DEVICE_CHANNEL_AIRQUALITY_PPM25 = "air-quality-ppm25";
+    public static final String DEVICE_CHANNEL_CHILD_LOCK_ENABLED = "childLock";
+    public static final String DEVICE_CHANNEL_AIR_FILTER_LIFE_PERCENTAGE_REMAINING = "filterLifePercentage";
+    public static final String DEVICE_CHANNEL_FAN_MODE_ENABLED = "fanMode";
+    public static final String DEVICE_CHANNEL_FAN_SPEED_ENABLED = "manualFanSpeed";
+    public static final String DEVICE_CHANNEL_ERROR_CODE = "errorCode";
+    public static final String DEVICE_CHANNEL_AIRQUALITY_BASIC = "airQuality";
+    public static final String DEVICE_CHANNEL_AIRQUALITY_PPM25 = "airQualityPPM25";
 
-    public static final String DEVICE_CHANNEL_AF_CONFIG_DISPLAY_FOREVER = "config-display-forever";
-    public static final String DEVICE_CHANNEL_AF_CONFIG_AUTO_MODE_PREF = "config-auto-mode";
+    public static final String DEVICE_CHANNEL_AF_CONFIG_DISPLAY_FOREVER = "configDisplayForever";
+    public static final String DEVICE_CHANNEL_AF_CONFIG_AUTO_MODE_PREF = "configAutoMode";
 
-    public static final String DEVICE_CHANNEL_AF_AUTO_OFF_CALC_TIME = "timer-expiry";
-    public static final String DEVICE_CHANNEL_AF_CONFIG_AUTO_ROOM_SIZE = "config-auto-room-size";
-    public static final String DEVICE_CHANNEL_AF_SCHEDULES_COUNT = "schedules-count";
-    public static final String DEVICE_CHANNEL_AF_NIGHT_LIGHT = "night-light-mode";
+    public static final String DEVICE_CHANNEL_AF_AUTO_OFF_CALC_TIME = "timerExpiry";
+    public static final String DEVICE_CHANNEL_AF_CONFIG_AUTO_ROOM_SIZE = "configAutoRoomSize";
+    public static final String DEVICE_CHANNEL_AF_SCHEDULES_COUNT = "schedulesCount";
+    public static final String DEVICE_CHANNEL_AF_NIGHT_LIGHT = "nightLightMode";
 
     // Humidity related channels
-    public static final String DEVICE_CHANNEL_WATER_LACKS = "water-lacking";
-    public static final String DEVICE_CHANNEL_HUMIDITY_HIGH = "humidity-high";
-    public static final String DEVICE_CHANNEL_WATER_TANK_LIFTED = "water-tank-lifted";
-    public static final String DEVICE_CHANNEL_STOP_AT_TARGET = "stop-at-target-level";
+    public static final String DEVICE_CHANNEL_WATER_LACKS = "waterLacking";
+    public static final String DEVICE_CHANNEL_HUMIDITY_HIGH = "humidityHigh";
+    public static final String DEVICE_CHANNEL_WATER_TANK_LIFTED = "waterTankLifted";
+    public static final String DEVICE_CHANNEL_STOP_AT_TARGET = "stopAtTargetLevel";
     public static final String DEVICE_CHANNEL_HUMIDITY = "humidity";
-    public static final String DEVICE_CHANNEL_MIST_LEVEL = "mist-level";
-    public static final String DEVICE_CHANNEL_HUMIDIFIER_MODE = "humidifier-mode";
-    public static final String DEVICE_CHANNEL_WARM_ENABLED = "warm-enabled";
-    public static final String DEVICE_CHANNEL_WARM_LEVEL = "warm-level";
+    public static final String DEVICE_CHANNEL_MIST_LEVEL = "mistLevel";
+    public static final String DEVICE_CHANNEL_HUMIDIFIER_MODE = "humidifierMode";
+    public static final String DEVICE_CHANNEL_WARM_ENABLED = "warmEnabled";
+    public static final String DEVICE_CHANNEL_WARM_LEVEL = "warmLevel";
 
-    public static final String DEVICE_CHANNEL_CONFIG_TARGET_HUMIDITY = "config-target-humidity";
+    public static final String DEVICE_CHANNEL_CONFIG_TARGET_HUMIDITY = "configTargetHumidity";
 
     // Property name constants
     public static final String DEVICE_PROP_DEVICE_NAME = "Device Name";

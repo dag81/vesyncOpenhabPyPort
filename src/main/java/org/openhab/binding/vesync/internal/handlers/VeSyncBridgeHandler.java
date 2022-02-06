@@ -150,7 +150,7 @@ public class VeSyncBridgeHandler extends BaseBridgeHandler implements VeSyncClie
     public void runDeviceScanSequence() throws AuthenticationException {
         logger.trace("Scanning for new devices / base information now");
         api.discoverDevices();
-        handlers.forEach(x -> x.HandleMetadataRetrieved(this));
+        handlers.forEach(x -> x.handleMetadataRetrieved(this));
         checkIfIncreaseScanRateRequired();
 
         this.updateThings();
@@ -197,7 +197,7 @@ public class VeSyncBridgeHandler extends BaseBridgeHandler implements VeSyncClie
 
             try {
                 api.login(config.username, passwordMd5, "Europe/London");
-                api.UpdateBridgeData(this);
+                api.updateBridgeData(this);
                 runDeviceScanSequence();
                 updateStatus(ThingStatus.ONLINE);
             } catch (final AuthenticationException ae) {

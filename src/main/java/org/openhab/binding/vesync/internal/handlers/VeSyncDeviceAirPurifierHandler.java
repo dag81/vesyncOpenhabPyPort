@@ -55,20 +55,20 @@ import org.slf4j.LoggerFactory;
 @NonNullByDefault
 public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
 
-    public final static int DEFAULT_AIR_PURIFIER_POLL_RATE = 120;
+    public static final int DEFAULT_AIR_PURIFIER_POLL_RATE = 120;
     // "Device Type" values
-    public final static String DEV_TYPE_CORE_600S = "LAP-C601S-WUS";
-    public final static String DEV_TYPE_CORE_400S = "Core400S";
-    public final static String DEV_TYPE_CORE_300S = "Core300S";
-    public final static String DEV_TYPE_CORE_201S = "LAP-C201S-AUSR";
-    public final static String DEV_TYPE_CORE_200S = "Core200S";
-    public final static String DEV_TYPE_LV_PUR131S = "LV-PUR131S";
-    public final static List<String> SUPPORTED_DEVICE_TYPES = Arrays.asList(DEV_TYPE_CORE_600S, DEV_TYPE_CORE_400S,
+    public static final String DEV_TYPE_CORE_600S = "LAP-C601S-WUS";
+    public static final String DEV_TYPE_CORE_400S = "Core400S";
+    public static final String DEV_TYPE_CORE_300S = "Core300S";
+    public static final String DEV_TYPE_CORE_201S = "LAP-C201S-AUSR";
+    public static final String DEV_TYPE_CORE_200S = "Core200S";
+    public static final String DEV_TYPE_LV_PUR131S = "LV-PUR131S";
+    public static final List<String> SUPPORTED_DEVICE_TYPES = Arrays.asList(DEV_TYPE_CORE_600S, DEV_TYPE_CORE_400S,
             DEV_TYPE_CORE_300S, DEV_TYPE_CORE_201S, DEV_TYPE_CORE_200S, DEV_TYPE_LV_PUR131S);
 
-    private final static List<String> CORE_400S600S_FAN_MODES = Arrays.asList(MODE_AUTO, MODE_MANUAL, MODE_SLEEP);
-    private final static List<String> CORE_200S300S_FAN_MODES = Arrays.asList(MODE_MANUAL, MODE_SLEEP);
-    private final static List<String> CORE_200S300S_NIGHT_LIGHT_MODES = Arrays.asList(MODE_ON, MODE_DIM, MODE_OFF);
+    private static final List<String> CORE_400S600S_FAN_MODES = Arrays.asList(MODE_AUTO, MODE_MANUAL, MODE_SLEEP);
+    private static final List<String> CORE_200S300S_FAN_MODES = Arrays.asList(MODE_MANUAL, MODE_SLEEP);
+    private static final List<String> CORE_200S300S_NIGHT_LIGHT_MODES = Arrays.asList(MODE_ON, MODE_DIM, MODE_OFF);
 
     private final Logger logger = LoggerFactory.getLogger(VeSyncDeviceAirPurifierHandler.class);
 
@@ -110,8 +110,9 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
     @Override
     public void updateBridgeBasedPolls(final VeSyncBridgeConfiguration config) {
         Integer pollRate = config.airPurifierPollInterval;
-        if (pollRate == null)
+        if (pollRate == null) {
             pollRate = DEFAULT_AIR_PURIFIER_POLL_RATE;
+        }
 
         if (ThingStatus.OFFLINE.equals(getThing().getStatus())) {
             setBackgroundPollInterval(-1);
@@ -128,16 +129,18 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
     @Override
     protected boolean isDeviceSupported() {
         final String deviceType = getThing().getProperties().get(DEVICE_PROP_DEVICE_TYPE);
-        if (deviceType == null)
+        if (deviceType == null) {
             return false;
+        }
         return SUPPORTED_DEVICE_TYPES.contains(deviceType);
     }
 
     @Override
     public void handleCommand(final ChannelUID channelUID, final Command command) {
         final String deviceType = getThing().getProperties().get(DEVICE_PROP_DEVICE_TYPE);
-        if (deviceType == null)
+        if (deviceType == null) {
             return;
+        }
 
         scheduler.submit(() -> {
 
@@ -259,8 +262,9 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
     @Override
     protected void pollForDeviceData(final ExpiringCache<String> cachedResponse) {
         final String deviceType = getThing().getProperties().get(DEVICE_PROP_DEVICE_TYPE);
-        if (deviceType == null)
+        if (deviceType == null) {
             return;
+        }
 
         switch (deviceType) {
             case DEV_TYPE_CORE_600S:
@@ -278,13 +282,13 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
 
     private void processV1AirPurifierPoll(final ExpiringCache<String> cachedResponse) {
         final String deviceUuid = getThing().getProperties().get(DEVICE_PROP_DEVICE_UUID);
-        if (deviceUuid == null)
+        if (deviceUuid == null) {
             return;
+        }
 
         String response;
         VesyncV1AirPurifierDeviceDetailsResponse purifierStatus;
         synchronized (pollLock) {
-
             response = cachedResponse.getValue();
             boolean cachedDataUsed = response != null;
             if (response == null) {
@@ -295,13 +299,15 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
                 logger.trace("Using cached response {}", response);
             }
 
-            if (response.equals(EMPTY_STRING))
+            if (response.equals(EMPTY_STRING)) {
                 return;
+            }
 
             purifierStatus = VeSyncConstants.GSON.fromJson(response, VesyncV1AirPurifierDeviceDetailsResponse.class);
 
-            if (purifierStatus == null)
+            if (purifierStatus == null) {
                 return;
+            }
 
             if (!cachedDataUsed) {
                 cachedResponse.putValue(response);
@@ -334,7 +340,6 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
         String response;
         VesyncV2BypassPurifierStatus purifierStatus;
         synchronized (pollLock) {
-
             response = cachedResponse.getValue();
             boolean cachedDataUsed = response != null;
             if (response == null) {
@@ -345,13 +350,15 @@ public class VeSyncDeviceAirPurifierHandler extends VeSyncBaseDeviceHandler {
                 logger.trace("Using cached response {}", response);
             }
 
-            if (response.equals(EMPTY_STRING))
+            if (response.equals(EMPTY_STRING)) {
                 return;
+            }
 
             purifierStatus = VeSyncConstants.GSON.fromJson(response, VesyncV2BypassPurifierStatus.class);
 
-            if (purifierStatus == null)
+            if (purifierStatus == null) {
                 return;
+            }
 
             if (!cachedDataUsed) {
                 cachedResponse.putValue(response);

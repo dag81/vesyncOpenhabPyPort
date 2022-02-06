@@ -36,16 +36,18 @@ public class VesyncAuthenticatedRequest extends VesyncRequest {
 
     public VesyncAuthenticatedRequest(final VesyncLoginResponse.VesyncUserSession user) throws AuthenticationException {
         super();
-        if (user == null)
+        if (user == null) {
             throw new AuthenticationException("User is not logged in");
+        }
         this.token = user.getToken();
         this.accountId = user.getAccountId();
     }
 
-    public void ApplyAuthentication(final VesyncLoginResponse.VesyncUserSession userSession)
+    public void applyAuthentication(final VesyncLoginResponse.VesyncUserSession userSession)
             throws AuthenticationException {
-        if (userSession == null)
+        if (userSession == null) {
             throw new AuthenticationException("User is not logged in");
+        }
         this.accountId = userSession.getAccountId();
         this.token = userSession.getToken();
     }

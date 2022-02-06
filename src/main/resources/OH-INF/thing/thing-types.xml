@@ -48,20 +48,20 @@
 
 		<channels>
 			<channel id="enabled" typeId="deviceEnabledType"/>
-			<channel id="child-lock" typeId="deviceChildLockEnabledType"/>
+			<channel id="childLock" typeId="deviceChildLockEnabledType"/>
 			<channel id="display" typeId="deviceDisplayEnabledType"/>
-			<channel id="filter-life-percentage" typeId="deviceFilterLifePercentageType"/>
-			<channel id="fan-mode" typeId="airPurifierModeType"/>
-			<channel id="manual-fan-speed" typeId="airPurifierFanLevelType"/>
-			<channel id="error-code" typeId="deviceErrorCodeType"/>
-			<channel id="air-quality" typeId="deviceAirQualityBasicType"/>
-			<channel id="air-quality-ppm25" typeId="deviceAirQualityBasicType"/>
-			<channel id="config-display-forever" typeId="deviceAFConfigDisplayForever"/>
-			<channel id="config-auto-mode" typeId="deviceAFConfigAutoPrefType"/>
-			<channel id="timer-expiry" typeId="deviceAFTimerExpiry"/>
-			<channel id="config-auto-room-size" typeId="deviceAFConfigAutoPrefRoomSizeType"/>
-			<channel id="schedules-count" typeId="deviceAFConfigAutoScheduleCountType"/>
-			<channel id="night-light-mode" typeId="deviceAFNightLight"/>
+			<channel id="filterLifePercentage" typeId="deviceFilterLifePercentageType"/>
+			<channel id="fanMode" typeId="airPurifierModeType"/>
+			<channel id="manualFanSpeed" typeId="airPurifierFanLevelType"/>
+			<channel id="errorCode" typeId="deviceErrorCodeType"/>
+			<channel id="airQuality" typeId="deviceAirQualityBasicType"/>
+			<channel id="airQualityPPM25" typeId="deviceAirQualityBasicType"/>
+			<channel id="configDisplayForever" typeId="deviceAFConfigDisplayForever"/>
+			<channel id="configAutoMode" typeId="deviceAFConfigAutoPrefType"/>
+			<channel id="timerExpiry" typeId="deviceAFTimerExpiry"/>
+			<channel id="configAutoRoomSize" typeId="deviceAFConfigAutoPrefRoomSizeType"/>
+			<channel id="schedulesCount" typeId="deviceAFConfigAutoScheduleCountType"/>
+			<channel id="nightLightMode" typeId="deviceAFNightLight"/>
 		</channels>
 
 		<properties>
@@ -97,17 +97,17 @@
 		<channels>
 			<channel id="enabled" typeId="deviceEnabledType"/>
 			<channel id="display" typeId="deviceDisplayEnabledType"/>
-			<channel id="water-lacking" typeId="deviceWaterLackingType"/>
-			<channel id="humidity-high" typeId="deviceHighHumidityType"/>
-			<channel id="water-tank-lifted" typeId="deviceWaterTankLiftedType"/>
-			<channel id="stop-at-target-level" typeId="deviceAutomaticStopReachTargetType"/>
+			<channel id="waterLacking" typeId="deviceWaterLackingType"/>
+			<channel id="humidityHigh" typeId="deviceHighHumidityType"/>
+			<channel id="waterTankLifted" typeId="deviceWaterTankLiftedType"/>
+			<channel id="stopAtTargetLevel" typeId="deviceAutomaticStopReachTargetType"/>
 			<channel id="humidity" typeId="deviceHumidityType"/>
-			<channel id="mist-level" typeId="deviceMistLevelType"/>
-			<channel id="humidifier-mode" typeId="airHumidifierModeType"/>
-			<channel id="night-light-mode" typeId="deviceAFNightLight"/>
-			<channel id="config-target-humidity" typeId="deviceConfigTargetHumidity"/>
-			<channel id="warm-enabled" typeId="warmModeEnabled"/>
-			<channel id="warm-level" typeId="warmLevel"/>
+			<channel id="mistLevel" typeId="deviceMistLevelType"/>
+			<channel id="humidifierMode" typeId="airHumidifierModeType"/>
+			<channel id="nightLightMode" typeId="deviceAFNightLight"/>
+			<channel id="configTargetHumidity" typeId="deviceConfigTargetHumidity"/>
+			<channel id="warmEnabled" typeId="warmModeEnabled"/>
+			<channel id="warmLevel" typeId="warmLevel"/>
 		</channels>
 
 		<properties>
@@ -208,7 +208,7 @@
 		<state readOnly="true" pattern="%.0f"/>
 	</channel-type>
 
-	<channel-type id="air-quality-ppm25">
+	<channel-type id="airQualityPPM25">
 		<item-type>Number:Dimensionless</item-type>
 		<label>Air Quality PPM 2.5</label>
 		<description>Indicator of current air quality</description>

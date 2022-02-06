@@ -88,9 +88,9 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
     }
 
     protected void setBackgroundPollInterval(final int seconds) {
-        if (activePollRate == seconds)
+        if (activePollRate == seconds) {
             return;
-
+        }
         logger.debug("Reconfiguring devices background polling to {} seconds", seconds);
 
         synchronized (pollConfigLock) {
@@ -126,9 +126,9 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
 
     private @Nullable BridgeHandler getBridgeHandler() {
         Bridge bridgeRef = getBridge();
-        if (bridgeRef == null)
+        if (bridgeRef == null) {
             return null;
-        else {
+        } else {
             return bridgeRef.getHandler();
         }
     }
@@ -140,8 +140,9 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
             VesyncManagedDevicesPage.Result.@Nullable VesyncManagedDeviceBase metadata = vesyncBridgeHandler.api
                     .getMacLookupMap().get(deviceLookupKey);
 
-            if (metadata == null)
+            if (metadata == null) {
                 return false;
+            }
 
             return ("online".equals(metadata.connectionStatus));
         }
@@ -149,7 +150,6 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
     }
 
     public void updateDeviceMetaData() {
-
         Map<String, String> newProps = null;
 
         BridgeHandler bridgeHandler = getBridgeHandler();
@@ -158,8 +158,9 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
             VesyncManagedDevicesPage.Result.@Nullable VesyncManagedDeviceBase metadata = vesyncBridgeHandler.api
                     .getMacLookupMap().get(deviceLookupKey);
 
-            if (metadata == null)
+            if (metadata == null) {
                 return;
+            }
 
             newProps = getMetadataProperities(metadata);
 
@@ -198,8 +199,9 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
         final List<Channel> channelsToBeRemoved = new ArrayList<>();
         for (String name : channelsToRemove) {
             Channel ch = getThing().getChannel(name);
-            if (ch != null)
+            if (ch != null) {
                 channelsToBeRemoved.add(ch);
+            }
         }
 
         final ThingBuilder builder = editThing().withoutChannels(channelsToBeRemoved);
@@ -270,13 +272,13 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
 
             // Try to use the mac directly
             if (configMac != null) {
-
                 logger.debug("Searching for device mac id : {}", configMac);
                 VesyncManagedDevicesPage.Result.@Nullable VesyncManagedDeviceBase metadata = vesyncBridgeHandler.api
                         .getMacLookupMap().get(configMac.toLowerCase());
 
-                if (metadata != null && metadata.macId != null)
+                if (metadata != null && metadata.macId != null) {
                     return metadata.macId;
+                }
             }
 
             final String deviceName = config.deviceName;
@@ -305,7 +307,6 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
 
     @Override
     public void initialize() {
-
         // Sanity check basic setup
         final VeSyncBridgeHandler bridge = (VeSyncBridgeHandler) getBridgeHandler();
         if (bridge == null) {
@@ -364,8 +365,9 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
     protected final String sendV2BypassControlCommand(final String method,
             final VesyncRequestManagedDeviceBypassV2.EmptyPayload payload, final boolean readbackDevice) {
         final String result = sendV2BypassCommand(method, payload);
-        if (!result.equals(EMPTY_STRING) && readbackDevice)
+        if (!result.equals(EMPTY_STRING) && readbackDevice) {
             performReadbackPoll();
+        }
         return result;
     }
 
@@ -380,9 +382,9 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
                 deviceLookupKey = getValidatedIdString();
             }
             VeSyncClient client = getVeSyncClient();
-            if (client != null)
+            if (client != null) {
                 return client.reqV2Authorized(url, deviceLookupKey, request);
-            else {
+            } else {
                 throw new DeviceUnknownException("Missing client");
             }
         } catch (AuthenticationException e) {
@@ -428,9 +430,9 @@ public abstract class VeSyncBaseDeviceHandler extends BaseThingHandler {
                 deviceLookupKey = getValidatedIdString();
             }
             VeSyncClient client = getVeSyncClient();
-            if (client != null)
+            if (client != null) {
                 return client.reqV2Authorized(V2_BYPASS_ENDPOINT, deviceLookupKey, readReq);
-            else {
+            } else {
                 throw new DeviceUnknownException("Missing client");
             }
         } catch (AuthenticationException e) {

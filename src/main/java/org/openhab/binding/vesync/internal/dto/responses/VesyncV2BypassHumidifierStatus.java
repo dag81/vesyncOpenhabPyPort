@@ -38,40 +38,40 @@ public class VesyncV2BypassHumidifierStatus extends VesyncResponse {
             public int humidity;
 
             @SerializedName("mist_virtual_level")
-            public int mist_virtual_level;
+            public int mistVirtualLevel;
 
             @SerializedName("mist_level")
-            public int mist_level;
+            public int mistLevel;
 
             @SerializedName("mode")
             public String mode;
 
             @SerializedName("water_lacks")
-            public boolean water_lacks;
+            public boolean waterLacks;
 
             @SerializedName("humidity_high")
             public boolean humidityHigh;
 
             @SerializedName("water_tank_lifted")
-            public boolean water_tank_lifted;
+            public boolean waterTankLifted;
 
             @SerializedName("display")
             public boolean display;
 
             @SerializedName("automatic_stop_reach_target")
-            public boolean automatic_stop_reach_target;
+            public boolean automaticStopReachTarget;
 
             @SerializedName("configuration")
             public HumidityPurifierConfig configuration;
 
             @SerializedName("night_light_brightness")
-            public int night_light_brightness;
+            public int nightLightBrightness;
 
             @SerializedName("warm_enabled")
-            public boolean warn_enabled;
+            public boolean warnEnabled;
 
             @SerializedName("warm_level")
-            public int warm_level;
+            public int warmLevel;
 
             public class HumidityPurifierConfig {
                 @SerializedName("auto_target_humidity")
