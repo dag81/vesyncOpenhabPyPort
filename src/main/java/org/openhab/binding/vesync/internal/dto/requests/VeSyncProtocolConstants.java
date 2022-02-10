@@ -42,6 +42,7 @@ public interface VeSyncProtocolConstants {
     String DEVICE_GET_HUMIDIFIER_STATUS = "getHumidifierStatus";
 
     String DEVICE_LEVEL_TYPE_MIST = "mist";
+    String DEVICE_LEVEL_TYPE_WARM = "warm";
 
     // Air Purifier Commands
     String DEVICE_SET_PURIFIER_MODE = "setPurifierMode";

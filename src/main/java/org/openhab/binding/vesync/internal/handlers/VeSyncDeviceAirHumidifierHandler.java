@@ -194,7 +194,19 @@ public class VeSyncDeviceAirHumidifierHandler extends VeSyncBaseDeviceHandler {
                                         targetMistLevel));
                         break;
                     case DEVICE_CHANNEL_WARM_LEVEL:
-                        logger.warn("Warm level API is unknown in order to send the command");
+                        int targetWarmLevel = ((QuantityType<?>) command).intValue();
+                        if (targetWarmLevel < 1) {
+                            logger.warn(
+                                    "Target Humidity Warm Level less than 1 - adjusting to 1 as the valid API value");
+                            targetWarmLevel = 1;
+                        } else if (targetWarmLevel > 3) {
+                            logger.warn(
+                                    "Target Humidity Warm Level greater than 3 - adjusting to 3 as the valid API value");
+                            targetWarmLevel = 3;
+                        }
+                        sendV2BypassControlCommand(DEVICE_SET_LEVEL,
+                                new VesyncRequestManagedDeviceBypassV2.SetLevelPayload(0, DEVICE_LEVEL_TYPE_WARM,
+                                        targetWarmLevel));
                         break;
                 }
             } else if (command instanceof StringType) {
